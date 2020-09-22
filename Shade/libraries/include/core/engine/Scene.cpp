@@ -1,18 +1,50 @@
 #include "Scene.h"
+#include <core/engine/Engine.h>
+#include <core/engine/EventManager.h>
 
-se::Scene::Scene()
-	:m_Name("Undefined Scene"), m_State(SceneState::Continue)
+se::Scene::Scene(const std::string& name):
+	m_Name(name)
 {
-	DEBUG_LOG("Scene(" + m_Name + ")", LOG_LEVEL::INFO_SECONDARY);
-}
-
-se::Scene::Scene(const std::string& name)
-	:m_Name(name), m_State(SceneState::Continue)
-{
-	DEBUG_LOG("Scene(" + m_Name + ")", LOG_LEVEL::INFO_SECONDARY);
 }
 
 se::Scene::~Scene()
 {
-	DEBUG_LOG("~Scene(" + m_Name + ")", LOG_LEVEL::INFO_SECONDARY);
+	for (auto& layer : m_Layers)
+	{
+		layer->OnDelete();
+		delete layer;
+	}
+}
+
+void se::Scene::SetScene(const std::string& name)
+{
+	try
+	{
+		if (Engine::GetInstance().m_Scenes.find(name) != Engine::GetInstance().m_Scenes.end())
+		{
+			Engine::GetInstance().m_CurrentScene = Engine::GetInstance().m_Scenes.find(name)->second;
+		}
+		else
+		{
+			throw std::runtime_error("Exeption : Scene wasn't founded: "+ name);
+		}
+	}
+	catch (std::runtime_error& error)
+	{
+		DEBUG_PRINT(error.what(), LogLevel::ERROR);
+	}
+	
+}
+
+void se::Scene::RegisterEventCallback(const EventType& type, const EventCallback& callback)
+{
+	se::EventManager::RegisterSceneCallback(type, this, callback);
+}
+
+void se::Scene::AddLayer(Layer* layer)
+{
+	m_Layers.emplace_back(layer);
+
+	layer->OnCreate();
+	layer->OnInit();
 }

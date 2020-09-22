@@ -1,15 +1,14 @@
 #include "Engine.h"
+#include <core/engine/WindowManager.h>
+#include <core/engine/EventManager.h>
 
 se::Engine::Engine()
-	:m_CurrentScene(nullptr)
+	: m_State(EngineState::RUNNING), m_CurrentScene(nullptr)
 {
-	DEBUG_LOG("Engine has been created", LOG_LEVEL::INFO_SECONDARY);
 }
-
 se::Engine::~Engine()
-{
-	Clean();
-	DEBUG_LOG("Engine has been destroyed", LOG_LEVEL::INFO_SECONDARY);
+{	
+	DEBUG_PRINT("Engine has been destroyed", LogLevel::INFO_SECONDARY);
 }
 
 se::Engine& se::Engine::GetInstance()
@@ -18,110 +17,146 @@ se::Engine& se::Engine::GetInstance()
 	return _Instatnce;
 }
 
-void se::Engine::Start()
+void se::Engine::SetConfig(const EngineConfig& config)
 {
-	return GetInstance()._Start();
+	GetInstance()._SetConfig(config);
 }
 
-
-void se::Engine::_Start()
+void se::Engine::SetState(const EngineState& state)
 {
+	GetInstance()._SetState(state);
+}
+
+void se::Engine::Init()
+{
+	try 
+	{
+		GetInstance()._Init();
+	}
+	catch (std::runtime_error& error)
+	{
+#ifdef SE_DEBUG
+		DEBUG_PRINT(error.what(), LogLevel::ERROR);
+#else 
+		DEBUG_SAVE(error.what(),  LogLevel::ERROR);
+#endif // SE_DEBUG
+		exit(-1);
+	}
+}
+
+void se::Engine::RegisterEventCallback(const EventType& type, const se::EventCallback& callback)
+{
+	GetInstance()._RegisterEventCallback(type, callback);
+}
+
+void se::Engine::_SetConfig(const EngineConfig& config)
+{
+	m_Config = config;
+}
+
+void se::Engine::_SetState(const EngineState& state)
+{
+	m_State = state;
+}
+
+void se::Engine::_Init()
+{
+	m_CurrentScene = m_Config.scene;
+	WindowManager::CreateWindow(m_Config.window);
+
 	Prepare();
-	DEBUG_LOG("Engine start", LOG_LEVEL::SUCCESS);
-	Run();
+	Start();
+}
+
+void se::Engine::_RegisterEventCallback(const EventType& type, const se::EventCallback& callback)
+{
+	EventManager::RegisterEventCoreCallback(type, callback);
+}
+
+void se::Engine::Start()
+{
+	
+	while (true) //TODO some like vent for exit or other things
+	{
+		EventManager::GetInstance().Update();
+
+		if (!WindowManager::IsClosed())
+			m_State == EngineState::STOP;
+
+		switch (m_State)
+		{
+		case EngineState::RUNNING:
+			Update();
+			break;
+		case EngineState::PAUSE:
+
+			break;
+		case EngineState::STOP:
+			Stop();
+			return;
+		default:
+			break;
+		}
+
+		WindowManager::GetInstance().Update();
+	}
+
 }
 
 void se::Engine::Prepare()
 {
-	DEBUG_LOG("Engine prepare state", LOG_LEVEL::INFO_SECONDARY);
+	
+	m_CurrentScene->OnCreate();
+	m_CurrentScene->OnInit();
 
-	for (const auto& scene : m_Scenes)
-		scene.second->OnCreate();
+}
 
-	//Create default window
-	WindowManager::CreateWindow(Window{});
-
-	SDL_Event &event = WindowManager::GetWindow().Event;
-
-	//Registr some events
-	auto _Window = [&event]() {
-		switch (event.display.event)
+void se::Engine::Update()
+{
+	
+	
+	if (m_CurrentScene != nullptr)
+	{
+		//Should be binded to scene ! update events and etc
+	
+		switch (m_CurrentScene->OnUpdate())
 		{
-		case EventType::WindowClosed:
-			DEBUG_LOG("Window Closed", LOG_LEVEL::EVENT);
-			WindowManager::Close();
-			return false; // Then no need to handle this event anymore and it will be deletet
+		case SceneState::CONTINUE:
+			m_CurrentScene->OnRender();
 			break;
-		case EventType::WindowResized:
-			DEBUG_LOG("Window Resized", LOG_LEVEL::EVENT);
-			return true; // keep traking event
+		case SceneState::STOP:
+			m_State = EngineState::STOP;
 			break;
-		case EventType::WindowMoved:
-			DEBUG_LOG("Window Moved", LOG_LEVEL::EVENT);
-			return true;
+		case SceneState::NEXTSCENE:
+			//TODO: 
+			break;
+		case SceneState::PREVIOUSSCENE:
+			//TODO: 
 			break;
 		default:
-			return true;
 			break;
 		}
-	};
-	auto _KeyBoard = [&event]() {
-		DEBUG_LOG("KeyBoard", LOG_LEVEL::EVENT);
-		return true;
-	};
-
-	//Push events to update
-	EventManager::OnEvent(EventCategory::WINDOW,   _Window);
-	EventManager::OnEvent(EventCategory::KEYBOARD, _KeyBoard);
-	
-}
-
-void se::Engine::Run()
-{
-	DEBUG_LOG("Engine run", LOG_LEVEL::SUCCESS);
-
-	while (!WindowManager::IsClosed())
-	{
-
-		EventManager::Update();
-
-		if (m_CurrentScene->OnUpdate() == SceneState::Exit)
-		{
-			break;
-		}
-
-		m_CurrentScene->OnRender();
-
-		WindowManager::Update();
-
+		
+		//TODO: Update physics
+		//TODO:	Network Update if needed	
 	}
 
-	Stop();
 }
 
-void se::Engine::Render()
+void se::Engine::Termintae()
 {
-	/*glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
-
-	
+	EventManager::GetInstance().EraseCallbacks();
 }
 
 void se::Engine::Stop()
 {
-	DEBUG_LOG("Engine stop", LOG_LEVEL::SUCCESS);
-	for (const auto& scene : m_Scenes)
-	{
-		scene.second->OnDelete();
-		delete scene.second;
-	}
-		
-	m_Scenes.clear();
-	SDL_Quit();
+	//TODO: idk, stop some thread or process ect..
+
+	se::WindowManager::GetInstance().Close();
+
+	m_CurrentScene->OnDelete();
+	delete m_CurrentScene;
+	
+	Termintae();
 }
 
-void se::Engine::Clean()
-{
-	DEBUG_LOG("Engine clean", LOG_LEVEL::INFO_SECONDARY);
-
-}

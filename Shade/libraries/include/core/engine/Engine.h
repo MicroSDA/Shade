@@ -1,43 +1,67 @@
 #pragma once
-#include <core/events/EventManager.h>
+
+#include <utilities/Log.h>
 #include <core/engine/Scene.h>
+#include <string>
+#include <map>
+#include <core/engine/Window.h>
 
 namespace se {
+
+	
 	//Main App
+	struct SE_API EngineConfig
+	{
+		Window window;
+		Scene* scene = nullptr;
+	};
+
+	enum class EngineState
+	{
+		RUNNING,
+		PAUSE,
+		STOP
+	};
+
 	class SE_API Engine
 	{
 	public:
+		friend void Scene::SetScene(const std::string& name);
+		
+		static void SetConfig(const EngineConfig& config);
+		static void SetState(const EngineState& state);
+		inline static EngineState GetState() { return GetInstance().m_State; }
 		//Start Engine
-		static void Start();
-		static inline void AddScene(const Scene* scene) { GetInstance()._AddScene(scene); }
+		static void Init();
+		static void RegisterEventCallback(const EventType& type, const se::EventCallback& callback);
+		static inline Scene* GetCurrentScene() { return GetInstance()._GetCurrentScene(); }
 	private:
+		
+		//Singleton implementation
 		Engine();
 		~Engine();
-		//Delete copy and move constructor
-		//Copy
 		Engine(const Engine&) = delete;
 		Engine& operator= (const Engine&) = delete;
-		//Move
 		Engine(const Engine&&) = delete;
 		Engine& operator= (const Engine&&) = delete;
-		////////////////////////////////////////////
 		static Engine& GetInstance();
-		void _Start();
-		inline void _AddScene(const Scene* scene)
-		{ 
-			m_CurrentScene = scene;
-			m_Scenes.insert(std::make_pair(scene->GetName(), scene)); 
-		}
 
+		void _SetConfig(const EngineConfig& config);
+		void _SetState(const EngineState& state);
+		void _Init();
+		void _RegisterEventCallback(const EventType& type, const se::EventCallback& callback);
+		inline Scene* _GetCurrentScene() const { return m_CurrentScene; }
 
+		void Start();
 		void Prepare();
-		void Run();
-		void Render();
 		void Stop();
-		void Clean();
+		void Update();
+		void Termintae();
 
-		std::map<std::string, const Scene*> m_Scenes;
-		mutable const Scene* m_CurrentScene;
+		EngineConfig                  m_Config;
+		EngineState                   m_State;
+		Scene*                        m_CurrentScene;
+		std::map<std::string, Scene*> m_Scenes;
 	};
 }
 

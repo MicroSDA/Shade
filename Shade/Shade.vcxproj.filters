@@ -30,13 +30,25 @@
     <ClCompile Include="libraries\include\vendors\glad\glad.c">
       <Filter>Source Files\vendors</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\include\core\render\Window.cpp">
+    <ClCompile Include="libraries\include\core\engine\WindowManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\include\core\events\EventManager.cpp">
+    <ClCompile Include="libraries\include\core\engine\EventManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\core\engine\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\core\engine\Layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\core\render\Render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\core\render\Drawable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\core\render\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,19 +56,37 @@
     <ClInclude Include="libraries\include\core\engine\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\core\Definitions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\utilities\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\core\render\Window.h">
+    <ClInclude Include="libraries\include\Shade.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\core\events\EventManager.h">
+    <ClInclude Include="libraries\include\Definitions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\core\engine\WindowManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\core\engine\EventManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\core\engine\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\core\engine\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\core\engine\Layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\core\render\Render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\core\render\Drawable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\core\render\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
