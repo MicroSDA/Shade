@@ -1,27 +1,13 @@
 #include <Shade.h>
-#include <iostream>
 #include <Scene/MainScene.h>
 
-
-/*void* operator new(size_t size)
-{
-	std::cout << size << "\n";
-	return malloc(size);
-
-}
-
-void operator delete(void* memory, size_t size)
-{
-	std::cout << size << "\n";
-	free(memory);
-}*/
-
-
-
-
+#include <string>
+void Prepare();
+void RoadMap();
 
 int main()
 {
+	//RoadMap();
 	
 	se::EngineConfig conf;
 
@@ -29,9 +15,20 @@ int main()
 	conf.window.WindowFlags = se::WindowFlags(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI );
 	conf.scene = new MainScene("MainScene");
 
+
 	se::Engine::SetConfig(conf);
 
-	se::Engine::RegisterEventCallback(se::EventType::SDL_WINDOWEVENT, 
+	Prepare();
+
+	se::Engine::Init();
+	
+	//delete conf.scene;
+
+	return 0;
+}
+void Prepare()
+{
+	se::Engine::RegisterEventCallback(se::EventType::SDL_WINDOWEVENT,
 		[](se::Event const& event) {
 
 			if (event.window.event == SDL_WINDOWEVENT_MINIMIZED)
@@ -45,7 +42,7 @@ int main()
 
 			if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
 			{
-			
+
 				if (se::Engine::GetState() == se::EngineState::PAUSE)
 				{
 					DEBUG_PRINT("SDL_WINDOWEVENT_FOCUS_GAINED", se::LogLevel::EVENT);
@@ -63,9 +60,6 @@ int main()
 			se::Engine::SetState(se::EngineState::STOP);
 			return true;
 		});
-
-	
-
 	se::Engine::RegisterEventCallback(se::EventType::SDL_KEYDOWN,
 		[](se::Event const& event) {
 
@@ -90,9 +84,37 @@ int main()
 
 			return false;
 		});
+}
 
 
-	se::Engine::Init();
+/*void* operator new(size_t size)
+{
+	std::cout << size << "\n";
+	return malloc(size);
 
-	return 0;
+}
+
+void operator delete(void* memory, size_t size)
+{
+	std::cout << size << "\n";
+	free(memory);
+}*/
+
+void RoadMap()
+{
+	se::AssetData asset;
+	asset._Name = "Shaders";
+	asset._Type = se::AssetDataType::Container;
+	asset._SubType = se::AssetDataSubType::None;
+	asset._Path = "shaders.bin";
+	asset._Offset = 0;
+	asset._Dependency.push_back(se::AssetData());
+
+	asset._Dependency[0]._Name = "BasicModel";
+	asset._Dependency[0]._Type = se::AssetDataType::Shader;
+	asset._Dependency[0]._Path = "shaders.bin";
+	asset._Dependency[0]._Offset = 0;
+
+	se::AssetManager::WriteRoadMap(asset);
+
 }

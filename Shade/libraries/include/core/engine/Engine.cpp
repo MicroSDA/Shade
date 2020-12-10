@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include <core/engine/WindowManager.h>
 #include <core/engine/EventManager.h>
+#include <core/asset/AssetManager.h>
 
 se::Engine::Engine()
 	: m_State(EngineState::RUNNING), m_CurrentScene(nullptr)
@@ -61,8 +62,10 @@ void se::Engine::_SetState(const EngineState& state)
 
 void se::Engine::_Init()
 {
+	se::AssetManager::ReadRoadMap();
+	se::WindowManager::CreateWindow(m_Config.window);
 	m_CurrentScene = m_Config.scene;
-	WindowManager::CreateWindow(m_Config.window);
+
 
 	Prepare();
 	Start();

@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="libraries\include\core\asset\Asset.cpp" />
+    <ClCompile Include="libraries\include\core\asset\AssetData.cpp" />
+    <ClCompile Include="libraries\include\core\asset\AssetManager.cpp" />
     <ClCompile Include="libraries\include\core\engine\Engine.cpp" />
     <ClCompile Include="libraries\include\core\engine\EventManager.cpp" />
     <ClCompile Include="libraries\include\core\engine\Layer.cpp" />
@@ -27,6 +30,7 @@
     <ClCompile Include="libraries\include\core\render\Drawable.cpp" />
     <ClCompile Include="libraries\include\core\render\Render.cpp" />
     <ClCompile Include="libraries\include\core\render\Shader.cpp" />
+    <ClCompile Include="libraries\include\utilities\Binarizer.cpp" />
     <ClCompile Include="libraries\include\utilities\Log.cpp" />
     <ClCompile Include="libraries\include\vendors\glad\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -36,6 +40,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="libraries\include\core\asset\Asset.h" />
+    <ClInclude Include="libraries\include\core\asset\AssetData.h" />
+    <ClInclude Include="libraries\include\core\asset\AssetManager.h" />
     <ClInclude Include="libraries\include\core\engine\Engine.h" />
     <ClInclude Include="libraries\include\core\engine\EventManager.h" />
     <ClInclude Include="libraries\include\core\engine\Layer.h" />
@@ -47,6 +54,7 @@
     <ClInclude Include="libraries\include\core\render\Shader.h" />
     <ClInclude Include="libraries\include\Definitions.h" />
     <ClInclude Include="libraries\include\Shade.h" />
+    <ClInclude Include="libraries\include\utilities\Binarizer.h" />
     <ClInclude Include="libraries\include\utilities\Log.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

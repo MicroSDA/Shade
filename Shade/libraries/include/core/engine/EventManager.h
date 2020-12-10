@@ -7,7 +7,8 @@
 #include <functional>
 #include <string>
 
-class Layer;
+class Layer; // ??????
+
 namespace se
 {
 	
@@ -41,6 +42,6 @@ namespace se
 		Event  m_Event;
 		std::map<EventType, std::vector<EventCallback>> m_CoreCallbacks;
 		std::map<EventType, std::map<const Scene* ,std::vector<EventCallback>>> m_SceneCallbacks;
-		std::map < EventType, std::map<const Scene*, std::map<const Layer*, std::vector<EventCallback>>>> m_LayerCallbacks;
+		std::map<EventType, std::map<const Scene*, std::map<const Layer*, std::vector<EventCallback>>>> m_LayerCallbacks;
 	};
 }

@@ -33,6 +33,16 @@ void se::WindowManager::CreateWindow(Window& window)
 	
 }
 
+inline bool se::WindowManager::IsClosed()
+{
+	return GetInstance().m_Window.IsClosed;
+}
+
+inline void se::WindowManager::Close()
+{
+	GetInstance().m_Window.IsClosed = true;
+}
+
 void se::WindowManager::_CreateWindow(Window& window)
 {
 	m_Window = window;

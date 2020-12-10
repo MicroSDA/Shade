@@ -12,10 +12,8 @@ namespace se
 
 }
 
-
-
 #define LOG_PATH "./logs/logs.txt"
-
+#define ROAD_MAP_PATH "./RoadMap.bin"
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 600
 

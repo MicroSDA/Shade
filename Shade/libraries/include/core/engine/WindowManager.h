@@ -15,13 +15,11 @@ namespace se
 	class SE_API WindowManager
 	{
 		friend class se::Engine;
-		
-
 	public:
 		//Window
 		static void CreateWindow(Window& window);
-		inline static bool IsClosed() { return GetInstance().m_Window.IsClosed; }
-		inline static void Close()    { GetInstance().m_Window.IsClosed = true; }
+		inline static bool IsClosed();
+		inline static void Close();
 		static void DestroyWindow();
 	private:
 		//Singleton implementation

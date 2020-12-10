@@ -1,5 +1,6 @@
 #pragma once
 #include <Shade.h>
+#include <core/render/Shader.h>
 
 class MainLayer :public se::Layer
 {
@@ -14,5 +15,6 @@ public:
 	virtual void OnDelete() override;
 
 private:
+	const mutable se::Shader* shader;
 
 };
