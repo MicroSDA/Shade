@@ -19,7 +19,7 @@ namespace se
 		inline GLuint   GetIndicesCount() const { return m_IndicesCount; }
 		inline DrawMode GetDrawMode()     const { return m_DrawMode; }
 	protected:
-		GLuint   m_VAO;
+		GLuint   m_VAO, m_VBO, m_EBO;
 		GLuint   m_IndicesCount;
 		GLuint   m_AttribCount;
 		DrawMode m_DrawMode;

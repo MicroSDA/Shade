@@ -13,7 +13,7 @@ void MainLayer::OnCreate()
 {
 	DEBUG_PRINT("OnLayer Create", se::LogLevel::INFO_PRIMARY);
 	shader = reinterpret_cast<const se::Shader*>(se::AssetManager::Hold("Shaders.BasicModel"));
-
+	triangle = new se::Drawable();
 }
 void MainLayer::OnInit()
 {
@@ -37,11 +37,12 @@ void MainLayer::OnInit()
 void MainLayer::OnRender() 
 {
 	
-
 	se::Render::SetClearColor({ 0.5444f, 0.62f, 0.69f, 1.0f });
-	se::Render::
-	//shader->Bind();
 	se::Render::Clear();
+
+	shader->Bind();
+	se::Render::DrawIndexed(triangle);
+	se::Shader::UnBind();
 	
 }
 

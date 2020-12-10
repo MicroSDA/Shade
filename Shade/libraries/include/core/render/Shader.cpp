@@ -49,6 +49,8 @@ se::Shader::Shader(const AssetData* data)
 
 	}
 
+	file.close();
+
 	m_Program = glCreateProgram();
 	for (unsigned int i = 0; i < m_Shaders.size(); i++) {
 		glAttachShader(m_Program, m_Shaders[i]);

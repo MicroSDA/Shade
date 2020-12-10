@@ -62,7 +62,8 @@ void se::Engine::_SetState(const EngineState& state)
 
 void se::Engine::_Init()
 {
-	se::AssetManager::ReadRoadMap();
+	se::AssetManager::ReadRoadMap(); //Temporary here
+
 	se::WindowManager::CreateWindow(m_Config.window);
 	m_CurrentScene = m_Config.scene;
 

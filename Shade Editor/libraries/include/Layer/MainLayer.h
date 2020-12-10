@@ -16,5 +16,5 @@ public:
 
 private:
 	const mutable se::Shader* shader;
-
+	se::Drawable* triangle;
 };

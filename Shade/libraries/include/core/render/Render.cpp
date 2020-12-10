@@ -13,11 +13,14 @@ inline void se::Render::Clear()
 inline void se::Render::DrawIndexed(const Drawable* element)
 {
 	
-	/*for (GLuint attr = 0; attr < element->GetAttribCount(); attr++)
-		glEnableVertexAttribArray(attr);
-	glDrawElements(static_cast<GLenum>(element->GetDrawMode()), element->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 	for (GLuint attr = 0; attr < element->GetAttribCount(); attr++)
-		glDisableVertexAttribArray(attr);*/
+		glEnableVertexAttribArray(attr);
+
+	glBindVertexArray(element->GetVAO());
+	glDrawElements(static_cast<GLenum>(element->GetDrawMode()), element->GetIndicesCount(), GL_UNSIGNED_INT, 0);
+
+	for (GLuint attr = 0; attr < element->GetAttribCount(); attr++)
+		glDisableVertexAttribArray(attr);
 
 	
 }

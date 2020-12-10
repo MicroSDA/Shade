@@ -13,10 +13,18 @@ void se::AssetManager::WriteRoadMap(const se::AssetData& asset)
 	file.open(ROAD_MAP_PATH, std::ofstream::binary);
 	if (!file.is_open())
 	{
-		std::cout << "here";
+#ifdef SE_DEBUG
+		DEBUG_PRINT("Error: Road map file cannot be open in se::AssetManager::WriteRoadMap()", LogLevel::ERROR);
+#else
+		DEBUG_SAVE("", LogLevel::ERROR);
+#endif // SE_DEBUG
+		
+	}
+	else 
+	{
+		GetInstance()._WriteRoadMap(file, asset);
 	}
 
-	GetInstance()._WriteRoadMap(file, asset);
 	file.close();
 }
 
@@ -72,29 +80,43 @@ se::AssetManager& se::AssetManager::GetInstance()
 
 const se::Asset* se::AssetManager::_Hold(const ClassName& className)
 {
-	if (m_RoadMap.find(className) != m_RoadMap.end())
+	try
 	{
-		if (m_Assets.find(className) != m_Assets.end())
+		if (m_RoadMap.find(className) != m_RoadMap.end())
 		{
-			return m_Assets.find(className)->second.m_Ref;
-		}
-		else
-		{
-			switch (m_RoadMap.find(className)->second->_Type)
+			if (m_Assets.find(className) != m_Assets.end())
 			{
-			case AssetDataType::Shader:
-				return se::Shader::Load(m_RoadMap.find(className)->second);
-				break;
-			default:
-				break;
+				return m_Assets.find(className)->second.m_Ref;
 			}
-			
-		}
-		
-		return nullptr;
-	}
+			else
+			{
+				switch (m_RoadMap.find(className)->second->_Type)
+				{
+				case AssetDataType::Shader:
+					return se::Shader::Load(m_RoadMap.find(className)->second);
+					break;
+				default:
+					break;
+				}
 
-	return nullptr;
+			}
+
+			std::string msg = "Exeption : Specifaed class name \'" + className + "\' hasn't been found in AssetManager::Hold()";
+			throw std::runtime_error(msg);
+		}
+
+		std::string msg = "Exeption : Specifaed class name \'"+className+"\' hasn't been found in AssetManager::Hold()";
+		throw std::runtime_error(msg);
+	}
+	catch (std::runtime_error& error)
+	{
+#ifdef SE_DEBUG
+		DEBUG_PRINT(error.what(), LogLevel::ERROR);
+#else
+		DEBUG_SAVE(error.what(), LogLevel::ERROR);
+#endif // SE_DEBUG
+		exit(-1);
+	}
 }
 
 void se::AssetManager::_WriteRoadMap(std::ofstream& file, const se::AssetData& asset)
