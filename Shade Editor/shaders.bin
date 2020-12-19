@@ -1,23 +1,26 @@
 #BasicModel
 #vertex
-	#version 330 core
+	#version 440
 	layout (location = 0) in vec3 pos;
+	layout (location = 0) uniform mat4 ModelM;
+	layout (location = 1) uniform mat4 ViewM;
+	layout (location = 2) uniform mat4 ProjectionM;
 	void main()
 	{
 
-		gl_Position = vec4(pos.x, pos.y, pos.z, 1.0); 
+		gl_Position = ProjectionM * ViewM * ModelM * vec4(pos, 1.0f);
 
 	}
 #end
 #fragment
-	#version 330 core
+	#version 440
 	void main()
 	{
-		gl_FragColor = vec4(0.0,0.0,0.0,1.0);
+		gl_FragColor = vec4(1.0,0.0,0.0,1.0);
 	}
 #end
 #geometry
-	#version 330 core
+	#version 440
 	layout (triangles) in;
     layout (triangle_strip, max_vertices = 3) out;
 	void main()

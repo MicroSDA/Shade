@@ -102,6 +102,7 @@
       <PreprocessorDefinitions>SE_DEBUG;SE_WINDOWS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)Shade\libraries\include\;$(SolutionDir)Shade\libraries\include\vendors\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,8 +111,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade Editor\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)"</Command>
@@ -126,6 +126,7 @@
       <PreprocessorDefinitions>SE_WINDOWS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)Shade\libraries\include\;$(SolutionDir)Shade\libraries\include\vendors\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,6 +153,7 @@
       <PreprocessorDefinitions>SE_DEBUG;SE_WINDOWS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)Shade\libraries\include\;$(SolutionDir)Shade\libraries\include\vendors\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -176,6 +178,7 @@
       <PreprocessorDefinitions>SE_WINDOWS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)Shade\libraries\include\;$(SolutionDir)Shade\libraries\include\vendors\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

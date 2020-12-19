@@ -1,11 +1,11 @@
 #pragma once
-#include <Shade.h>
-#include <core/render/Shader.h>
+#include <Shade/Shade.h>
+#include <Shade/Core/Engine/Layer.h>
 
 class MainLayer :public se::Layer
 {
 public:
-	MainLayer(const std::string& name, const void* scene);
+	MainLayer(const std::string& name, se::Scene* scene);
 	~MainLayer();
 	// Inherited via Layer
 	virtual void OnCreate() override;
@@ -15,6 +15,6 @@ public:
 	virtual void OnDelete() override;
 
 private:
-	const mutable se::Shader* shader;
-	se::Drawable* triangle;
+	se::Entity e;
+	se::Entity b;
 };

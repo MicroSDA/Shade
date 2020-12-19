@@ -1,4 +1,4 @@
-#include <Shade.h>
+#include <Shade/Shade.h>
 #include <Scene/MainScene.h>
 
 #include <string>
@@ -9,6 +9,7 @@ int main()
 {
 	//RoadMap();
 	
+
 	se::EngineConfig conf;
 
 	conf.window.Title = "Shade Editor";
@@ -102,19 +103,47 @@ void operator delete(void* memory, size_t size)
 
 void RoadMap()
 {
-	se::AssetData asset;
-	asset._Name = "Shaders";
-	asset._Type = se::AssetDataType::Container;
-	asset._SubType = se::AssetDataSubType::None;
-	asset._Path = "shaders.bin";
-	asset._Offset = 0;
-	asset._Dependency.push_back(se::AssetData());
+	se::AssetData _Packet;
+	se::AssetData _Asset;
 
-	asset._Dependency[0]._Name = "BasicModel";
-	asset._Dependency[0]._Type = se::AssetDataType::Shader;
-	asset._Dependency[0]._Path = "shaders.bin";
-	asset._Dependency[0]._Offset = 0;
+	_Packet._Name = "Assets";
+	//_Packet._Type = se::AssetDataType::Packet;
+	
+	_Asset._Name = "Shaders";
+	//_Asset._Type = se::AssetDataType::Container;
+	_Asset._Path = "shaders.bin";
+	_Asset._Offset = 0;
 
-	se::AssetManager::WriteRoadMap(asset);
+	_Packet._Dependency.push_back(_Asset);
+
+	_Asset._Name = "BasicModel";
+	//_Asset._Type = se::AssetDataType::Shader;
+	_Asset._Path = "shaders.bin";
+	_Asset._Offset = 0;
+
+	_Packet._Dependency[0]._Dependency.push_back(_Asset);
+
+	_Asset._Name = "Models";
+	//_Asset._Type = se::AssetDataType::Container;
+	_Asset._Path = "models.bin";
+	_Asset._Offset = 0;
+
+	_Packet._Dependency.push_back(_Asset);
+
+	_Asset._Name = "Cube";
+	//_Asset._Type = se::AssetDataType::Model;
+	_Asset._Path = "models.bin";
+	_Asset._Offset = 0;
+
+	_Packet._Dependency[1]._Dependency.push_back(_Asset);
+
+	_Asset._Name = "Triangle";
+	//_Asset._Type = se::AssetDataType::Model;
+	_Asset._Path = "models.bin";
+	_Asset._Offset = 540;
+
+	_Packet._Dependency[1]._Dependency.push_back(_Asset);
+
+	se::AssetManager::WriteRoadMap(_Packet);
 
 }
