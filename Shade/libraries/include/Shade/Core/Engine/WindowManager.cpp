@@ -1,67 +1,16 @@
+#include "stdafx.h"
 #include "WindowManager.h"
 
-se::WindowManager::WindowManager()
+se::WindowManager::WindowManager() :
+	m_Context(nullptr), m_IsWindowCreated(false)
 {
-}
-
-se::WindowManager::~WindowManager()
-{
-}
-
-se::WindowManager& se::WindowManager::GetInstance()
-{
-	static WindowManager _Instatnce;
-	return _Instatnce;
-}
-
-
-void se::WindowManager::CreateWindow(Window& window)
-{
-	try
-	{
-		GetInstance()._CreateWindow(window);
-	}
-	catch (std::runtime_error& error)
-	{
-#ifdef SE_DEBUG
-		DEBUG_PRINT(error.what(), LogLevel::ERROR);
-#else 
-		DEBUG_SAVE(error.what(), LogLevel::ERROR);
-#endif // SE_DEBUG
-		exit(-1);
-	}
-	
-}
-
-inline bool se::WindowManager::IsClosed()
-{
-	return GetInstance().m_Window.IsClosed;
-}
-
-inline void se::WindowManager::Close()
-{
-	GetInstance().m_Window.IsClosed = true;
-}
-
-void se::WindowManager::_CreateWindow(Window& window)
-{
-
-	m_Window = window;
-
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
-	{
-		//Im not sure if this works	!
-		std::string msg = "Exeption : Video initializen faild in WindowManager::CreateWindow()", SDL_GetError();
-		throw std::runtime_error(msg);
-	}
-		
-	//TODO: If opnegl, if direct nad ect...
+		throw se::ShadeException((std::string("Video initializing faild!") + SDL_GetError()).c_str(), se::SECode::Error);
 
 	//Set Opengl Version
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
 	////////////////////////////////////////////////////
-
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -70,64 +19,96 @@ void se::WindowManager::_CreateWindow(Window& window)
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-
 	SDL_GetCurrentDisplayMode(0, &m_DisplayMode);
+}
 
-	m_Window.Handler = SDL_CreateWindow(
-		m_Window.Title.c_str(),
+se::WindowManager::~WindowManager()
+{
+}
+
+se::WindowManager& se::WindowManager::Get()
+{
+	static WindowManager _Instatnce;
+	return _Instatnce;
+}
+
+void se::WindowManager::Create(const Window& window)
+{
+	auto& _Manager = Get();
+	_Manager.m_Window = window;
+	_Manager.m_Window.Handler = SDL_CreateWindow(
+		_Manager.m_Window.Title.c_str(),
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		m_Window.Width,
-		m_Window.Height,
-		m_Window.WindowFlags
+		_Manager.m_Window.Width,
+		_Manager.m_Window.Height,
+		_Manager.m_Window.WindowFlags
 	);
 
-	m_Context = SDL_GL_CreateContext(m_Window.Handler);
-
-	SDL_GL_MakeCurrent(m_Window.Handler, m_Context);
-
-	//SDL_GL_SetSwapInterval(-1);
+	_Manager.m_Context = SDL_GL_CreateContext(_Manager.m_Window.Handler);
+	SDL_GL_MakeCurrent(_Manager.m_Window.Handler, _Manager.m_Context);
 
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-	{
-		throw std::runtime_error("Exeption : Glad initializing faild");
-	}
+		throw se::ShadeException((std::string("Glad initializing faild!") + SDL_GetError()).c_str(), se::SECode::Error);
 
-	DEBUG_PRINT("Display native resolution is:" + std::to_string(m_DisplayMode.w) +
-		"x" + std::to_string(m_DisplayMode.h), LogLevel::INFO_SECONDARY);
+	_Manager.m_IsWindowCreated = true;
+
+	SE_DEBUG_PRINT(std::string("Display native resolution is:" + std::to_string(_Manager.m_DisplayMode.w) +
+		"x" + std::to_string(_Manager.m_DisplayMode.h)).c_str(), SLCode::InfoSecondary);
 }
 
 void se::WindowManager::Update()
 {
-	if (m_Window.IsClosed)
+
+	if (!m_Window.IsClosed)
 	{
-		_DestroyWindow();
+		if (m_IsWindowCreated)
+		{
+			SDL_GL_SwapWindow(m_Window.Handler);
+#ifdef SE_DEBUG
+			static GLenum _GLError = glGetError();
+			if (_GLError != GL_NO_ERROR)
+				SE_DEBUG_PRINT((std::string("OpenGL Error: ") + std::to_string(_GLError)).c_str(), se::SLCode::Warning);
+#endif // SE_DEBUG
+		}
+		else
+		{
+			throw se::ShadeException("Window has not been created!", se::SECode::Error);
+		}
 	}
 	else
 	{
-		SDL_GL_SwapWindow(m_Window.Handler);
-
-#ifdef SE_DEBUG
-		static GLenum _GLError = glGetError();
-		if (_GLError != GL_NO_ERROR)
-			DEBUG_PRINT("OpenGL Error: " + std::to_string(_GLError), LogLevel::WARNING);
-#endif // SE_DEBUG
+		DestroyWindow();
 	}
+}
+
+void se::WindowManager::DestroyWindow()
+{
+	auto& _Manager = Get();
+	SDL_GL_DeleteContext(_Manager.m_Context);
+	SDL_DestroyWindow(_Manager.m_Window.Handler);
+	_Manager.m_IsWindowCreated = false;
+}
+
+const se::Window& const se::WindowManager::GetWindow()
+{
+	return Get().m_Window;
+}
+
+void se::WindowManager::Close()
+{
+	Get().m_Window.IsClosed = true;
+}
+
+bool se::WindowManager::IsClosed()
+{
+	return Get().m_Window.IsClosed;
 }
 
 void se::WindowManager::Clear()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-
-void se::WindowManager::DestroyWindow()
-{
-	GetInstance()._DestroyWindow();
-}
-
-void se::WindowManager::_DestroyWindow()
-{
-	SDL_GL_DeleteContext(m_Context);
-	SDL_DestroyWindow(m_Window.Handler);
+	if (m_IsWindowCreated)
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	else
+		throw se::ShadeException("Window has not been created!", se::SECode::Error);
 }

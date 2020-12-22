@@ -1,28 +1,34 @@
 #pragma once
-#include <Shade/Core/Engine/Engine.h>
+#include "Shade/Core/CoreAPI.h"
+#include "Vendors/SDL2/SDL.h"
+#include "Shade/Core/Util/Log.h"
 
-#include <iostream>
-#include <map>
-#include <vector>
-#include <functional>
-#include <string>
-
-class Layer; // ??????
+#undef main // For SDL
 
 namespace se
 {
-	
-	//For event creating and managment
+	// Forward Declaration
+	class Layer;
+	class Scene;
+	//////////////////////
+
+	typedef SDL_Event     Event;
+	typedef SDL_EventType EventType;
+	typedef SDL_KeyCode   KeyCode;
+
+	using EventCallback = std::function<bool(Event const&)>;
+
 	class SE_API EventManager
 	{
-		friend class se::Engine;
 		
 	public:
-		static int  RegisterEventCoreCallback(const EventType& type, const EventCallback& callback);
-		static int  RegisterSceneCallback(const EventType& type, const Scene* ,const EventCallback& callback);
-		static int  RegisterLayerCallback(const EventType& type, const Scene* scene, const Layer* layer, const EventCallback& callback);
-		static void DeleteCallback(const EventType& type, int index);
-		static void DeleteCallback(const EventType& type);
+		friend class Application;
+
+		static int  RegAppEventCallback(const EventType& type, const EventCallback& callback);
+		static int  RegSceneEventCallback(const EventType& type, const Scene* scene, const EventCallback& callback);
+		static int  RegLayerEventCallback(const EventType& type, const Scene* scene, const Layer* layer, const EventCallback& callback);
+		static void DeleteEventCallback(const EventType& type, int index);
+		static void DeleteEventCallback(const EventType& type);
 	private:
 		//Singleton implementation
 		EventManager();
@@ -31,17 +37,17 @@ namespace se
 		EventManager& operator= (const EventManager&) = delete;
 		EventManager(const EventManager&&) = delete;
 		EventManager& operator= (const EventManager&&) = delete;
-		static EventManager& GetInstance();
+		static EventManager& Get();
 		/////////////////////////////////
+
 		void Update();
 		void EraseCallbacks();
-		int  _RegisterEventCoreCallback(const EventType& type, const EventCallback& callback);
-		int  _RegisterSceneCallback(const EventType& type, const Scene* scene, const EventCallback& callback);
-		int  _RegisterLayerCallback(const EventType& type, const Scene* scene, const Layer* layer, const EventCallback& callback);
-		
-		Event  m_Event;
+
+		se::Event  m_Event;
 		std::map<EventType, std::vector<EventCallback>> m_CoreCallbacks;
-		std::map<EventType, std::map<const Scene* ,std::vector<EventCallback>>> m_SceneCallbacks;
+		std::map<EventType, std::map<const Scene*, std::vector<EventCallback>>> m_SceneCallbacks;
 		std::map<EventType, std::map<const Scene*, std::map<const Layer*, std::vector<EventCallback>>>> m_LayerCallbacks;
 	};
 }
+
+

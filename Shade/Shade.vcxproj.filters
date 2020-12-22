@@ -2,98 +2,56 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Core">
-      <UniqueIdentifier>{69b16d96-0dc0-4380-ace7-c1c80c37fe30}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Asset">
-      <UniqueIdentifier>{9b021248-10cb-43fc-8870-5c33c1e90609}</UniqueIdentifier>
+      <UniqueIdentifier>{3286aab8-2ed0-4fc6-83e0-4c984717ec72}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\Engine">
-      <UniqueIdentifier>{179ec8fd-50d9-41a1-a737-6f023ff22861}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Render">
-      <UniqueIdentifier>{654b768c-e44e-4433-95ab-4222ce3c341a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utilities">
-      <UniqueIdentifier>{2b578277-ab48-4fb6-8ddb-21f8b29c558e}</UniqueIdentifier>
+      <UniqueIdentifier>{456672a2-3e16-4a69-85d3-5d5edd2b037d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Vendors">
-      <UniqueIdentifier>{4a57243d-eb25-4c05-b651-3b2f3e5e971b}</UniqueIdentifier>
+      <UniqueIdentifier>{0ef7cab3-ffca-4079-92c8-aae50798b837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Util">
+      <UniqueIdentifier>{e95e9bf6-5895-4a16-a629-01e9e549e316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Engine\Asset">
+      <UniqueIdentifier>{22c4f3dd-321c-4821-8056-1b3ac7a9ab52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Engine\Render">
+      <UniqueIdentifier>{02f4ef8e-426b-47f8-a928-d5a4537ed5f5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="libraries\include\Shade\Core\Asset\Asset.cpp">
-      <Filter>Core\Asset</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Asset\AssetData.cpp">
-      <Filter>Core\Asset</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Asset\AssetManager.cpp">
-      <Filter>Core\Asset</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Engine.cpp">
+    <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Application.h">
       <Filter>Core\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp">
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Main.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Shade.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Scene.h">
       <Filter>Core\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp">
-      <Filter>Core\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Scene.cpp">
-      <Filter>Core\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp">
-      <Filter>Core\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Render\Camera.cpp">
-      <Filter>Core\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Render\Drawable.cpp">
-      <Filter>Core\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Render\Mesh.cpp">
-      <Filter>Core\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Render\Render.cpp">
-      <Filter>Core\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Render\Shader.cpp">
-      <Filter>Core\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Utilities\Binarizer.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Utilities\Log.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Vendors\glad\glad.c">
+    </ClInclude>
+    <ClInclude Include="libraries\include\stdafx.h" />
+    <ClInclude Include="libraries\include\Vendors\entt\entt.hpp">
       <Filter>Vendors</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Render\Vertex.cpp">
-      <Filter>Core\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Asset\AssetLoader.cpp">
-      <Filter>Core\Asset</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Render\Transform.cpp">
-      <Filter>Core\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp">
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Util\ShadeException.h">
+      <Filter>Core\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Util\Log.h">
+      <Filter>Core\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Util\Macros.h">
+      <Filter>Core\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\WindowManager.h">
       <Filter>Core\Engine</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="libraries\include\Shade\Core\Asset\Asset.h">
-      <Filter>Core\Asset</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Asset\AssetData.h">
-      <Filter>Core\Asset</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Asset\AssetManager.h">
-      <Filter>Core\Asset</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Engine.h">
-      <Filter>Core\Engine</Filter>
+    <ClInclude Include="libraries\include\Vendors\glad\glad.h">
+      <Filter>Vendors</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h">
       <Filter>Core\Engine</Filter>
@@ -101,65 +59,104 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h">
       <Filter>Core\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Scene.h">
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h">
       <Filter>Core\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Window.h">
-      <Filter>Core\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\WindowManager.h">
-      <Filter>Core\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Render\Camera.h">
-      <Filter>Core\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Render\Drawable.h">
-      <Filter>Core\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Render\Mesh.h">
-      <Filter>Core\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Render\Render.h">
-      <Filter>Core\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Render\Shader.h">
-      <Filter>Core\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Utilities\Binarizer.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Utilities\Log.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Utilities\Types.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Vendors\glad\glad.h">
-      <Filter>Vendors</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Definitions.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Shade.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Render\Vertex.h">
-      <Filter>Core\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Asset\AssetLoader.h">
-      <Filter>Core\Asset</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Render\Transform.h">
-      <Filter>Core\Render</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Components.h">
       <Filter>Core\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Vendors\entt\entt.hpp">
-      <Filter>Vendors</Filter>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Asset.h">
+      <Filter>Core\Engine\Asset</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h">
+    <ClInclude Include="libraries\include\Shade\Core\Engine\AssetData.h">
+      <Filter>Core\Engine\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\AssetManager.h">
+      <Filter>Core\Engine\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Util\Binarizer.h">
+      <Filter>Core\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Transform.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Shader.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Model3D.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Mesh.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Vertex.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Drawable.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Camera.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
       <Filter>Core\Engine</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Scene.cpp">
+      <Filter>Core\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\stdafx.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Util\ShadeException.cpp">
+      <Filter>Core\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp">
+      <Filter>Core\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp">
+      <Filter>Core\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Vendors\glad\glad.c">
+      <Filter>Vendors</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp">
+      <Filter>Core\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp">
+      <Filter>Core\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp">
+      <Filter>Core\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Asset.cpp">
+      <Filter>Core\Engine\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\AssetManager.cpp">
+      <Filter>Core\Engine\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Transform.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Shader.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Model3D.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Mesh.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Vertex.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Drawable.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Camera.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Str.json" />
   </ItemGroup>
 </Project>

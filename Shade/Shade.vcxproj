@@ -19,59 +19,79 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="libraries\include\Shade\Core\Asset\Asset.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Asset\AssetData.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Asset\AssetLoader.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Asset\AssetManager.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Engine.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Scene.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Render\Camera.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Render\Drawable.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Render\Mesh.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Render\Render.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Render\Shader.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Render\Transform.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Render\Vertex.cpp" />
-    <ClCompile Include="libraries\include\Shade\Utilities\Binarizer.cpp" />
-    <ClCompile Include="libraries\include\Shade\Utilities\Log.cpp" />
-    <ClCompile Include="libraries\include\Shade\Vendors\glad\glad.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="libraries\include\Shade\Core\Asset\Asset.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Asset\AssetData.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Asset\AssetLoader.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Asset\AssetManager.h" />
+    <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Application.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Asset.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\AssetData.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\AssetManager.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Camera.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Components.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Engine.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Drawable.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Mesh.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Model3D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Scene.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Window.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Shader.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Transform.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Vertex.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\WindowManager.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Render\Camera.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Render\Drawable.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Render\Mesh.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Render\Render.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Render\Shader.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Render\Transform.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Render\Vertex.h" />
-    <ClInclude Include="libraries\include\Shade\Definitions.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Main.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Util\Binarizer.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Util\Log.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Util\Macros.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Util\ShadeException.h" />
     <ClInclude Include="libraries\include\Shade\Shade.h" />
-    <ClInclude Include="libraries\include\Shade\Utilities\Binarizer.h" />
-    <ClInclude Include="libraries\include\Shade\Utilities\Log.h" />
-    <ClInclude Include="libraries\include\Shade\Utilities\Types.h" />
-    <ClInclude Include="libraries\include\Shade\Vendors\entt\entt.hpp" />
-    <ClInclude Include="libraries\include\Shade\Vendors\glad\glad.h" />
+    <ClInclude Include="libraries\include\stdafx.h" />
+    <ClInclude Include="libraries\include\Vendors\entt\entt.hpp" />
+    <ClInclude Include="libraries\include\Vendors\glad\glad.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Asset.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\AssetManager.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Camera.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Drawable.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Mesh.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Model3D.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Scene.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Shader.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Transform.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Vertex.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Util\ShadeException.cpp" />
+    <ClCompile Include="libraries\include\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Vendors\glad\glad.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Str.json" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a6d8be8a-8687-4906-b585-444633eb7836}</ProjectGuid>
+    <ProjectGuid>{c9492e23-52a9-4f2c-9500-9b21a89aa08c}</ProjectGuid>
     <RootNamespace>Shade</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -128,7 +148,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
-    <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\$(ProjectName)</IntDir>
+    <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -138,35 +158,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
-    <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\$(ProjectName)</IntDir>
+    <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SE_DEBUG;SE_WINDOWS;SE_DLL;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Shade\Vendors\</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
-      <PrecompiledHeaderFile>shade_pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x86\</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;OpenGL32.lib;SDL2test.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x86\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade Editor\"</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -174,57 +186,43 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SE_WINDOWS;SE_DLL;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Shade\Vendors\</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
-      <PrecompiledHeaderFile>shade_pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x86\</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;OpenGL32.lib;SDL2test.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x86\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade Editor\"</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SE_DEBUG;SE_WINDOWS;SE_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Shade\Vendors\</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
-      <PrecompiledHeaderFile>shade_pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x64\</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;OpenGL32.lib;SDL2test.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x64\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade Editor\"</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -232,30 +230,23 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SE_WINDOWS;SE_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Shade\Vendors\</AdditionalIncludeDirectories>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
-      <PrecompiledHeaderFile>shade_pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x64\</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;OpenGL32.lib;SDL2test.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x64\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade Editor\"</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
