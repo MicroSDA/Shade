@@ -1,15 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="libraries\include\Shade Editor\ShadeEditor.h" />
-    <ClInclude Include="libraries\include\Shade Editor\MainLayer.h" />
-    <ClInclude Include="libraries\include\Shade Editor\MainScene.h" />
     <ClInclude Include="libraries\include\Shade Editor\Serializer.h" />
+    <ClInclude Include="libraries\include\Shade Editor\MainLayer.h">
+      <Filter>Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade Editor\MainScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade Editor\ShadeEditor.h">
+      <Filter>Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="libraries\include\Shade Editor\MainLayer.cpp" />
-    <ClCompile Include="libraries\include\Shade Editor\MainScene.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\Serializer.cpp" />
-    <ClCompile Include="libraries\include\Shade Editor\ShadeEditor.cpp" />
+    <ClCompile Include="libraries\include\Shade Editor\MainLayer.cpp">
+      <Filter>Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade Editor\MainScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade Editor\ShadeEditor.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{9192bb99-19d7-4a3c-bf54-5f6afc899da7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Layer">
+      <UniqueIdentifier>{9b8250b1-f5f4-4356-8b0a-e83961b7b041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{5085ae01-a553-4a43-979e-387c742fb766}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

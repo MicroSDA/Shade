@@ -21,7 +21,7 @@ namespace se
 		}
 
 		template<typename T>
-		T& GetComponent()
+		T& GetComponent() const
 		{
 			if (!HasComponent<T>())
 				throw se::ShadeException("Entity does not have component!", se::SECode::Error);
@@ -37,7 +37,7 @@ namespace se
 		}
 
 		template<typename T>
-		bool HasComponent()
+		bool HasComponent() const
 		{
 			return m_pScene->GetRegistry().has<T>(m_EntityHandle);
 		}

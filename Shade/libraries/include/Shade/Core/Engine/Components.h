@@ -39,6 +39,6 @@ namespace se
 
 	struct RenderComponent
 	{
-		void(*Layout)(se::Entity&);
+		void(*Layout)(se::Entity);
 	};
 }

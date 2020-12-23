@@ -12,7 +12,7 @@
 	{
 		
 		//gl_Position = vec4(pos, 1.0f);
-		gl_Position = ProjectionM * ViewM * ModelM * vec4(pos, 1.0f);
+		gl_Position = ProjectionM * ViewM * ModelM *  vec4(pos, 1.0f);
 		out_Position = pos;
 
 	}
@@ -23,7 +23,7 @@
 	void main()
 	{
 		//out_pos;
-		gl_FragColor = vec4(out_Position.x*2, out_Position.x, out_Position.x, 1.0);
+		gl_FragColor = vec4(1,0,0,1.0);
 	}
 #end
 #geometry

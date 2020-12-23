@@ -28,7 +28,7 @@ void MainLayer::OnInit()
 			return false;
 		});
 
-	se::Model3D* cube = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
+	/*se::Model3D* cube = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
 	se::Shader* shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel");
 	se::Camera* camera = new se::Camera();
 	se::Entity entity = GetScene()->CreateEntity();
@@ -49,7 +49,7 @@ void MainLayer::OnInit()
 		shader->SendUniformMatrix4fv(1, GL_FALSE, &camera->GetView()[0][0]);
 		shader->SendUniformMatrix4fv(2, GL_FALSE, &camera->GetPerpective()[0][0]);
 	
-	};
+	};*/
 }
 
 void MainLayer::OnUpdate()
@@ -61,17 +61,14 @@ void MainLayer::OnRender()
 {
 	auto view = GetScene()->GetRegistry().view<se::Model3DComponent, se::RenderComponent>();
 	 
-	for (auto entity : view) {
-		auto* model = view.get<se::Model3DComponent>(entity).Model3D;
+	for (auto& entity : view) {
+		 auto* model = view.get<se::Model3DComponent>(entity).Model3D;
+		 view.get<se::RenderComponent>(entity).Layout(se::Entity(entity, GetScene()));
 
-		se::Entity e(entity, GetScene());
-
-		view.get<se::RenderComponent>(entity).Layout(e);
-
-		for (auto& mesh: model->m_Meshes)
-		{
-			mesh.Draw();
-		}
+		 for (auto& mesh: model->m_Meshes)
+		 {
+			se::Renderer::Draw(mesh);
+		 }
 	}
 	
 }

@@ -44,12 +44,16 @@ bool Serializer::SerializeModel(const std::string& filePath)
 	std::ofstream _File;
 	_File.open(new_name, std::ios::binary);
 
+	//Header
 	se::Binarizer::WriteNext<std::string>(_File, "#ShadeModel3D");
+	//Mesh count
 	se::Binarizer::WriteNext<unsigned int>(_File, m_Meshes.size());
 
 	for (auto& mesh : m_Meshes)
 	{
+		//Vertex count 
 		se::Binarizer::WriteNext<unsigned int>(_File, mesh.vertices.size());
+
 		for (auto& vertex : mesh.vertices)
 		{
 			se::Binarizer::WriteNext<float>(_File, vertex.m_Position.x);

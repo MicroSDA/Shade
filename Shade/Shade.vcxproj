@@ -32,6 +32,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Mesh.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Model3D.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Renderer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Scene.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Shader.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Transform.h" />
@@ -63,6 +64,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Mesh.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Model3D.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Renderer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Scene.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Shader.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Transform.cpp" />

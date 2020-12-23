@@ -5,7 +5,8 @@
 #include "Shade/Core/Engine/Scene.h"
 #include "Shade/Core/Engine/Entity.h"
 #include "Shade/Core/Engine/Components.h"
-#include "Vendors/glad/glad.h"
+//#include "Vendors/glad/glad.h"
+#include "Shade/Core/Engine/Renderer.h"
 
 namespace se
 {
