@@ -192,6 +192,11 @@
     <ClCompile Include="libraries\include\Shade Editor\Serializer.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\ShadeEditor.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="project\resources\shaders\BasicModelFragment.glsl" />
+    <None Include="project\resources\shaders\BasicModelVertex.glsl" />
+    <None Include="project\resources\shaders\Ligthing.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

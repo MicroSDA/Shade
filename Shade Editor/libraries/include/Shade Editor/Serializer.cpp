@@ -36,13 +36,19 @@ bool Serializer::SerializeModel(const std::string& filePath)
 	}
 
 	//////////////////////
-	std::string new_name = m_FilePath;
-	std::size_t extension = new_name.find_last_of(".");
+	std::string new_name  = m_FilePath;
+	std::size_t extension = new_name.find_last_of("/");
+	new_name.erase(0, extension + 1);
+	extension = new_name.find_last_of(".");
 	new_name.erase(extension);
 	new_name += ".bin";
 
 	std::ofstream _File;
-	_File.open(new_name, std::ios::binary);
+	_File.open("./resources/models/" + new_name, std::ios::binary);
+	if (!_File.is_open())
+	{
+		std::cout << "Error open " << new_name << std::endl;
+	}
 
 	//Header
 	se::Binarizer::WriteNext<std::string>(_File, "#ShadeModel3D");
@@ -80,6 +86,67 @@ bool Serializer::SerializeModel(const std::string& filePath)
 
 	_File.close();
 	return true;
+}
+
+bool Serializer::SerializeShader(const std::vector<Shader>& shaders, se::AssetData* data)
+{
+	std::vector<std::string> _ShadersCource;
+	_ShadersCource.resize(shaders.size());
+	std::regex include(".*#include[ ]*[\"<](.*)[\">].*");
+	std::smatch      includeMatch;
+	
+	for (short s = 0 ; s< shaders.size(); s++)	
+	{
+		std::ifstream _Read;
+		_Read.open(shaders[s].path, std::ios::binary);
+		if (!_Read.is_open())
+			std::cout << "Error open sahder file!";
+
+		_ShadersCource[s] += shaders[s].type;
+		std::string line;
+		while (_Read.good())
+		{
+			std::getline(_Read, line);
+			
+			if (std::regex_search(line, includeMatch, include))
+			{
+				std::ifstream _Include;
+				_Include.open(includeMatch[1], std::ios::binary);
+				if (!_Include.is_open())
+					std::cout << "Error open sahder include file!";
+
+				std::string includeLine;
+				while (_Include.good())
+				{
+					std::getline(_Include, includeLine);
+					_ShadersCource[s] += "\n" + includeLine;
+				}
+
+				std::getline(_Read, line); // Next line to skip #include 
+			}
+
+			_ShadersCource[s] += "\n" + line;
+		}
+
+		_ShadersCource[s] += "\n#end";
+		_Read.close();
+	}
+
+	std::ofstream _Write;
+	_Write.open("./resources/shaders/shaders.bin", std::ios::binary);
+	_Write.write("#BasicModel\n", 12);
+	//se::Binarizer::WriteNext<std::string>(_Write, "#BasicModel\n");
+	for (short s = 0; s < shaders.size(); s++)
+	{
+		_Write.write(_ShadersCource[s].c_str(), _ShadersCource[s].size());
+		//se::Binarizer::WriteNext<std::string>(_Write, _ShadersCource[s]);
+		//se::Binarizer::WriteNext<std::string>(_Write, "\n");
+		_Write.write("\n", 1);
+	}
+	
+	_Write.write("#---", 4);
+	_Write.close();
+	return false;
 }
 
 void Serializer::processNode(const aiNode* node, const aiScene* scene)

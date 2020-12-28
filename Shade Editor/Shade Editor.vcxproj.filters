@@ -34,5 +34,19 @@
     <Filter Include="Application">
       <UniqueIdentifier>{5085ae01-a553-4a43-979e-387c742fb766}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{0192582a-01d7-4a4a-80e5-b0479045f04f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project\resources\shaders\BasicModelFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="project\resources\shaders\BasicModelVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="project\resources\shaders\Ligthing.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

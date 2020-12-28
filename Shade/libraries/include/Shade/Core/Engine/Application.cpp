@@ -11,10 +11,26 @@ se::Application::Application()
 	SE_DEBUG_PRINT("Application has been created.", se::SLCode::InfoSecondary);
 
 	se::AssetManager::ReadRoadMap(); //Temporary here
+
+	/*SDL_Init(SDL_INIT_AUDIO);
+	SDL_AudioSpec wavSpec;
+	Uint32 wavLength;
+	Uint8* wavBuffer;
+
+	SDL_LoadWAV("Test.wav", &wavSpec, &wavBuffer, &wavLength);
+	SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
+	int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+	SDL_PauseAudioDevice(deviceId, 0);
+	SDL_Delay(300000);
+	SDL_CloseAudioDevice(deviceId);
+	SDL_FreeWAV(wavBuffer);
+	SDL_Quit();*/
 }
 
 se::Application::~Application()
 {
+	m_Scenes.clear();
+	SE_DEBUG_PRINT("Application has been destroyed.", se::SLCode::InfoSecondary);
 }
 
 void se::Application::Start()
@@ -91,6 +107,7 @@ void se::Application::InitScene(const std::string& name)
 		{ 
 			_Scene->second->OnInit();
 			_Scene->second->m_IsInitalized = true;
+			SE_DEBUG_PRINT(std::string("'"+name +"' scene has been initialized").c_str(), se::SLCode::InfoSecondary);
 		}
 		else
 		{
@@ -126,8 +143,11 @@ void se::Application::DeleteScene(const std::string& name)
 		if (m_ActiveScene == _Scene->second)
 			m_ActiveScene = nullptr;
 
+		_Scene->second->OnDelete();
 		delete _Scene->second;
 		m_Scenes.erase(_Scene);
+		SE_DEBUG_PRINT(std::string("'" + name + "' scene has been deleted").c_str(), se::SLCode::InfoSecondary);
+		
 	}
 	else
 	{

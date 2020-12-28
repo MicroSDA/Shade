@@ -10,6 +10,10 @@ namespace se
 	{
 	public:
 		Entity(entt::entity handle, se::Scene* scene);
+		/*Entity(const Entity& other) : 
+			m_EntityHandle(other.m_EntityHandle),
+			m_pScene(other.m_pScene)
+		{ }*/
 		~Entity();
 
 		template<typename T, typename... Args>

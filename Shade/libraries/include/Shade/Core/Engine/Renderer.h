@@ -10,5 +10,8 @@ namespace se
 	{
 	public:
 		static void Draw(const se::Drawable& entity);
+		inline static void Enable(const GLenum& capability);
+		inline static void Disable(const GLenum& capability);
+		inline static void CullFace(const GLenum& mode);
 	};
 }

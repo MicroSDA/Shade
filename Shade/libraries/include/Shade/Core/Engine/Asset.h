@@ -1,6 +1,7 @@
 #pragma once
 #include "Shade/Core/CoreAPI.h"
 #include "Shade/Core/Engine/AssetData.h"
+#include "Shade/Core/Util/ShadeException.h"
 
 namespace se
 {

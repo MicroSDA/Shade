@@ -42,7 +42,7 @@ void se::AssetManager::_Free(const ClassName& className)
 void se::AssetManager::WriteRoadMap(const se::AssetData& asset)
 {
 	std::ofstream _File;
-	_File.open("./RoadMap.bin", std::ofstream::binary);
+	_File.open("./project/RoadMap.bin", std::ofstream::binary);
 	if (!_File.is_open())
 	{
 		throw se::ShadeException("Error: Road map file cannot be open!", se::SECode::Error);
@@ -63,7 +63,7 @@ void se::AssetManager::_ReadRoadMap()
 {
 
 	std::ifstream _File;
-	_File.open("./RoadMap.bin", std::ifstream::binary);
+	_File.open("./project/RoadMap.bin", std::ifstream::binary);
 
 	if (!_File.is_open())
 	{
@@ -110,6 +110,7 @@ void se::AssetManager::ReadAssetsData(std::ifstream& file, se::AssetData& asset)
 	asset._Type = se::Binarizer::ReadNext<se::AssetDataType>(file);
 	asset._SubType = se::Binarizer::ReadNext<se::AssetDataSubType>(file);
 	asset._Path = se::Binarizer::ReadNext<std::string>(file);
+	asset._Path.pop_back();// Remove \0
 	asset._Offset = se::Binarizer::ReadNext<long long>(file);
 	size_t _DependencyCount = se::Binarizer::ReadNext<size_t>(file);
 

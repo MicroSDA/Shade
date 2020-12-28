@@ -4,8 +4,49 @@
 
 ShadeEditor::ShadeEditor()
 {
-	Serializer ser;
-	ser.SerializeModel("cube.obj");
+	
+	/*Serializer _Serializer;
+	_Serializer.SerializeModel("./project/resources/models/cube.obj");
+	_Serializer.SerializeShader({
+		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
+		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}}, {});
+
+	se::AssetData _Packet;
+	se::AssetData _Asset;
+
+	_Packet._Name = "Assets";
+	//_Packet._Type = se::AssetDataType::Packet;
+
+	_Asset._Name = "Shaders";
+	//_Asset._Type = se::AssetDataType::Container;
+	_Asset._Path = "./resources/shaders/shaders.bin";
+	_Asset._Offset = 0;
+
+	_Packet._Dependency.push_back(_Asset);
+
+	_Asset._Name = "BasicModel";
+	//_Asset._Type = se::AssetDataType::Shader;
+	_Asset._Path = "./resources/shaders/shaders.bin";
+	_Asset._Offset = 0;
+
+	_Packet._Dependency[0]._Dependency.push_back(_Asset);
+
+	_Asset._Name = "Models";
+	//_Asset._Type = se::AssetDataType::Container;
+	_Asset._Path = "./resources/models/";
+	_Asset._Offset = 0;
+
+	_Packet._Dependency.push_back(_Asset);
+
+	_Asset._Name = "Cube";
+	//_Asset._Type = se::AssetDataType::Model;
+	_Asset._Path = "./resources/models/cube.bin";
+	_Asset._Offset = 0;
+
+	_Packet._Dependency[1]._Dependency.push_back(_Asset);
+
+	se::AssetManager::WriteRoadMap(_Packet);*/
+
 }
 
 ShadeEditor::~ShadeEditor()
@@ -38,6 +79,20 @@ void ShadeEditor::OnInit()
 			se::WindowManager::DestroyWindow();
 			exit(0);
 			return true;
+		});
+	se::EventManager::RegAppEventCallback(se::EventType::SDL_KEYDOWN,
+		[](se::Event const& event) {
+
+			if (event.key.keysym.sym == SDLK_ESCAPE)
+			{
+				SE_DEBUG_PRINT("SDLK_ESCAPE", se::SLCode::Event);
+				se::WindowManager::DestroyWindow();
+				exit(0);
+				return true;
+			}
+
+			return false;
+		
 		});
 
 	CreateScene<MainScene>("MainScene");
