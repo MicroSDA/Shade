@@ -72,3 +72,16 @@ void se::Model3D::Load()
 
 	_File.close();
 }
+
+void se::Model3D::Init()
+{
+	//TODO 
+	/*
+	* for(auto& mesh : m_Meshes)
+	* {
+	* 
+	*	TODO: mesh.Init()
+	* 
+	* }
+	*/
+}

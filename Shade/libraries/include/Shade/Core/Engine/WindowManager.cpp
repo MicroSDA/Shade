@@ -2,7 +2,8 @@
 #include "WindowManager.h"
 
 se::WindowManager::WindowManager() :
-	m_Context(nullptr), m_IsWindowCreated(false)
+	m_Context(nullptr), m_IsWindowCreated(false),
+	m_ClearR(0),m_ClearG(0),m_ClearB(0),m_ClearA(1)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 		throw se::ShadeException((std::string("Video initializing faild!") + SDL_GetError()).c_str(), se::SECode::Error);
@@ -108,7 +109,29 @@ bool se::WindowManager::IsClosed()
 void se::WindowManager::Clear()
 {
 	if (m_IsWindowCreated)
+	{
+		glClearColor(Get().m_ClearR, Get().m_ClearG, Get().m_ClearB, Get().m_ClearA);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+		
 	else
 		throw se::ShadeException("Window has not been created!", se::SECode::Error);
+}
+
+void se::WindowManager::SetClearColor(const float& r, const float& g, const float& b, const float& a)
+{
+	m_ClearR = r;
+	m_ClearG = g;
+	m_ClearB = b;
+	m_ClearA = a;
+}
+
+void se::WindowManager::Resize()
+{
+	static int _Width;
+	static int _Height;
+	SDL_GetWindowSize(Get().m_Window.Handler, &_Width, &_Height);
+	glViewport(0, 0, _Width, _Height);
+	Get().m_Window.Width = _Width;
+	Get().m_Window.Height = _Height;
 }

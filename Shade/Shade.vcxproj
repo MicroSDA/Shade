@@ -35,6 +35,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Renderer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Scene.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Shader.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Texture.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Transform.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Vertex.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\WindowManager.h" />
@@ -67,6 +68,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Renderer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Scene.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Shader.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Texture.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Transform.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Vertex.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp" />

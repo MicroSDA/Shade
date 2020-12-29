@@ -21,6 +21,7 @@ namespace se
 		}
 
 		virtual void Load() override;
+		virtual void Init() override;
 	protected:
 		std::vector<GLuint> m_Shaders;
 		GLuint              m_Program;
@@ -28,6 +29,7 @@ namespace se
 		GLuint CreateShader(const std::string& text, GLenum shaderType);
 		std::string LoadShader(std::ifstream& file);
 		void CheckShaderError(GLuint shader, GLuint flag, bool isProgram, const std::string& errorMessage);
+
 	};
 
 }

@@ -5,13 +5,14 @@
 ShadeEditor::ShadeEditor()
 {
 	
-	/*Serializer _Serializer;
-	_Serializer.SerializeModel("./project/resources/models/cube.obj");
+	Serializer _Serializer;
+	//_Serializer.SerializeImage("./project/resources/images/CubeDiffuse.png");
+	//_Serializer.SerializeModel("./project/resources/models/cube.obj");
 	_Serializer.SerializeShader({
 		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
 		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}}, {});
 
-	se::AssetData _Packet;
+	/*se::AssetData _Packet;
 	se::AssetData _Asset;
 
 	_Packet._Name = "Assets";
@@ -43,6 +44,11 @@ ShadeEditor::ShadeEditor()
 	_Asset._Path = "./resources/models/cube.bin";
 	_Asset._Offset = 0;
 
+	se::AssetData _Iamge;
+	_Iamge._Name = "Image";
+	_Iamge._Path = "./resources/textures/CubeDiffuse.bin";
+
+	_Asset._Dependency.push_back(_Iamge);
 	_Packet._Dependency[1]._Dependency.push_back(_Asset);
 
 	se::AssetManager::WriteRoadMap(_Packet);*/
@@ -94,6 +100,7 @@ void ShadeEditor::OnInit()
 			return false;
 		
 		});
+	
 
 	CreateScene<MainScene>("MainScene");
 

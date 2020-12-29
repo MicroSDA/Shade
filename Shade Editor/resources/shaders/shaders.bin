@@ -23,16 +23,16 @@
 #end
 #fragment
 #version 440
-	vec4 Light(vec3 Normals)
+	vec4 Light(vec3 Normals, vec4 Texture)
 	{
-		return vec4(0.5, 0.5, 0.5, 1.0) * clamp(dot(-vec3(0,0,1), Normals),0.0, 1.0);
+		return vec4(Texture.rgb * clamp(dot(-vec3(0,0,1), Normals),0.0, 1.0), Texture.a);
 	}
 	layout (location = 0) in vec2 TextureCoords;
 	layout (location = 1) in vec3 Normals;
-
+	layout(binding = 0) uniform sampler2D DIFFUSE_TEXTURE;
 	void main()
 	{
-		gl_FragColor = Light(Normals);
+		gl_FragColor = Light(Normals, texture(DIFFUSE_TEXTURE, TextureCoords).rgba);
 	}
 #end
 #---

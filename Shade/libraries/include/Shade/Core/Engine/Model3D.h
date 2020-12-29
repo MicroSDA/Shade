@@ -13,8 +13,8 @@ namespace se
 		std::vector<se::Mesh> m_Meshes; // Temp here as public
 
 		virtual void Load() override;
+		virtual void Init() override;
 	private:
-		
 	};
 }
 

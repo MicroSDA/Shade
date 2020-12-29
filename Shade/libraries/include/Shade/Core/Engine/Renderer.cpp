@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "Vendors/glad/glad.h"
+#include "Shade/Core/Engine/WindowManager.h"
+
+void se::Renderer::SetClearColor(const float& r, const float& g, const float& b, const float& a)
+{
+	se::WindowManager::Get().SetClearColor(r, g, b, a);
+}
 
 void se::Renderer::Draw(const se::Drawable& entity)
 {

@@ -4,6 +4,7 @@
 #include "Shade/Core/Engine/Model3D.h"
 #include "Shade/Core/Engine/Mesh.h"
 #include "Shade/Core/Engine/Camera.h"
+#include "Shade/Core/Engine/Texture.h"
 
 namespace se
 {
@@ -56,6 +57,17 @@ namespace se
 		}
 	};
 
+	struct TextureComponent
+	{
+		se::Texture* Texture = nullptr;
+
+		TextureComponent() = default;
+		TextureComponent(const TextureComponent&) = default;
+		TextureComponent(se::Texture* other)
+			:Texture(other)
+		{
+		}
+	};
 	struct RenderComponent
 	{
 		using RenderComponentCallback = void(*)(se::Entity);
@@ -70,5 +82,5 @@ namespace se
 		operator RenderComponentCallback& () { return Callback; }
 		operator const RenderComponentCallback& () const { return Callback; }
 	};
-	
+
 }

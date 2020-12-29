@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Serializer.h"
+#include <Shade/Core/Util/ShadeException.h>
 
 Serializer::Serializer()
 {
@@ -21,8 +22,6 @@ bool Serializer::SerializeModel(const std::string& filePath)
 		aiProcess_FixInfacingNormals |
 		aiProcess_GenSmoothNormals
 	);
-
-
 	// If the import failed, report it
 	if (!m_pScene)
 	{
@@ -32,59 +31,54 @@ bool Serializer::SerializeModel(const std::string& filePath)
 	else {
 
 		processNode(m_pScene->mRootNode, m_pScene);
-		//return true;
 	}
 
-	//////////////////////
-	std::string new_name  = m_FilePath;
-	std::size_t extension = new_name.find_last_of("/");
-	new_name.erase(0, extension + 1);
-	extension = new_name.find_last_of(".");
-	new_name.erase(extension);
-	new_name += ".bin";
-
+	std::string _Name = GetNameFromPath(filePath) + ".bin";
 	std::ofstream _File;
-	_File.open("./resources/models/" + new_name, std::ios::binary);
-	if (!_File.is_open())
+	_File.open("./resources/models/" + _Name, std::ios::binary);
+	if (_File.is_open())
 	{
-		std::cout << "Error open " << new_name << std::endl;
+		//Header
+		se::Binarizer::WriteNext<std::string>(_File, "#ShadeModel3D");
+		//Mesh count
+		se::Binarizer::WriteNext<unsigned int>(_File, m_Meshes.size());
+
+		for (auto& mesh : m_Meshes)
+		{
+			//Vertex count 
+			se::Binarizer::WriteNext<unsigned int>(_File, mesh.vertices.size());
+
+			for (auto& vertex : mesh.vertices)
+			{
+				se::Binarizer::WriteNext<float>(_File, vertex.m_Position.x);
+				se::Binarizer::WriteNext<float>(_File, vertex.m_Position.y);
+				se::Binarizer::WriteNext<float>(_File, vertex.m_Position.z);
+
+				se::Binarizer::WriteNext<float>(_File, vertex.m_TextureCoords.x);
+				se::Binarizer::WriteNext<float>(_File, vertex.m_TextureCoords.y);
+
+				se::Binarizer::WriteNext<float>(_File, vertex.m_Normals.x);
+				se::Binarizer::WriteNext<float>(_File, vertex.m_Normals.y);
+				se::Binarizer::WriteNext<float>(_File, vertex.m_Normals.z);
+
+				se::Binarizer::WriteNext<float>(_File, vertex.m_Tangents.x);
+				se::Binarizer::WriteNext<float>(_File, vertex.m_Tangents.y);
+				se::Binarizer::WriteNext<float>(_File, vertex.m_Tangents.z);
+			}
+			se::Binarizer::WriteNext<unsigned int>(_File, mesh.indices.size());
+			for (auto& index : mesh.indices)
+			{
+				se::Binarizer::WriteNext<unsigned int>(_File, index);
+			}
+		}
+
+		_File.close();
+	}
+	else
+	{
+		throw se::ShadeException(std::string("Failed to open model '" + _Name + "' !").c_str(), se::SECode::Warning);
 	}
 
-	//Header
-	se::Binarizer::WriteNext<std::string>(_File, "#ShadeModel3D");
-	//Mesh count
-	se::Binarizer::WriteNext<unsigned int>(_File, m_Meshes.size());
-
-	for (auto& mesh : m_Meshes)
-	{
-		//Vertex count 
-		se::Binarizer::WriteNext<unsigned int>(_File, mesh.vertices.size());
-
-		for (auto& vertex : mesh.vertices)
-		{
-			se::Binarizer::WriteNext<float>(_File, vertex.m_Position.x);
-			se::Binarizer::WriteNext<float>(_File, vertex.m_Position.y);
-			se::Binarizer::WriteNext<float>(_File, vertex.m_Position.z);
-
-			se::Binarizer::WriteNext<float>(_File, vertex.m_TextureCoords.x);
-			se::Binarizer::WriteNext<float>(_File, vertex.m_TextureCoords.y);
-		
-			se::Binarizer::WriteNext<float>(_File, vertex.m_Normals.x);
-			se::Binarizer::WriteNext<float>(_File, vertex.m_Normals.y);
-			se::Binarizer::WriteNext<float>(_File, vertex.m_Normals.z);
-
-			se::Binarizer::WriteNext<float>(_File, vertex.m_Tangents.x);
-			se::Binarizer::WriteNext<float>(_File, vertex.m_Tangents.y);
-			se::Binarizer::WriteNext<float>(_File, vertex.m_Tangents.z);
-		}
-		se::Binarizer::WriteNext<unsigned int>(_File, mesh.indices.size());
-		for (auto& index : mesh.indices)
-		{
-			se::Binarizer::WriteNext<unsigned int>(_File, index);
-		}
-	}
-
-	_File.close();
 	return true;
 }
 
@@ -92,15 +86,16 @@ bool Serializer::SerializeShader(const std::vector<Shader>& shaders, se::AssetDa
 {
 	std::vector<std::string> _ShadersCource;
 	_ShadersCource.resize(shaders.size());
-	std::regex include(".*#include[ ]*[\"<](.*)[\">].*");
-	std::smatch      includeMatch;
+
+	std::regex  include(".*#include[ ]*[\"<](.*)[\">].*");
+	std::smatch includeMatch;
 	
 	for (short s = 0 ; s< shaders.size(); s++)	
 	{
 		std::ifstream _Read;
 		_Read.open(shaders[s].path, std::ios::binary);
 		if (!_Read.is_open())
-			std::cout << "Error open sahder file!";
+			throw se::ShadeException(std::string("Failed to open shader file '" + shaders[s].path + "' !").c_str(), se::SECode::Warning);
 
 		_ShadersCource[s] += shaders[s].type;
 		std::string line;
@@ -113,8 +108,8 @@ bool Serializer::SerializeShader(const std::vector<Shader>& shaders, se::AssetDa
 				std::ifstream _Include;
 				_Include.open(includeMatch[1], std::ios::binary);
 				if (!_Include.is_open())
-					std::cout << "Error open sahder include file!";
-
+					throw se::ShadeException(std::string("Failed to open sahder include file '" + shaders[s].path + "' !").c_str(), se::SECode::Warning);
+				
 				std::string includeLine;
 				while (_Include.good())
 				{
@@ -134,19 +129,58 @@ bool Serializer::SerializeShader(const std::vector<Shader>& shaders, se::AssetDa
 
 	std::ofstream _Write;
 	_Write.open("./resources/shaders/shaders.bin", std::ios::binary);
-	_Write.write("#BasicModel\n", 12);
-	//se::Binarizer::WriteNext<std::string>(_Write, "#BasicModel\n");
-	for (short s = 0; s < shaders.size(); s++)
+	if (_Write.is_open())
 	{
-		_Write.write(_ShadersCource[s].c_str(), _ShadersCource[s].size());
-		//se::Binarizer::WriteNext<std::string>(_Write, _ShadersCource[s]);
-		//se::Binarizer::WriteNext<std::string>(_Write, "\n");
-		_Write.write("\n", 1);
+		_Write.write("#BasicModel\n", 12);
+		for (short s = 0; s < shaders.size(); s++)
+		{
+			_Write.write(_ShadersCource[s].c_str(), _ShadersCource[s].size());
+			_Write.write("\n", 1);
+		}
+
+		_Write.write("#---", 4);
+		_Write.close();
+	}
+	else
+	{
+		throw se::ShadeException(std::string("Failed to save sahder file './resources/shaders/shaders.bin' !").c_str(), se::SECode::Warning);
 	}
 	
-	_Write.write("#---", 4);
-	_Write.close();
 	return false;
+}
+
+bool Serializer::SerializeImage(const std::string& filePath)
+{
+	int _Width , _Height, _Channels;
+	unsigned char* _Data = stbi_load(filePath.c_str(), &_Width, &_Height, &_Channels, STBI_rgb_alpha);
+	if (_Data)
+	{
+		std::ofstream _File;
+		_File.open("./resources/textures/" + GetNameFromPath(filePath) + ".bin", std::ios::binary);
+		if (_File.is_open())
+		{
+			se::Binarizer::WriteNext<std::string>(_File, "#ShadeImage");
+			se::Binarizer::WriteNext<int>(_File, _Width);
+			se::Binarizer::WriteNext<int>(_File, _Height);
+			se::Binarizer::WriteNext<int>(_File, _Channels);
+			unsigned int _Size = (_Channels * _Width * _Height);
+			se::Binarizer::WriteNext<unsigned int>(_File, _Size);
+			_File.write(reinterpret_cast<char*>(_Data), _Size);
+			_File.close();
+		}
+		else
+		{
+			throw se::ShadeException(std::string("Failed to save image '" + filePath + "' !").c_str(), se::SECode::Warning);
+		}
+
+		stbi_image_free(_Data);
+	}
+	else
+	{
+		throw se::ShadeException(std::string("Failed to open source image '" + filePath + "' !").c_str(), se::SECode::Warning);
+	}
+	
+	return true;
 }
 
 void Serializer::processNode(const aiNode* node, const aiScene* scene)
@@ -166,29 +200,29 @@ void Serializer::processNode(const aiNode* node, const aiScene* scene)
 
 Model Serializer::processMesh(aiMesh* mesh, const aiScene* scene, unsigned int id)
 {
-
-	std::vector<se::Vertex> vertices;
-	std::vector<unsigned int> indices;
-
+	std::vector<se::Vertex> _Vertices;
+	std::vector<unsigned int> _Indices;
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
-		se::Vertex vertex;
+		se::Vertex _Vertex;
+		_Vertex.m_Position.x = mesh->mVertices[i].x;
+		_Vertex.m_Position.y = mesh->mVertices[i].y;
+		_Vertex.m_Position.z = mesh->mVertices[i].z;
 
-		vertex.m_Position.x = mesh->mVertices[i].x;
-		vertex.m_Position.y = mesh->mVertices[i].y;
-		vertex.m_Position.z = mesh->mVertices[i].z;
-
-		if (mesh->HasNormals()) {
-
-			vertex.m_Normals.x = mesh->mNormals[i].x;
-			vertex.m_Normals.y = mesh->mNormals[i].y;
-			vertex.m_Normals.z = mesh->mNormals[i].z;
-
+		if (mesh->HasNormals()) 
+		{
+			_Vertex.m_Normals.x = mesh->mNormals[i].x;
+			_Vertex.m_Normals.y = mesh->mNormals[i].y;
+			_Vertex.m_Normals.z = mesh->mNormals[i].z;
 			if (mesh->HasTangentsAndBitangents())
 			{
-				vertex.m_Tangents.x = mesh->mTangents[i].x;
-				vertex.m_Tangents.y = mesh->mTangents[i].y;
-				vertex.m_Tangents.z = mesh->mTangents[i].z;
+				_Vertex.m_Tangents.x = mesh->mTangents[i].x;
+				_Vertex.m_Tangents.y = mesh->mTangents[i].y;
+				_Vertex.m_Tangents.z = mesh->mTangents[i].z;
+			}
+			else
+			{
+				//TODO
 			}
 		}
 		else {
@@ -196,18 +230,17 @@ Model Serializer::processMesh(aiMesh* mesh, const aiScene* scene, unsigned int i
 			//TODO: if noramls doesnt exist
 		}
 
-		if (mesh->HasTextureCoords(0)) {
-
-
-			vertex.m_TextureCoords.x = mesh->mTextureCoords[0][i].x;
-			vertex.m_TextureCoords.y = mesh->mTextureCoords[0][i].y;
-
+		if (mesh->HasTextureCoords(0)) 
+		{
+			_Vertex.m_TextureCoords.x = mesh->mTextureCoords[0][i].x;
+			_Vertex.m_TextureCoords.y = mesh->mTextureCoords[0][i].y;
 		}
-		else {
+		else 
+		{
 			//TODO: if textCoors doesnt exist
 		}
 
-		vertices.push_back(vertex);
+		_Vertices.push_back(_Vertex);
 	}
 
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -215,15 +248,46 @@ Model Serializer::processMesh(aiMesh* mesh, const aiScene* scene, unsigned int i
 		const aiFace& face = mesh->mFaces[i];
 		for (unsigned int j = 0; j < face.mNumIndices; j++)
 		{
-			indices.push_back(face.mIndices[j]);
+			_Indices.push_back(face.mIndices[j]);
 		}
 	}
+	Model _Model;
+	_Model.name = mesh->mName.data;
+	_Model.vertices = _Vertices;
+	_Model.indices = _Indices;
+	return _Model;
+}
 
-	Model model;
+std::string Serializer::GetNameFromPath(const std::string& filePath)
+{
+	std::size_t _Pos = filePath.find_last_of("/");
+	std::string _Out = filePath;
 
-	model.name = mesh->mName.data;
-	model.vertices = vertices;
-	model.indices = indices;
-
-	return model;
+	if (_Pos != std::string::npos)
+	{
+		_Out.erase(0, _Pos + 1);
+		_Pos = _Out.find_last_of(".");
+		if (_Pos != std::string::npos)
+		{
+			_Out.erase(_Pos);
+			return _Out;
+		}
+		else
+		{
+			throw se::ShadeException(std::string("Faild to get name from path :'" + filePath + "'").c_str(), se::SECode::Warning);
+		}
+	}
+	else
+	{
+		_Pos = _Out.find_last_of(".");
+		if (_Pos != std::string::npos)
+		{
+			_Out.erase(_Pos);
+			return _Out;
+		}
+		else
+		{
+			throw se::ShadeException(std::string("Faild to get name from path :'" + filePath + "'").c_str(), se::SECode::Warning);
+		}
+	}
 }

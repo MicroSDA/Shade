@@ -101,6 +101,9 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Renderer.h">
       <Filter>Core\Engine\Render</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Texture.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -159,6 +162,9 @@
       <Filter>Core\Engine\Render</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Renderer.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Texture.cpp">
       <Filter>Core\Engine\Render</Filter>
     </ClCompile>
   </ItemGroup>

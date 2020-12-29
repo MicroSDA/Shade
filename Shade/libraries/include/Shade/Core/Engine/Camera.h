@@ -15,9 +15,9 @@ namespace se
 			   const float& zNear,
 			   const float& zFar);
 		~Camera();
-		inline glm::mat4 GetView()              const { return glm::lookAt(m_Position, m_Position + m_Forward, m_Up); };
-		inline glm::mat4 GetPerpective()        const { return m_Perpective; };
-		inline glm::mat4 GetViewProjection()    const { return m_Perpective * glm::lookAt(m_Position, m_Position + m_Forward, m_Up); }
+		inline glm::mat4 GetView()              const { return glm::lookAt(m_Position, m_Forward, m_Up); };
+		inline glm::mat4 GetProjection()        const { return m_Perpective; };
+		inline glm::mat4 GetViewProjection()    const { return m_Perpective * glm::lookAt(m_Position, m_Forward, m_Up); }
 		inline glm::vec3 GetForwardDirrection() const { return m_Forward; }
 		inline glm::vec3 GetUpDirrection()      const { return m_Up; }
 		inline glm::vec3 GetPosition()          const { return m_Position; }
@@ -44,12 +44,15 @@ namespace se
 		}
 		// Z
 		inline void SetRoll(float angle) { /* TODO:*/ }
+
+		void Resize();
 	private:
 		const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f); // Y is up
 		glm::mat4 m_Perpective;
 		glm::vec3 m_Position;
 		glm::vec3 m_Forward;
 		glm::vec3 m_Up;
+		float m_Fov, m_Aspect, m_zNear, m_zFar;
 	};
 
 }

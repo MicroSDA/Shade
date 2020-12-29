@@ -11,6 +11,7 @@ namespace se
 		Asset(const se::AssetData* data); // ??
 		virtual ~Asset();
 		virtual void Load() = 0;
+		virtual void Init() = 0;
 	protected:
 		const se::AssetData* m_AssetData;
 	private:

@@ -30,46 +30,44 @@ void se::Shader::Load()
 {
 	std::ifstream _File;
 	_File.open(m_AssetData->_Path, std::ifstream::in);
-	if (!_File.is_open())
+	if (_File.is_open())
 	{
-		std::cout << "Error open shader file." << std::endl; // Todo for threads
-		exit(-1);
-	}
+		_File.seekg(m_AssetData->_Offset);
+		std::string line;
+		while (_File.good())
+		{
+			std::getline(_File, line);
+			if (line == "#vertex")
+				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_VERTEX_SHADER));
 
-	_File.seekg(m_AssetData->_Offset);
-	std::string line;
-	while (_File.good())
+			if (line == "#fragment")
+				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_FRAGMENT_SHADER));
+		
+			if (line == "#geometry")
+				//m_Shaders.push_back(CreateShader(LoadShader(_File), GL_GEOMETRY_SHADER));
+		
+			if (line == "#---")
+				break;
+		}
+
+		_File.close();
+		if (m_Shaders.size() == 0)
+			throw se::ShadeException(std::string("Shaders count 0 in '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+
+		m_Program = glCreateProgram();
+		for (unsigned int i = 0; i < m_Shaders.size(); i++) {
+			glAttachShader(m_Program, m_Shaders[i]);
+		}
+		glLinkProgram(m_Program);
+		CheckShaderError(m_Program, GL_LINK_STATUS, true, "Error: Shader program linkin faild: ");
+		glValidateProgram(m_Program);
+		CheckShaderError(m_Program, GL_VALIDATE_STATUS, true, "Error: Shader program validate faild: ");
+	}
+	else
 	{
-		std::getline(_File, line);
-		if (line == "#vertex")
-		{
-			m_Shaders.push_back(CreateShader(LoadShader(_File), GL_VERTEX_SHADER));
-		}
-
-		if (line == "#fragment")
-		{
-			m_Shaders.push_back(CreateShader(LoadShader(_File), GL_FRAGMENT_SHADER));
-		}
-
-		if (line == "#geometry")
-		{
-			//m_Shaders.push_back(CreateShader(LoadShader(_File), GL_GEOMETRY_SHADER));
-		}
-
-		if (line == "#---")
-		{
-			break;
-		}
+		throw se::ShadeException(std::string("Failed to open shader file '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
 	}
-	_File.close();
-	m_Program = glCreateProgram();
-	for (unsigned int i = 0; i < m_Shaders.size(); i++) {
-		glAttachShader(m_Program, m_Shaders[i]);
-	}
-	glLinkProgram(m_Program);
-	CheckShaderError(m_Program, GL_LINK_STATUS, true, "Error: Shader program linkin faild: ");
-	glValidateProgram(m_Program);
-	CheckShaderError(m_Program, GL_VALIDATE_STATUS, true, "Error: Shader program validate faild: ");
+
 }
 
 GLuint se::Shader::CreateShader(const std::string& text, GLenum shaderType)
@@ -153,4 +151,8 @@ void se::Shader::CheckShaderError(GLuint shader, GLuint flag, bool isProgram, co
 		std::string _Msg(errorMessage + ": '" + error + "'");
 		SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Error);
 	}
+}
+
+void se::Shader::Init()
+{
 }

@@ -11,6 +11,9 @@
     <ClInclude Include="libraries\include\Shade Editor\ShadeEditor.h">
       <Filter>Application</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Vendors\stbi\stb_image.h">
+      <Filter>Vendors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade Editor\Serializer.cpp" />
@@ -22,6 +25,9 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade Editor\ShadeEditor.cpp">
       <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Vendors\stbi\stb_image.c">
+      <Filter>Vendors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -36,6 +42,9 @@
     </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{0192582a-01d7-4a4a-80e5-b0479045f04f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vendors">
+      <UniqueIdentifier>{caf50bda-6e7f-4a80-8369-3a4455018288}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

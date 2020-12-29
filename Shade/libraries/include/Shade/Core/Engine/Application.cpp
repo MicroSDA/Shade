@@ -25,10 +25,27 @@ se::Application::Application()
 	SDL_CloseAudioDevice(deviceId);
 	SDL_FreeWAV(wavBuffer);
 	SDL_Quit();*/
+	se::EventManager::RegAppEventCallback(se::EventType::SDL_WINDOWEVENT,
+		[](se::Event const& event) {
+			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+			{
+				se::WindowManager::Resize();
+				se::Application::GetApp().GetActiveScene()->GetMainCamera()->Resize();
+			}
+		
+			return false;
+
+		});
 }
 
 se::Application::~Application()
 {
+	for (auto& scene : m_Scenes)
+	{
+		scene.second->OnDelete();
+		delete scene.second;
+	}
+
 	m_Scenes.clear();
 	SE_DEBUG_PRINT("Application has been destroyed.", se::SLCode::InfoSecondary);
 }

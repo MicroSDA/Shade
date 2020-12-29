@@ -17,7 +17,7 @@ namespace se {
 			file.seekp(pos);
 		}
 		template <typename T>
-		inline static T ReadNext(std::ifstream& file)
+		inline static T ReadNext(std::ifstream& file, const std::streamsize& size = 1)
 		{
 			T value;
 
@@ -33,13 +33,13 @@ namespace se {
 			}
 			else
 			{
-				file.read((char*)&value, sizeof(T));
+				file.read(reinterpret_cast<char*>(&value), sizeof(T) * size);
 			}
 
 			return value;
 		}
 		template <typename T>
-		inline static std::streampos WriteNext(std::ofstream& file, T value)
+		inline static std::streampos WriteNext(std::ofstream& file, T value, const std::streamsize& size = 1)
 		{
 			std::streampos pos = file.tellp();
 
@@ -50,7 +50,7 @@ namespace se {
 			}
 			else
 			{
-				file.write((char*)&value, sizeof(T));
+				file.write((char*)&value, sizeof(T) * size);
 			}
 
 			return pos;

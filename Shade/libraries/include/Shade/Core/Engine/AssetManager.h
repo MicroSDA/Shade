@@ -82,6 +82,7 @@ se::Asset* se::AssetManager::_Hold(const ClassName& className)
 			// Load asset
 			auto* _Asset = new T(_RElement->second);
 			_Asset->Load();
+			_Asset->Init(); // Temporary here 
 			// Create asset ref and incease asset count + one ref;
 			m_Assets.insert(std::pair<ClassName, AssetReferences>(className, AssetReferences{ _Asset, 1 }));
 			return _Asset;

@@ -17,7 +17,7 @@ namespace se
 		Application();
 		virtual ~Application();
 		static Application& GetApp() { return *m_pInstance; }
-		inline const se::Scene* GetActiveScene() const { return m_ActiveScene; };
+		inline se::Scene* GetActiveScene() const { return m_ActiveScene; };
 		virtual void OnInit() = 0;
 		void   Start();
 	protected:

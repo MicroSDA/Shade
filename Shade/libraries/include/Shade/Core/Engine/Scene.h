@@ -4,6 +4,7 @@
 #include "Shade/Core/Engine/Application.h"
 #include "Shade/Core/Engine/AssetManager.h"
 #include "Shade/Core/Engine/Shader.h"
+#include "Shade/Core/Engine/Camera.h"
 //#include "Shade/Core/Engine/Layer.h"
 //#include "Shade/Core/Engine/Entity.h"
 
@@ -23,7 +24,8 @@ namespace se
 
 		se::Entity CreateEntity();
 		entt::registry& GetRegistry();
-	
+		se::Camera* GetMainCamera();
+		void SetMainCamera(se::Camera* camera);
 	protected:
 		virtual void OnCreate() = 0;
 		virtual void OnInit() = 0;
@@ -47,14 +49,14 @@ namespace se
 		void InitLayers();
 
 		inline std::vector<se::Layer*>& GetLayers() { return m_Layers; };
-
+	
 	private:
 		std::vector<se::Layer*> m_Layers;
 		entt::registry m_Registry;
 		virtual void OnUpdate() = 0;
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
-
+		se::Camera* m_pMainCamera;
 	};
 
 }
