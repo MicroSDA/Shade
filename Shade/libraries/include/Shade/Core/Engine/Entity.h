@@ -9,11 +9,12 @@ namespace se
 	class SE_API Entity
 	{
 	public:
+		Entity() = default;
 		Entity(entt::entity handle, se::Scene* scene);
-		/*Entity(const Entity& other) : 
+		Entity(const Entity& other) : 
 			m_EntityHandle(other.m_EntityHandle),
 			m_pScene(other.m_pScene)
-		{ }*/
+		{ }
 		~Entity();
 
 		template<typename T, typename... Args>
@@ -63,4 +64,5 @@ namespace se
 		entt::entity m_EntityHandle{ entt::null };
 		se::Scene* m_pScene = nullptr;
 	};
+
 }

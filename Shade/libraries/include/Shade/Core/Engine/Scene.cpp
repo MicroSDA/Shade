@@ -17,6 +17,17 @@ se::Scene::~Scene()
 		delete layer;
 	}
 	m_Layers.clear();
+
+	m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+		{
+			if (nsc.Instance)
+			{
+				nsc.Instance->OnDestroy();
+				nsc.DestroyScript(&nsc);
+			}
+		});
+
+	SE_DEBUG_PRINT(std::string("Scene '"+ m_Name +"' has been destroyed").c_str(), se::SLCode::InfoSecondary);
 }
 
 se::Entity se::Scene::CreateEntity()
@@ -27,6 +38,22 @@ se::Entity se::Scene::CreateEntity()
 entt::registry& se::Scene::GetRegistry()
 {
 	return m_Registry;
+}
+
+void se::Scene::UpdateNativeScripts(const se::Timer& deltaTime)
+{
+	m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+		{
+			// TODO: Move to Scene::OnScenePlay
+			if (!nsc.Instance)
+			{
+				nsc.Instance = nsc.InstantiateScript();
+				nsc.Instance->m_Entity = Entity{ entity, this };
+				nsc.Instance->OnCreate();
+			}
+
+			nsc.Instance->OnUpdate(deltaTime);
+		});
 }
 
 void se::Scene::DeleteLayers()

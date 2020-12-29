@@ -5,6 +5,7 @@
 #include "Shade/Core/Engine/Mesh.h"
 #include "Shade/Core/Engine/Camera.h"
 #include "Shade/Core/Engine/Texture.h"
+#include "Shade/Core/Engine/ScriptableEntity.h"
 
 namespace se
 {
@@ -83,4 +84,18 @@ namespace se
 		operator const RenderComponentCallback& () const { return Callback; }
 	};
 
+	struct NativeScriptComponent
+	{
+		se::ScriptableEntity* Instance = nullptr;
+
+		ScriptableEntity* (*InstantiateScript)();
+		void (*DestroyScript)(NativeScriptComponent*);
+
+		template<typename T>
+		void Bind()
+		{
+			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
+		}
+	};
 }

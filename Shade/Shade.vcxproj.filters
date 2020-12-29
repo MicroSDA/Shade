@@ -19,6 +19,18 @@
     <Filter Include="Core\Engine\Render">
       <UniqueIdentifier>{02f4ef8e-426b-47f8-a928-d5a4537ed5f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Engine\Input">
+      <UniqueIdentifier>{d92344b5-c27f-4bf5-84dc-30c9a1174486}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Engine\Scipts">
+      <UniqueIdentifier>{a285ab2c-01e7-497e-899d-1e858fd70954}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Engine\Scipts\Controllers">
+      <UniqueIdentifier>{82109fd4-b400-4687-9afe-b7caa38c780b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Engine\Time">
+      <UniqueIdentifier>{abe51aaf-1e06-4da6-a521-141e64848106}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -104,6 +116,18 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Texture.h">
       <Filter>Core\Engine\Render</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Input.h">
+      <Filter>Core\Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Controllers.h">
+      <Filter>Core\Engine\Scipts\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\ScriptableEntity.h">
+      <Filter>Core\Engine\Scipts</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Timer.h">
+      <Filter>Core\Engine\Time</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -166,6 +190,18 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Texture.cpp">
       <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Input.cpp">
+      <Filter>Core\Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Controllers.cpp">
+      <Filter>Core\Engine\Scipts\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\ScriptableEntity.cpp">
+      <Filter>Core\Engine\Scipts</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Timer.cpp">
+      <Filter>Core\Engine\Time</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

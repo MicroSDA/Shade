@@ -7,6 +7,8 @@
 #include "Shade/Core/Engine/Components.h"
 //#include "Vendors/glad/glad.h"
 #include "Shade/Core/Engine/Renderer.h"
+#include "Shade/Core/Engine/Controllers.h"
+#include "Shade/Core/Engine/Timer.h"
 
 namespace se
 {
@@ -20,8 +22,9 @@ namespace se
 
 		virtual void OnCreate() = 0;
 		virtual void OnInit() = 0;
-		virtual void OnUpdate() = 0; //TODO:Delta as args
-		virtual void OnRender() = 0; //TODO:Delta as args
+		//TODO Move to private and friend class
+		virtual void OnUpdate(const se::Timer& deltaTime) = 0; //TODO:Delta as args
+		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
 
 		se::Scene* GetScene() { return m_pScene; }

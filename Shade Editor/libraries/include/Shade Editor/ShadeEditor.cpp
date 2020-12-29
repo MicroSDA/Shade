@@ -62,46 +62,22 @@ ShadeEditor::~ShadeEditor()
 void ShadeEditor::OnInit()
 {
 	//Events call back an other stuff 
-
-	se::WindowManager::Create(se::Window{});
-	se::EventManager::RegAppEventCallback(se::EventType::SDL_WINDOWEVENT,
-		[](se::Event const& event) {
-
-			if (event.window.event == SDL_WINDOWEVENT_MINIMIZED)
-			{
-				SE_DEBUG_PRINT("WINDOWEVENT_MINIMIZED", se::SLCode::Event);
-			}
-
-			if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-			{
-				SE_DEBUG_PRINT("WINDOWEVENT_FOCUS_GAINED", se::SLCode::Event);
-			}
-
-			return false;
-		});
 	se::EventManager::RegAppEventCallback(se::EventType::SDL_QUIT,
-		[](se::Event const& event) {
-
-			se::WindowManager::DestroyWindow();
-			exit(0);
+		[&](se::Event const& event) {
+			this->Quit();
 			return true;
 		});
 	se::EventManager::RegAppEventCallback(se::EventType::SDL_KEYDOWN,
-		[](se::Event const& event) {
-
-			if (event.key.keysym.sym == SDLK_ESCAPE)
+		[&](se::Event const& event) {
+			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 			{
-				SE_DEBUG_PRINT("SDLK_ESCAPE", se::SLCode::Event);
-				se::WindowManager::DestroyWindow();
-				exit(0);
+				this->Quit();
 				return true;
 			}
-
 			return false;
-		
 		});
-	
 
+	se::WindowManager::Create(se::Window{});
 	CreateScene<MainScene>("MainScene");
 
 	//? or more
@@ -115,7 +91,7 @@ void ShadeEditor::OnInit()
 	//DeleteScene("MainScene");
 }
 
-void ShadeEditor::OnUpdate()
+void ShadeEditor::OnUpdate(const se::Timer& deltaTime)
 {
 	return;
 }

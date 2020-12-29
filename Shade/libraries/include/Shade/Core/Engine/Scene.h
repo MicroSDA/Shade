@@ -5,6 +5,7 @@
 #include "Shade/Core/Engine/AssetManager.h"
 #include "Shade/Core/Engine/Shader.h"
 #include "Shade/Core/Engine/Camera.h"
+#include "Shade/Core/Engine/Timer.h"
 //#include "Shade/Core/Engine/Layer.h"
 //#include "Shade/Core/Engine/Entity.h"
 
@@ -29,11 +30,10 @@ namespace se
 	protected:
 		virtual void OnCreate() = 0;
 		virtual void OnInit() = 0;
-		
-		std::string    m_Name;
-		bool m_IsInitalized = false;
-
-
+		void         UpdateNativeScripts(const se::Timer& deltaTime);
+		void         DeleteLayers();
+		void         InitLayers();
+		inline       std::vector<se::Layer*>& GetLayers() { return m_Layers; };
 		template<typename T>
 		se::Layer* CreateLayer(const std::string& name)
 		{
@@ -45,15 +45,13 @@ namespace se
 			m_Layers.push_back(_Layer);
 			return _Layer;
 		}
-		void DeleteLayers();
-		void InitLayers();
 
-		inline std::vector<se::Layer*>& GetLayers() { return m_Layers; };
-	
+		std::string    m_Name;
+		bool m_IsInitalized = false;
 	private:
 		std::vector<se::Layer*> m_Layers;
 		entt::registry m_Registry;
-		virtual void OnUpdate() = 0;
+		virtual void OnUpdate(const se::Timer& deltaTime) = 0;
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
 		se::Camera* m_pMainCamera;

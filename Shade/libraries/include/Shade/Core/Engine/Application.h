@@ -7,6 +7,7 @@
 #include "Shade/Core/Engine/WindowManager.h"
 #include "Shade/Core/Engine/EventManager.h"
 #include "Shade/Core/Engine/AssetManager.h"
+#include "Shade/Core/Engine/Timer.h"
 
 namespace se
 {
@@ -20,8 +21,9 @@ namespace se
 		inline se::Scene* GetActiveScene() const { return m_ActiveScene; };
 		virtual void OnInit() = 0;
 		void   Start();
+		void   Quit();
 	protected:
-		virtual void OnUpdate() = 0;
+		virtual void OnUpdate(const se::Timer& deltaTime) = 0;
 		template<typename T>
 		se::Scene* CreateScene(const std::string& name)
 		{
@@ -38,9 +40,9 @@ namespace se
 		void DeleteScene(const std::string& name);
 	private:
 		static Application*               m_pInstance;
-
 		se::Scene*                        m_ActiveScene;
 		std::map<std::string, se::Scene*> m_Scenes;
+		bool                              m_IsQuitRequested;
 	};
 
 	Application* CreateApplication();

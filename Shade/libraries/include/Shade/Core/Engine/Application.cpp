@@ -5,7 +5,7 @@
 se::Application* se::Application::m_pInstance = nullptr;
 
 se::Application::Application()
-	:m_ActiveScene(nullptr)
+	:m_ActiveScene(nullptr), m_IsQuitRequested(false)
 {
 	m_pInstance = this;
 	SE_DEBUG_PRINT("Application has been created.", se::SLCode::InfoSecondary);
@@ -52,17 +52,18 @@ se::Application::~Application()
 
 void se::Application::Start()
 {
-	
-
-	while (true)
+	se::Timer _DeltaTime;
+	while (!m_IsQuitRequested)
 	{
+		_DeltaTime.Update();
+
 		try
 		{
 			se::EventManager::Get().Update();
-			OnUpdate();
+			OnUpdate(_DeltaTime);
 			if (m_ActiveScene)
 			{
-				m_ActiveScene->OnUpdate();
+				m_ActiveScene->OnUpdate(_DeltaTime);
 
 				se::WindowManager::Get().Clear();
 				m_ActiveScene->OnRender();
@@ -93,8 +94,17 @@ void se::Application::Start()
 				default:
 					break;
 			}
-		}		
+		}
+
+	
 	}
+
+	se::WindowManager::DestroyWindow();
+}
+
+void se::Application::Quit()
+{
+	m_IsQuitRequested = true;
 }
 
 std::map<std::string, se::Scene*>& se::Application::GetScenes()

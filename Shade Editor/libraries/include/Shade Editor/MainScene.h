@@ -13,7 +13,7 @@ public:
 
 	virtual void OnInit() override;
 
-	virtual void OnUpdate() override;
+	virtual void OnUpdate(const se::Timer& deltaTime) override;
 
 	virtual void OnRender() override;
 

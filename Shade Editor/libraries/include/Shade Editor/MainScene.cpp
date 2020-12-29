@@ -28,6 +28,7 @@ void MainScene::OnInit()
 
 	se::Shader* shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel");
 	se::Camera* camera = new se::Camera();
+	
 
 	SetMainCamera(camera);
 
@@ -40,7 +41,6 @@ void MainScene::OnInit()
 		
 		entity.GetComponent<se::TextureComponent>().Texture->Bind(0);
 		auto& transform = entity.GetComponent<se::TransformComponent>().Transform;
-		transform.SetRotation(glm::vec3(transform.GetRotation().x + 0.01f, transform.GetRotation().y + 0.01f, 0));
 		auto* shader = entity.GetComponent<se::ShaderComponent>().Shader;
 		auto* camera = entity.GetComponent<se::CameraComponent>().Camera;
 
@@ -68,15 +68,25 @@ void MainScene::OnInit()
 	//InitLayer TODO !
 	InitLayers();
 	se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
-}
 
-void MainScene::OnUpdate()
+	se::Entity CameraController = CreateEntity();
+	CameraController.AddComponent<se::CameraComponent>(camera);
+	CameraController.AddComponent<se::NativeScriptComponent>().Bind<se::CameraController>();
+}
+	
+
+
+void MainScene::OnUpdate(const se::Timer& deltaTime)
 {
-	//GetMainCamera()->Resize();
+	{
+		UpdateNativeScripts(deltaTime);
+	}
+
+	//std::cout << se::Input::GetMousePosition().x << std::endl;
 
 	for (auto& layer : GetLayers())
 	{
-		layer->OnUpdate();
+		layer->OnUpdate(deltaTime);
 	}
 }
 

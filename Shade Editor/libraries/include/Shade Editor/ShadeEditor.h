@@ -10,6 +10,6 @@ public:
 private:
 	// Унаследовано через Application
 	virtual void OnInit() override;
-	virtual void OnUpdate() override;
+	virtual void OnUpdate(const se::Timer& deltaTime) override;
 };
 

@@ -29,11 +29,17 @@ void MainLayer::OnInit()
 		});
 
 	se::Renderer::Enable(GL_CULL_FACE);
+	se::Renderer::Enable(GL_DEPTH_TEST);
 }
 
-void MainLayer::OnUpdate()
+void MainLayer::OnUpdate(const se::Timer& deltaTime)
 {
-	
+	auto entities = GetScene()->GetRegistry().view<se::TransformComponent, se::Model3DComponent>();
+	for (auto& entity : entities) {
+
+		auto& transform = entities.get<se::TransformComponent>(entity).Transform;
+		transform.SetRotation(glm::vec3(transform.GetRotation().x + 2.5f * deltaTime, transform.GetRotation().y + 2.5f * deltaTime, 0));
+	}
 }
 
 void MainLayer::OnRender()

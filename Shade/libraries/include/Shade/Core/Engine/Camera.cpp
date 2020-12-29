@@ -9,7 +9,7 @@ se::Camera::Camera():
 {
 	m_Perpective = glm::perspective(glm::radians(m_Fov), m_Aspect, m_zNear, m_zFar);
 	m_Position = glm::vec3(0, 0, 0);
-	m_Forward = glm::vec3(0, 0, 1);
+	m_Forward = glm::vec3(0, 0, 1); // - Z
 	m_Up = glm::vec3(0, 1, 0);
 
 }
@@ -25,10 +25,11 @@ se::Camera::Camera(const glm::vec3& position,
 	m_zNear  = zNear;
 	m_zFar   = zFar;
 
-	m_Perpective = glm::perspective(fov, aspect, zNear, zFar);
+	m_Perpective = glm::perspective(glm::radians(fov), aspect, zNear, zFar);
 	m_Position = position;
-	m_Forward = glm::vec3(0, 0, 1);
+	m_Forward = glm::vec3(0, 0, 1); // - Z
 	m_Up = glm::vec3(0, 1, 0);
+
 }
 
 se::Camera::~Camera()

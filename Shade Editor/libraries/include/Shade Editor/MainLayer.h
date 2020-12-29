@@ -9,7 +9,7 @@ public:
 	// Унаследовано через Layer
 	virtual void OnCreate() override;
 	virtual void OnInit() override;
-	virtual void OnUpdate() override;
+	virtual void OnUpdate(const se::Timer& deltaTime) override;
 	virtual void OnRender() override;
 	virtual void OnDelete() override;
 };
