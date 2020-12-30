@@ -10,6 +10,7 @@ int main()
 	try
 	{
 		app->OnInit();
+		app->Start();
 	}
 	catch (se::ShadeException& exception)
 	{
@@ -31,8 +32,6 @@ int main()
 		}
 	}
 	
-	app->Start();
-
 	delete app;
 	return EXIT_SUCCESS;
 }

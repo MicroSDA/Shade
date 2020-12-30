@@ -5,7 +5,41 @@
 
 namespace se
 {
-	class SE_API CameraController : public se::ScriptableEntity
+	class SE_API GeneralLightController : public se::ScriptableEntity
+	{
+	public:
+		void OnCreate()
+		{
+			
+		}
+		void OnDestroy()
+		{
+
+		}
+		void OnUpdate(const se::Timer& deltaTime)
+		{
+			auto* _Light = static_cast<se::GeneralLight*>(GetComponent<se::EnvironmentComponent>().Instance);
+			glm::fvec3 _Dir = _Light->GetDirection();
+
+			if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_UP))
+				_Light->SetDirection(_Dir.x, _Dir.y + (m_MovementSpeed * deltaTime), _Dir.z);
+			if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_DOWN))
+				_Light->SetDirection(_Dir.x, _Dir.y - (m_MovementSpeed * deltaTime), _Dir.z);
+
+			
+			if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_LEFT))
+				_Light->SetDirection(_Dir.x + (m_MovementSpeed * deltaTime), _Dir.y, _Dir.z);
+			if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_RIGHT))
+				_Light->SetDirection(_Dir.x - (m_MovementSpeed * deltaTime), _Dir.y, _Dir.z);
+
+			_Dir = glm::normalize(_Light->GetDirection());// anyway z coord will be undefined big
+			_Light->SetDirection(_Dir);
+		}
+
+	private:
+		float m_MovementSpeed = 7.0f;
+	};
+	class SE_API FreeCameraController : public se::ScriptableEntity
 	{
 	public:
 		void OnCreate()

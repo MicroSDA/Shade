@@ -9,30 +9,80 @@
 	layout (location = 0) uniform mat4 ModelM;
 	layout (location = 1) uniform mat4 ViewM;
 	layout (location = 2) uniform mat4 ProjectionM;
-	
+	layout (location = 6) uniform vec3 CameraPosition;
 		
 	layout (location = 0) out vec2 out_TextureCoords;
     layout (location = 1) out vec3 out_Normals;
+	layout (location = 2) out vec3 out_ToCameraDirection;
+	layout (location = 3) out vec3 out_Position;
 
 	void main()
 	{
 		gl_Position = ProjectionM * ViewM * ModelM *  vec4(Position, 1.0f);
 		out_TextureCoords = TextureCoords;
-		out_Normals = (ModelM * vec4(normalize(Normals), 0.0)).xyz;
+		out_Normals  = (ModelM * vec4(normalize(Normals), 0.0)).xyz;
+		out_Position = (ModelM * vec4(Position, 1.0f)).xyz;
+        out_ToCameraDirection  = normalize(CameraPosition - out_Position);
 	}
 #end
 #fragment
 #version 440
-	vec4 Light(vec3 Normals, vec4 Texture)
-	{
-		return vec4(Texture.rgb * clamp(dot(-vec3(0,0,1), Normals),0.0, 1.0), Texture.a);
-	}
+/*vec4 Light(vec3 Normals, vec4 Texture)
+{
+    return vec4(Texture.rgb * clamp(dot(-vec3(0,0,1), Normals),0.0, 1.0), Texture.a);
+}*/
+struct GeneralLight {
+   vec3  direction;
+   vec3  colorAmbient;
+   vec3  colorDiffuse;
+   vec3  colorSpecular;
+   float shininesStrength;
+};
+struct Material {
+   vec3  colorAmbient;
+   vec3  colorDiffuse;
+   vec3  colorSpecular;
+   float shinines;
+   float transparency;
+};
+
+uniform GeneralLight   generalL;
+uniform Material       material;
+
+vec4 ProcessGeneralLight(GeneralLight generalLight, Material material, vec3 NormalTBN, vec4 Texture, vec3 ToCameraDirection)
+{
+    vec4  m_AmbientColor   = vec4(vec3(0,0,0) * generalLight.colorAmbient, 1.0)  * Texture;
+    vec4  m_DiffuesColor   = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4  m_SpecularColor  = vec4(0.0, 0.0, 0.0, 1.0);
+
+    float m_DiffuesShading = dot(NormalTBN, -generalLight.direction);
+
+    if(m_DiffuesShading > 0.0)
+    {
+       m_DiffuesColor   = vec4(vec3(1,1,1) * generalLight.colorDiffuse * m_DiffuesShading, 1.0) * Texture;
+      // vec3  m_Reflect  = normalize(reflect(-generalLight.direction, NormalTBN));
+       //float m_SpecularShading = dot(ToCameraDirection, m_Reflect);
+       float m_SpecularShading = dot(NormalTBN, normalize(-generalLight.direction + ToCameraDirection));
+       if(m_SpecularShading > 0.0)
+       {
+          m_SpecularShading = pow(m_SpecularShading, 2);
+          m_SpecularColor  = vec4(vec3(1,1,1) * vec3(1,1,1), 1.0) * generalLight.shininesStrength * m_SpecularShading * 
+          Texture ; 
+      }
+    }
+
+    return vec4(m_AmbientColor + m_DiffuesColor + m_SpecularColor);// Alpha is hardcoded now
+}
 	layout (location = 0) in vec2 TextureCoords;
 	layout (location = 1) in vec3 Normals;
+	layout (location = 2) in vec3 ToCameraDirection;
+
 	layout(binding = 0) uniform sampler2D DIFFUSE_TEXTURE;
+
 	void main()
 	{
-		gl_FragColor = Light(Normals, texture(DIFFUSE_TEXTURE, TextureCoords).rgba);
+		//gl_FragColor = Light(Normals, texture(DIFFUSE_TEXTURE, TextureCoords).rgba);
+		gl_FragColor = ProcessGeneralLight(generalL, material, Normals, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, ToCameraDirection);
 	}
 #end
 #---

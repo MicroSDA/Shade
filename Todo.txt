@@ -1,3 +1,4 @@
 Render system
 Create application pause, resume and application exit !
 Zoom for fov during resize
+Ligth = environment

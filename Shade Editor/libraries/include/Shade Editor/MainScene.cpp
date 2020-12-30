@@ -3,86 +3,68 @@
 
 MainScene::MainScene(const std::string& name):se::Scene(name)
 {
+
 }
 
 MainScene::~MainScene()
 {
+
 }
 
 void MainScene::OnCreate()
 {
-	
+	se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
 }
 
 void MainScene::OnInit()
 {
-	se::EventManager::RegSceneEventCallback(se::EventType::SDL_KEYDOWN, this, 
-		[](se::Event const& event) {
+	{// Assets
+		se::Camera* _MainCamera = new se::Camera();
+		se::Shader* _Shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel");
+		se::Model3D* _Model3D = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
+		se::Texture* _Texture = se::AssetManager::Hold<se::Texture>("Assets.Models.Cube.Image");
+		SetMainCamera(_MainCamera);
 
-			if (event.key.keysym.sym == se::KeyCode::SDLK_SPACE)
-				SE_DEBUG_PRINT("SDLK_SPACE", se::SLCode::Event);
+		se::Entity _CubeEntity = CreateEntity();
+		_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(0, 0, 10);
+		_CubeEntity.AddComponent<se::ShaderComponent>(_Shader);
+		_CubeEntity.AddComponent<se::CameraComponent>(_MainCamera);
+		_CubeEntity.AddComponent<se::Model3DComponent>(_Model3D);
+		_CubeEntity.AddComponent<se::TextureComponent>(_Texture);
 
-			return false;
-		});
+		se::RenderComponent  _RenderComponent([](se::Entity entity) {
+			entity.GetComponent<se::TextureComponent>().Texture->Bind(0);
+			auto& transform = entity.GetComponent<se::TransformComponent>().Transform;
+			auto* shader = entity.GetComponent<se::ShaderComponent>().Shader;
+			auto* camera = entity.GetComponent<se::CameraComponent>().Camera;
+			shader->Bind();
+			shader->SendUniformMatrix4Float("ModelM", GL_FALSE, transform.GetModel());
+			shader->SendUniformMatrix4Float("ViewM", GL_FALSE, camera->GetView());
+			shader->SendUniformMatrix4Float("ProjectionM", GL_FALSE, camera->GetProjection());
+			shader->SendUniform3Float("CameraPosition", camera->GetPosition());
+			});
+		_CubeEntity.AddComponent<se::RenderComponent>(_RenderComponent);
+	}
+	{// Controllers
+		se::Entity _CameraController = CreateEntity();
+		_CameraController.AddComponent<se::CameraComponent>(GetMainCamera());
+		_CameraController.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
 
-
-	se::Shader* shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel");
-	se::Camera* camera = new se::Camera();
-	
-
-	SetMainCamera(camera);
-
-	se::ShaderComponent  shaderComp(shader);
-	se::CameraComponent  cameraComp(camera);
-
-
-	se::RenderComponent  renderComp([](se::Entity entity) {
-
-		
-		entity.GetComponent<se::TextureComponent>().Texture->Bind(0);
-		auto& transform = entity.GetComponent<se::TransformComponent>().Transform;
-		auto* shader = entity.GetComponent<se::ShaderComponent>().Shader;
-		auto* camera = entity.GetComponent<se::CameraComponent>().Camera;
-
-		//camera->MoveBack(0.0001f);
-
-		shader->Bind();
-		shader->SendUniformMatrix4fv(0, GL_FALSE, &transform.GetModel()[0][0]);
-		shader->SendUniformMatrix4fv(1, GL_FALSE, &camera->GetView()[0][0]);
-		shader->SendUniformMatrix4fv(2, GL_FALSE, &camera->GetProjection()[0][0]);
-
-	});
-
-	for (int i = 0 ; i < 10; i++)
-	{
-		se::Entity entity = CreateEntity();
-		entity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3( - i*3, 0, 10));
-		entity.AddComponent<se::ShaderComponent>(shaderComp);
-		entity.AddComponent<se::CameraComponent>(cameraComp);
-		entity.AddComponent<se::Model3DComponent>(se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube"));
-		entity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>("Assets.Models.Cube.Image"));
-		entity.AddComponent<se::RenderComponent>(renderComp);
+		se::Entity _GeneralLighController = CreateEntity();
+		_GeneralLighController.AddComponent<se::EnvironmentComponent>(new se::GeneralLight());
+		_GeneralLighController.AddComponent<se::NativeScriptComponent>().Bind<se::GeneralLightController>();
 	}
 
 	CreateLayer<MainLayer>("MainLayer");
-	//InitLayer TODO !
 	InitLayers();
-	se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
-
-	se::Entity CameraController = CreateEntity();
-	CameraController.AddComponent<se::CameraComponent>(camera);
-	CameraController.AddComponent<se::NativeScriptComponent>().Bind<se::CameraController>();
+	//InitLayer TODO !
 }
 	
-
-
 void MainScene::OnUpdate(const se::Timer& deltaTime)
 {
 	{
 		UpdateNativeScripts(deltaTime);
 	}
-
-	//std::cout << se::Input::GetMousePosition().x << std::endl;
 
 	for (auto& layer : GetLayers())
 	{
@@ -100,4 +82,13 @@ void MainScene::OnRender()
 
 void MainScene::OnDelete()
 {
+	// Delete Camera and light jsut for now here
+	{
+		auto _Lights = GetRegistry().view<se::EnvironmentComponent>();
+		delete _Lights.get<se::EnvironmentComponent>(_Lights[0]).Instance;
+	}
+	{
+		auto _Camera = GetRegistry().view<se::CameraComponent>();
+		delete _Camera.get<se::CameraComponent>(_Camera[0]).Camera;
+	}
 }

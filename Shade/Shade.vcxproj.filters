@@ -31,6 +31,9 @@
     <Filter Include="Core\Engine\Time">
       <UniqueIdentifier>{abe51aaf-1e06-4da6-a521-141e64848106}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Engine\Environment">
+      <UniqueIdentifier>{1fa300fb-621e-4bc1-8fe1-d2d418f00fb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -128,6 +131,15 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Timer.h">
       <Filter>Core\Engine\Time</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Environment.h">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Light.h">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\GeneralLight.h">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -203,8 +215,14 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Timer.cpp">
       <Filter>Core\Engine\Time</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Str.json" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Environment.cpp">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Light.cpp">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\GeneralLight.cpp">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

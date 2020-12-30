@@ -6,6 +6,7 @@
 #include "Shade/Core/Engine/Camera.h"
 #include "Shade/Core/Engine/Texture.h"
 #include "Shade/Core/Engine/ScriptableEntity.h"
+#include "Shade/Core/Engine/GeneralLight.h"
 
 namespace se
 {
@@ -97,5 +98,25 @@ namespace se
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 		}
+	};
+	struct EnvironmentComponent
+	{
+		se::Environment* Instance = nullptr;
+		EnvironmentComponent() = default;
+		EnvironmentComponent(const EnvironmentComponent&) = default;
+		EnvironmentComponent(se::Environment* other)
+			:Instance(other)
+		{
+		}
+	};
+	struct LightComponent : EnvironmentComponent
+	{
+		//se::Light* Light = nullptr;
+		/*LightComponent() = default;
+		LightComponent(const LightComponent&) = default;
+		LightComponent(se::Light* other)
+			:Light(other)
+		{
+		}*/
 	};
 }

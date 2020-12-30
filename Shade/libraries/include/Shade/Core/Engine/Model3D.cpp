@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Model3D.h"
 #include "Shade/Core/Util/Binarizer.h"
+#include "Shade/Core/Util/Log.h"
 
 se::Model3D::Model3D(const se::AssetData* data) :se::Asset(data)
 {
@@ -66,8 +67,21 @@ void se::Model3D::Load()
 		_Indices.reserve(_IndicesCount);
 		for (unsigned int i = 0; i < _IndicesCount; i++)
 			_Indices.push_back(se::Binarizer::ReadNext<unsigned int>(_File));
+		// Textures
 
-		m_Meshes.emplace_back(_Vertices, _Indices);
+		short _TexturesCount = se::Binarizer::ReadNext<short>(_File);
+		if (!_TexturesCount)
+		{
+			SE_DEBUG_PRINT(std::string("Textures count = 0 in '" + m_AssetData->_Path + "' file.").c_str(), se::SLCode::Warning);
+		}
+		else
+		{
+
+		}
+		
+		//TODO
+		std::vector<se::Texture*> t;
+		m_Meshes.emplace_back(_Vertices, _Indices, t); // Textures here temporary
 	}
 
 	_File.close();
@@ -75,13 +89,8 @@ void se::Model3D::Load()
 
 void se::Model3D::Init()
 {
-	//TODO 
-	/*
-	* for(auto& mesh : m_Meshes)
-	* {
-	* 
-	*	TODO: mesh.Init()
-	* 
-	* }
-	*/
+	for (auto& _Mesh : m_Meshes)
+	{
+		_Mesh.Init();
+	}
 }

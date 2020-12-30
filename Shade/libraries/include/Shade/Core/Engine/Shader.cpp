@@ -153,6 +153,76 @@ void se::Shader::CheckShaderError(GLuint shader, GLuint flag, bool isProgram, co
 	}
 }
 
+inline GLint se::Shader::GetUniformLocation(const std::string& name) const
+{
+	if (m_UniformLocation.find(name) != m_UniformLocation.end())
+	{
+		return m_UniformLocation[name];
+	}
+	else
+	{
+		GLint _Location = glGetUniformLocation(m_Program, name.c_str());
+		m_UniformLocation[name] = _Location;
+		return _Location;
+	}
+		
+}
+
 void se::Shader::Init()
 {
+}
+
+inline void se::Shader::SendUniformMatrix3Float(const std::string& name, const GLboolean& isTransopnse, const glm::fmat3& value) const
+{
+	glUniformMatrix3fv(GetUniformLocation(name), 1, isTransopnse, glm::value_ptr(value));
+}
+
+inline void se::Shader::SendUniformMatrix4Float(const std::string& name, const GLboolean& isTransopnse, const glm::fmat4& value) const
+{
+	glUniformMatrix4fv(GetUniformLocation(name), 1, isTransopnse, glm::value_ptr(value));
+}
+
+inline void se::Shader::SendUniform1Int(const std::string& name, const GLint& value) const
+{
+	glUniform1i(GetUniformLocation(name), value);
+}
+
+inline void se::Shader::SendUniform2Int(const std::string& name, const glm::ivec2& value) const
+{
+	glUniform2i(GetUniformLocation(name), value.x, value.y);
+}
+
+inline void se::Shader::SendUniform3Int(const std::string& name, const glm::ivec3& value) const
+{
+	glUniform3i(GetUniformLocation(name), value.x, value.y, value.z);
+}
+
+inline void se::Shader::SendUniform4Int(const std::string& name, const glm::ivec4& value) const
+{
+	glUniform4i(GetUniformLocation(name), value.x, value.y, value.z, value.a);
+}
+
+inline void se::Shader::SendUniform1Float(const std::string& name, const GLfloat& value) const
+{
+	glUniform1f(GetUniformLocation(name), value);
+}
+
+inline void se::Shader::SendUniform2Float(const std::string& name, const glm::fvec2& value) const
+{
+	glUniform2f(GetUniformLocation(name), value.x, value.y);
+}
+
+inline void se::Shader::SendUniform3Float(const std::string& name, const glm::fvec3& value) const
+{
+	glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
+}
+
+inline void se::Shader::SendUniform4Float(const std::string& name, const glm::fvec4& value) const
+{
+	glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.a);
+}
+
+inline void se::Shader::SendUniformBool(const std::string& name, const bool& value) const
+{
+	glUniform1i(GetUniformLocation(name), value);
 }

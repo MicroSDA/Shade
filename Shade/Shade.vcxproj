@@ -29,9 +29,12 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Controllers.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Drawable.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Environment.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\GeneralLight.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Input.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Light.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Mesh.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Model3D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Renderer.h" />
@@ -66,9 +69,12 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Controllers.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Drawable.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Environment.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\GeneralLight.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Input.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Light.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Mesh.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Model3D.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Renderer.cpp" />
@@ -96,9 +102,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Str.json" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
