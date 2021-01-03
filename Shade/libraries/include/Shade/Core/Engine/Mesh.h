@@ -11,6 +11,8 @@ namespace se
 	public:
 		Mesh(std::vector<se::Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<se::Texture*>& textures);
 		~Mesh();
+		void TexturesBind();
+		void TexturesUnBind();
 		virtual void Init() override;
 	private:
 		std::vector<se::Vertex>   m_Vertices;

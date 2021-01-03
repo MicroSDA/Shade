@@ -140,6 +140,12 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\GeneralLight.h">
       <Filter>Core\Engine\Environment</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\PointLight.h">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\SpotLight.h">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -222,6 +228,12 @@
       <Filter>Core\Engine\Environment</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\GeneralLight.cpp">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\PointLight.cpp">
+      <Filter>Core\Engine\Environment</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\SpotLight.cpp">
       <Filter>Core\Engine\Environment</Filter>
     </ClCompile>
   </ItemGroup>

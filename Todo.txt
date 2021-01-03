@@ -2,3 +2,4 @@ Render system
 Create application pause, resume and application exit !
 Zoom for fov during resize
 Ligth = environment
+pass to asset link on map with classes names anassetd dtata link

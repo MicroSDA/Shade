@@ -4,7 +4,7 @@
 #include "Vendors/SDL2/SDL.h"
 
 
-se::Texture::Texture(const se::AssetData* data) : se::Asset(data),
+se::Texture::Texture(const std::string& parrentClassName, const se::AssetData* data) : se::Asset(parrentClassName, data),
 	m_Texture(NULL)
 {
 }
@@ -17,12 +17,12 @@ se::Texture::~Texture()
 void se::Texture::Bind(const GLuint& id)
 {
 	glActiveTexture(GL_TEXTURE0 + id);
-	glBindTexture(GL_TEXTURE_2D, m_Texture);
+	glBindTexture(GL_TEXTURE_2D,  m_Texture);
 }
 
-void se::Texture::UnBind()
+void se::Texture::UnBind(const GLuint& id)
 {
-	glActiveTexture(GL_TEXTURE0 + 0);
+	glActiveTexture(GL_TEXTURE0 + id);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -70,6 +70,7 @@ void se::Texture::Load()
 
 void se::Texture::Init()
 {
+	m_AssetData;
 	if (m_ImageData.m_pImageData)
 	{
 		glGenTextures(1, &m_Texture);
@@ -98,6 +99,7 @@ void se::Texture::Init()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
 
+		glBindTexture(GL_TEXTURE_2D, 0);
 		delete m_ImageData.m_pImageData;
 	}
 	else

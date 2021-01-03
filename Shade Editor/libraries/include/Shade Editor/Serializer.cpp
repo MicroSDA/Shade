@@ -10,9 +10,12 @@ Serializer::~Serializer()
 {
 }
 
-bool Serializer::SerializeModel(const std::string& filePath)
+bool Serializer::SerializeModel(const std::string& filePath, se::AssetData& data)
 {
-	m_FilePath = filePath;
+	std::string _Name = GetNameFromPath(filePath) + ".bin";
+	data._Path = data._Path + _Name;
+	data._Type = se::AssetDataType::Model3D;
+
 	Assimp::Importer importer;
 	const aiScene* m_pScene = importer.ReadFile(filePath,
 		aiProcess_FlipUVs |
@@ -30,12 +33,12 @@ bool Serializer::SerializeModel(const std::string& filePath)
 	}
 	else {
 
-		processNode(m_pScene->mRootNode, m_pScene);
+		processNode(m_pScene->mRootNode, m_pScene, data);
 	}
 
-	std::string _Name = GetNameFromPath(filePath) + ".bin";
+	//std::string _Name = GetNameFromPath(filePath) + ".bin";
 	std::ofstream _File;
-	_File.open("./resources/models/" + _Name, std::ios::binary);
+	_File.open(data._Path, std::ios::binary);
 	if (_File.is_open())
 	{
 		//Header
@@ -79,10 +82,11 @@ bool Serializer::SerializeModel(const std::string& filePath)
 		throw se::ShadeException(std::string("Failed to open model '" + _Name + "' !").c_str(), se::SECode::Warning);
 	}
 
+	m_Meshes.clear();
 	return true;
 }
 
-bool Serializer::SerializeShader(const std::vector<Shader>& shaders, se::AssetData* data)
+bool Serializer::SerializeShader(const std::vector<Shader>& shaders, se::AssetData& data)
 {
 	std::vector<std::string> _ShadersCource;
 	_ShadersCource.resize(shaders.size());
@@ -149,7 +153,7 @@ bool Serializer::SerializeShader(const std::vector<Shader>& shaders, se::AssetDa
 	return false;
 }
 
-bool Serializer::SerializeImage(const std::string& filePath)
+bool Serializer::SerializeImage(const std::string& filePath, se::AssetData& data)
 {
 	int _Width , _Height, _Channels;
 	unsigned char* _Data = stbi_load(filePath.c_str(), &_Width, &_Height, &_Channels, STBI_rgb_alpha);
@@ -183,22 +187,27 @@ bool Serializer::SerializeImage(const std::string& filePath)
 	return true;
 }
 
-void Serializer::processNode(const aiNode* node, const aiScene* scene)
+void Serializer::processNode(const aiNode* node, const aiScene* scene, se::AssetData& data)
 {
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		m_Meshes.push_back(processMesh(mesh, scene, i));
+		se::AssetData _Mesh;
+		_Mesh._Name = mesh->mName.C_Str();
+		_Mesh._Path = data._Path;
+		_Mesh._Type = se::AssetDataType::Mesh;
+		m_Meshes.push_back(processMesh(mesh, scene, i, _Mesh));
+		data._Dependency.push_back(_Mesh);
 	}
 
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		processNode(node->mChildren[i], scene);
+		processNode(node->mChildren[i], scene, data);
 	}
 
 }
 
-Model Serializer::processMesh(aiMesh* mesh, const aiScene* scene, unsigned int id)
+Mesh Serializer::processMesh(aiMesh* mesh, const aiScene* scene, unsigned int id, se::AssetData& data)
 {
 	std::vector<se::Vertex> _Vertices;
 	std::vector<unsigned int> _Indices;
@@ -251,7 +260,78 @@ Model Serializer::processMesh(aiMesh* mesh, const aiScene* scene, unsigned int i
 			_Indices.push_back(face.mIndices[j]);
 		}
 	}
-	Model _Model;
+
+	std::vector<std::string> _Textures;
+
+	if (mesh->mMaterialIndex >= 0)
+	{
+		se::AssetData _Image;
+		aiColor3D     color;
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_DIFFUSE); i++)
+		{
+			aiString path;
+			material->GetTexture(aiTextureType_DIFFUSE, i, &path);
+			_Image._Name = GetNameFromPath(path.C_Str());
+			_Image._Type = se::AssetDataType::Texture;
+			_Image._SubType = se::AssetDataSubType::Diffuse;
+			_Image._Path = "./resources/textures/" + _Image._Name + ".bin";
+			SerializeImage(std::string("./project/resources/models/" + std::string(path.C_Str())).c_str(), _Image);
+			data._Dependency.push_back(_Image);
+		}
+
+		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_SPECULAR); i++)
+		{
+			aiString path;
+			material->GetTexture(aiTextureType_SPECULAR, i, &path);
+			_Image._Name = GetNameFromPath(path.C_Str());
+			_Image._Type = se::AssetDataType::Texture;
+			_Image._SubType = se::AssetDataSubType::Specular;
+			_Image._Path = "./resources/textures/" + _Image._Name + ".bin";
+			SerializeImage(std::string("./project/resources/models/" + std::string(path.C_Str())).c_str(), _Image);
+			data._Dependency.push_back(_Image);
+		}
+
+		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_SHININESS); i++)
+		{
+			/*aiString path;
+			material->GetTexture(aiTextureType_SHININESS, i, &path);
+			_Image._Name = GetNameFromPath(path.C_Str());
+			_Image._Type = se::AssetDataType::Texture;
+			_Image._SubType = se::AssetDataSubType::None;
+			_Image._Path = "./resources/textures/" + _Image._Name + ".bin";
+			SerializeImage(std::string("./project/resources/models/" + std::string(path.C_Str())).c_str(), _Image);
+			data._Dependency.push_back(_Image);*/
+		}
+
+		for (unsigned int i = 0; i < material->GetTextureCount(aiTextureType_HEIGHT); i++)
+		{
+			aiString path;
+			material->GetTexture(aiTextureType_HEIGHT, i, &path);
+			_Image._Name = GetNameFromPath(path.C_Str());
+			_Image._Type = se::AssetDataType::Texture;
+			_Image._SubType = se::AssetDataSubType::NormalMap;
+			_Image._Path = "./resources/textures/" + _Image._Name + ".bin";
+			SerializeImage(std::string("./project/resources/models/" + std::string(path.C_Str())).c_str(), _Image);
+			data._Dependency.push_back(_Image);
+		}
+	}
+
+	/*if (_Textures.size())
+	{
+		for (auto& _Texture : _Textures)
+		{
+			se::AssetData _Image;
+			_Image._Name = GetNameFromPath(_Texture);
+			_Image._Type = se::AssetDataType::Texture;
+			//_Image._Path = data._Path + _Image._Name + ".bin";
+			_Image._Path = "./resources/textures/" + _Image._Name + ".bin";
+			SerializeImage("./project/resources/models/" + _Texture, _Image);
+			data._Dependency.push_back(_Image);
+		}
+	}*/
+
+	Mesh _Model;
 	_Model.name = mesh->mName.data;
 	_Model.vertices = _Vertices;
 	_Model.indices = _Indices;

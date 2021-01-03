@@ -57,5 +57,11 @@
     <None Include="project\resources\shaders\Ligthing.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="project\resources\shaders\VertexUtility.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="project\resources\shaders\FragmentUtility.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

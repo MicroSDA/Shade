@@ -16,10 +16,10 @@ struct Shader
 	std::string type;
 
 };
-struct Model
+struct Mesh
 {
 	std::string name;
-	std::vector<se::Vertex> vertices;
+	std::vector<se::Vertex>   vertices;
 	std::vector<unsigned int> indices;
 };
 
@@ -28,14 +28,13 @@ class Serializer
 public:
 	Serializer();
 	~Serializer();
-	bool SerializeModel(const std::string& filePath);
-	bool SerializeShader(const std::vector<Shader>& shaders, se::AssetData* data);
-	bool SerializeImage(const std::string& filePath);
+	bool SerializeModel(const std::string& filePath, se::AssetData& data);
+	bool SerializeShader(const std::vector<Shader>& shaders, se::AssetData& data);
+	bool SerializeImage(const std::string& filePath, se::AssetData& data);
 private:
-	void processNode(const aiNode* node, const aiScene* scene);
-	Model processMesh(aiMesh* mesh, const aiScene* scene, unsigned int id);
+	void processNode(const aiNode* node, const aiScene* scene, se::AssetData& data);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene, unsigned int id, se::AssetData& data);
 	std::string GetNameFromPath(const std::string& filePath);
-	std::vector<Model> m_Meshes;
-	std::string m_FilePath;
+	std::vector<Mesh> m_Meshes;
 };
 

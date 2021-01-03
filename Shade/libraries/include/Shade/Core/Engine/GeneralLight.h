@@ -8,9 +8,9 @@ namespace se
 	public:
 		GeneralLight();
 		virtual ~GeneralLight();
-		inline void SetDirection(const float& x, const float& y, const float& z) { m_Direction = glm::vec3(x, y, z); }
-		inline void SetDirection(const glm::fvec3& direction) { m_Direction = direction; }
-		inline const glm::fvec3& GetDirection() const { return m_Direction; }
+		inline void SetDirection(const float& x, const float& y, const float& z);
+		inline void SetDirection(const glm::fvec3& direction);
+		inline const glm::fvec3& GetDirection() const;
 		
 
 		virtual void OnUpdate(const se::Timer& deltaTime) override;

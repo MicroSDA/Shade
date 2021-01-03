@@ -5,12 +5,13 @@ extern se::Application* se::CreateApplication();
 
 int main()
 {
-	auto app = se::CreateApplication();
+	se::Application* _pApp = nullptr;
 
 	try
 	{
-		app->OnInit();
-		app->Start();
+		_pApp = se::CreateApplication();
+		_pApp->OnInit();
+		_pApp->Start();
 	}
 	catch (se::ShadeException& exception)
 	{
@@ -31,7 +32,9 @@ int main()
 			break;
 		}
 	}
+
+	if(_pApp)
+		delete _pApp;
 	
-	delete app;
 	return EXIT_SUCCESS;
 }

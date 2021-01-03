@@ -2,8 +2,9 @@
 #include "Model3D.h"
 #include "Shade/Core/Util/Binarizer.h"
 #include "Shade/Core/Util/Log.h"
+#include "Shade/Core/Engine/AssetManager.h"
 
-se::Model3D::Model3D(const se::AssetData* data) :se::Asset(data)
+se::Model3D::Model3D(const std::string& parrentClassName, const se::AssetData* data) :se::Asset(parrentClassName, data)
 {
 }
 
@@ -30,7 +31,7 @@ void se::Model3D::Load()
 		throw se::ShadeException(std::string("Mesh count = 0 in '" + m_AssetData->_Path + "' file.").c_str(), se::SECode::Warning);
 
 	m_Meshes.reserve(_MeshCount);
-	for (unsigned int m = 0; m < _MeshCount; m++)
+	for (unsigned int m = 0; m < _MeshCount; m ++)
 	{
 		unsigned int _VertexCount = se::Binarizer::ReadNext<unsigned int>(_File);
 		if (!_VertexCount)
@@ -69,19 +70,20 @@ void se::Model3D::Load()
 			_Indices.push_back(se::Binarizer::ReadNext<unsigned int>(_File));
 		// Textures
 
-		short _TexturesCount = se::Binarizer::ReadNext<short>(_File);
-		if (!_TexturesCount)
+		std::vector<se::Texture*> _Textures;
+		if (m_AssetData->_Dependency[m]._Dependency.size())
 		{
-			SE_DEBUG_PRINT(std::string("Textures count = 0 in '" + m_AssetData->_Path + "' file.").c_str(), se::SLCode::Warning);
+			for (auto& _Asset : m_AssetData->_Dependency[m]._Dependency)
+			{
+				if (_Asset._Type == se::AssetDataType::Texture)
+				{
+					_Textures.emplace_back(se::AssetManager::Hold<se::Texture>(m_ParrentClassName + "." + m_AssetData->_Dependency[m]._Name + "." + _Asset._Name));
+				}
+				
+			}
 		}
-		else
-		{
-
-		}
-		
 		//TODO
-		std::vector<se::Texture*> t;
-		m_Meshes.emplace_back(_Vertices, _Indices, t); // Textures here temporary
+		m_Meshes.emplace_back(_Vertices, _Indices, _Textures); // Textures here temporary
 	}
 
 	_File.close();

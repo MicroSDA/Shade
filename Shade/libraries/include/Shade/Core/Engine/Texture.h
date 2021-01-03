@@ -18,10 +18,10 @@ namespace se
 	class SE_API Texture : public se::Asset
 	{
 	public:
-		Texture(const se::AssetData* data);
+		Texture(const std::string& parrentClassName, const se::AssetData* data);
 		~Texture();
 		void Bind(const GLuint& id);
-		static void UnBind();
+		static void UnBind(const GLuint& id);
 		// Унаследовано через Asset
 		virtual void Load() override;
 		virtual void Init() override;

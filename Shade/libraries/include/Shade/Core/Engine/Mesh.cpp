@@ -8,7 +8,7 @@ se::Mesh::Mesh(std::vector<se::Vertex>& vertices, std::vector<unsigned int>& ind
 	m_Textures  = std::move(textures);
 
 	m_IndicesCount = m_Indices.size();
-	m_AttribCount = 3; // DO NOT FORGET //
+	m_AttribCount = 4; // DO NOT FORGET //
 }
 
 se::Mesh::~Mesh()
@@ -16,6 +16,26 @@ se::Mesh::~Mesh()
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);
+}
+
+void se::Mesh::TexturesBind()
+{
+	unsigned int id = 0;
+	for (auto& _Texture : m_Textures)
+	{
+		_Texture->Bind(id);
+		id++;
+	}
+}
+
+void se::Mesh::TexturesUnBind()
+{
+	unsigned int id = 0;
+	for (auto& _Texture : m_Textures)
+	{
+		_Texture->UnBind(id);
+		id++;
+	}
 }
 
 void se::Mesh::Init()

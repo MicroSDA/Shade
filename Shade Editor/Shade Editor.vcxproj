@@ -197,7 +197,9 @@
   <ItemGroup>
     <None Include="project\resources\shaders\BasicModelFragment.glsl" />
     <None Include="project\resources\shaders\BasicModelVertex.glsl" />
+    <None Include="project\resources\shaders\FragmentUtility.glsl" />
     <None Include="project\resources\shaders\Ligthing.glsl" />
+    <None Include="project\resources\shaders\VertexUtility.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

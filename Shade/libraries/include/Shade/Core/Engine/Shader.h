@@ -10,7 +10,7 @@ namespace se
 	class SE_API Shader : public se::Asset
 	{
 	public:
-		Shader(const AssetData* data);
+		Shader(const std::string& parrentClassName, const se::AssetData* data);
 		virtual ~Shader();
 
 		inline void Bind() const;

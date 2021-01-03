@@ -19,24 +19,25 @@ void MainScene::OnCreate()
 void MainScene::OnInit()
 {
 	{// Assets
-		se::Camera* _MainCamera = new se::Camera();
-		se::Shader* _Shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel");
-		se::Model3D* _Model3D = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
-		se::Texture* _Texture = se::AssetManager::Hold<se::Texture>("Assets.Models.Cube.Image");
+		se::Camera*  _MainCamera = new se::Camera();
+		se::Model3D* _Model3D	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
+		se::Shader*  _Shader	 = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel");
+	
+		//se::Texture* _Texture = se::AssetManager::Hold<se::Texture>("Assets.Models.Cube.Image");
 		SetMainCamera(_MainCamera);
 
 		se::Entity _CubeEntity = CreateEntity();
-		_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(0, 0, 10);
+		_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3(0,0, 5));
 		_CubeEntity.AddComponent<se::ShaderComponent>(_Shader);
 		_CubeEntity.AddComponent<se::CameraComponent>(_MainCamera);
 		_CubeEntity.AddComponent<se::Model3DComponent>(_Model3D);
-		_CubeEntity.AddComponent<se::TextureComponent>(_Texture);
+		//_CubeEntity.AddComponent<se::TextureComponent>(_Texture);
 
 		se::RenderComponent  _RenderComponent([](se::Entity entity) {
-			entity.GetComponent<se::TextureComponent>().Texture->Bind(0);
 			auto& transform = entity.GetComponent<se::TransformComponent>().Transform;
 			auto* shader = entity.GetComponent<se::ShaderComponent>().Shader;
 			auto* camera = entity.GetComponent<se::CameraComponent>().Camera;
+
 			shader->Bind();
 			shader->SendUniformMatrix4Float("ModelM", GL_FALSE, transform.GetModel());
 			shader->SendUniformMatrix4Float("ViewM", GL_FALSE, camera->GetView());
@@ -51,8 +52,8 @@ void MainScene::OnInit()
 		_CameraController.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
 
 		se::Entity _GeneralLighController = CreateEntity();
-		_GeneralLighController.AddComponent<se::EnvironmentComponent>(new se::GeneralLight());
-		_GeneralLighController.AddComponent<se::NativeScriptComponent>().Bind<se::GeneralLightController>();
+		_GeneralLighController.AddComponent<se::EnvironmentComponent>(new se::PointLight());
+		_GeneralLighController.AddComponent<se::NativeScriptComponent>().Bind<se::LightController>();
 	}
 
 	CreateLayer<MainLayer>("MainLayer");

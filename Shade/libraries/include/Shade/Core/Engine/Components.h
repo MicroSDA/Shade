@@ -7,6 +7,8 @@
 #include "Shade/Core/Engine/Texture.h"
 #include "Shade/Core/Engine/ScriptableEntity.h"
 #include "Shade/Core/Engine/GeneralLight.h"
+#include "Shade/Core/Engine/PointLight.h"
+#include "Shade/Core/Engine/SpotLight.h"
 
 namespace se
 {

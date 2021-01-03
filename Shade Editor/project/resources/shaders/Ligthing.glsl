@@ -1,15 +1,27 @@
-/*vec4 Light(vec3 Normals, vec4 Texture)
+struct BaseLight
 {
-    return vec4(Texture.rgb * clamp(dot(-vec3(0,0,1), Normals),0.0, 1.0), Texture.a);
-}*/
-struct GeneralLight {
-   vec3  direction;
-   vec3  colorAmbient;
-   vec3  colorDiffuse;
-   vec3  colorSpecular;
-   float shininesStrength;
+   vec3  Direction;
+   vec3  ColorAmbient;
+   vec3  ColorDiffuse;
+   vec3  ColorSpecular;
+   float ShininesStrength;
 };
-struct Material {
+struct PointLight 
+{
+   BaseLight Light;
+   vec3  Position;
+   float Constant;
+   float Linear;                                                                   
+   float Qaudratic;    
+};
+struct SpotLight
+{
+  PointLight Light;
+  float MinAngle;
+  float MaxAngle;
+};
+struct Material 
+{
    vec3  colorAmbient;
    vec3  colorDiffuse;
    vec3  colorSpecular;
@@ -17,30 +29,67 @@ struct Material {
    float transparency;
 };
 
-uniform GeneralLight   generalL;
-uniform Material       material;
+uniform BaseLight         generalL;
+uniform PointLight        pointL;
+uniform SpotLight         spotL;
+uniform Material          material;
 
-vec4 ProcessGeneralLight(GeneralLight generalLight, Material material, vec3 NormalTBN, vec4 Texture, vec3 ToCameraDirection)
-{
-    vec4  m_AmbientColor   = vec4(vec3(0,0,0) * generalLight.colorAmbient, 1.0)  * Texture;
-    vec4  m_DiffuesColor   = vec4(0.0, 0.0, 0.0, 1.0);
-    vec4  m_SpecularColor  = vec4(0.0, 0.0, 0.0, 1.0);
+vec4 ProcessGeneralLight(vec3 Normals, BaseLight Light, Material material, vec3 ToCameraDirection, vec4 DiffuseTexture, vec4 SpecularTexture)
+{                                                          //Material
+    vec4  m_AmbientColor   = vec4((DiffuseTexture.rgb * vec3(0.1,0.1,0.1) * Light.ColorAmbient), DiffuseTexture.a);
+    vec4  m_DiffuesColor   = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4  m_SpecularColor  = vec4(0.0, 0.0, 0.0, 0.0);
 
-    float m_DiffuesShading = dot(NormalTBN, -generalLight.direction);
+    float m_DiffuesShading = dot(Normals, -Light.Direction);
 
     if(m_DiffuesShading > 0.0)
-    {
-       m_DiffuesColor   = vec4(vec3(1,1,1) * generalLight.colorDiffuse * m_DiffuesShading, 1.0) * Texture;
-      // vec3  m_Reflect  = normalize(reflect(-generalLight.direction, NormalTBN));
-       //float m_SpecularShading = dot(ToCameraDirection, m_Reflect);
-       float m_SpecularShading = dot(NormalTBN, normalize(-generalLight.direction + ToCameraDirection));
+    {                                                //Material
+       m_DiffuesColor    = vec4((DiffuseTexture.rgb * vec3(1,1,1) * Light.ColorDiffuse * m_DiffuesShading), DiffuseTexture.a);
+       vec3 LightReflect = normalize(reflect(Light.Direction, Normals));
+       float m_SpecularShading = dot(ToCameraDirection, LightReflect);
+
        if(m_SpecularShading > 0.0)
        {
-          m_SpecularShading = pow(m_SpecularShading, 2);
-          m_SpecularColor  = vec4(vec3(1,1,1) * vec3(1,1,1), 1.0) * generalLight.shininesStrength * m_SpecularShading * 
-          Texture ; 
+          m_SpecularShading = pow(m_SpecularShading, 10);
+                                                         //Material
+          m_SpecularColor = vec4((SpecularTexture.rgb * vec3(1,1,1) * 5 * m_SpecularShading), SpecularTexture.a);
       }
+
     }
 
-    return vec4(m_AmbientColor + m_DiffuesColor + m_SpecularColor);// Alpha is hardcoded now
+    return vec4(m_AmbientColor + m_DiffuesColor + m_SpecularColor);
+}
+
+vec4 ProcessPointLight(vec3 Normals, PointLight pointLight, Material material, vec3 ModelPosition, vec3 ToCameraDirection, vec4 DiffuseTexture, vec4 SpecularTexture)
+{
+    vec3  m_LightDirection  = ModelPosition - pointLight.Position;
+    float m_Distance        = length(m_LightDirection);
+    m_LightDirection        = normalize(m_LightDirection);
+    PointLight m_Light      = pointLight;
+    m_Light.Light.Direction = m_LightDirection;
+
+    vec4  m_Color = ProcessGeneralLight(Normals, m_Light.Light, material, ToCameraDirection, DiffuseTexture, SpecularTexture);
+    float m_Attenuation =  pointLight.Constant + pointLight.Linear * m_Distance + pointLight.Qaudratic * (m_Distance * m_Distance);
+
+    return m_Color / m_Attenuation;
+}
+
+vec4 ProcessSpotLight(vec3 Normals, SpotLight spotLight, Material material, vec3 ModelPosition, vec3 ToCameraDirection, vec4 DiffuseTexture, vec4 SpecularTexture)
+{
+    const float m_Smooth = 2; // Harcoded 
+    vec3  m_LightDirection = normalize(ModelPosition - spotLight.Light.Position);
+    float m_SpotFactor     = dot(m_LightDirection,  spotLight.Light.Light.Direction);
+    
+    if (m_SpotFactor > spotLight.MaxAngle)
+    { 
+        float m_Epsilon     = spotLight.MinAngle - spotLight.MaxAngle;
+        m_SpotFactor        = smoothstep(0.0, m_Smooth, (m_SpotFactor - spotLight.MaxAngle) / m_Epsilon);
+        SpotLight m_Light   = spotLight;
+        vec4 m_Color     = ProcessPointLight(Normals, spotLight.Light, material, ModelPosition, ToCameraDirection, DiffuseTexture, SpecularTexture);
+        return m_Color * m_SpotFactor;
+    }
+    else
+    {
+        return vec4(0, 0, 0, 0);
+    }
 }

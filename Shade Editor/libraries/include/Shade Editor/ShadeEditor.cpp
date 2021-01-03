@@ -5,16 +5,16 @@
 ShadeEditor::ShadeEditor()
 {
 	
+	
 	Serializer _Serializer;
-	//_Serializer.SerializeImage("./project/resources/images/CubeDiffuse.png");
-	//_Serializer.SerializeModel("./project/resources/models/nanosuit.obj");
 	_Serializer.SerializeShader({
 		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
-		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}}, {});
+		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"} }, *new se::AssetData());
 
 	/*se::AssetData _Packet;
 	se::AssetData _Shaders;
 	se::AssetData _Models;
+	se::AssetData _Model;
 	se::AssetData _Asset;
 
 	_Packet._Name = "Assets";
@@ -28,27 +28,26 @@ ShadeEditor::ShadeEditor()
 	_Asset._Offset = 0;
 	_Shaders._Dependency.push_back(_Asset);
 
-	//_Packet._Dependency.push_back(_Shaders);
-///////////////////////////////////////////////////
 	_Models._Name = "Models";
 	_Models._Path = "./resources/models/";
 	_Models._Offset = 0;
 
-	_Asset._Name = "Cube";
-	_Asset._Path = "./resources/models/cube.bin";
-	_Asset._Offset = 0;
-		se::AssetData _Image;
-		_Image._Name = "Image";
-		_Image._Path = "./resources/textures/CubeDiffuse.bin";
-	_Asset._Dependency.push_back(_Image);
-	_Models._Dependency.push_back(_Asset);
+	_Model._Name = "Cube";
+	_Model._Path = "./resources/models/";
+	_Serializer.SerializeModel("./project/resources/models/cube.obj", _Model);
+	_Models._Dependency.push_back(_Model);
 
-	_Asset._Name = "Nanosuit";
-	_Asset._Path = "./resources/models/nanosuit.bin";
-	_Asset._Offset = 0;
-	_Models._Dependency.push_back(_Asset);
-	///////////////
 	_Packet._Dependency.push_back(_Shaders);
+	_Packet._Dependency.push_back(_Models);
+
+	se::AssetManager::WriteRoadMap(_Packet); */
+
+	//_Serializer.SerializeImage("./project/resources/images/CubeDiffuse.png");
+	//_Serializer.SerializeModel("./project/resources/models/nanosuit.obj");
+	/*_Serializer.SerializeShader({
+		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
+		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}}, {});
+
 	_Packet._Dependency.push_back(_Models);
 
 	se::AssetManager::WriteRoadMap(_Packet);*/

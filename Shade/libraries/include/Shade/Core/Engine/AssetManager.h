@@ -80,7 +80,7 @@ se::Asset* se::AssetManager::_Hold(const ClassName& className)
 		if (_RElement != m_RoadMap.end())
 		{
 			// Load asset
-			auto* _Asset = new T(_RElement->second);
+			auto* _Asset = new T(_RElement->first, _RElement->second);
 			_Asset->Load();
 			_Asset->Init(); // Temporary here 
 			// Create asset ref and incease asset count + one ref;

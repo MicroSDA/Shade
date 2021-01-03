@@ -34,16 +34,19 @@ void MainLayer::OnRender()
 	auto _Entities    = GetScene()->GetRegistry().view<se::Model3DComponent, se::RenderComponent, se::ShaderComponent>();
 	auto _Enviroments = GetScene()->GetRegistry().view<se::EnvironmentComponent>();
 	for (auto& _Entity : _Entities) {
-		 _Entities.get<se::RenderComponent>(_Entity).Callback(se::Entity(_Entity, GetScene()));
+		_Entities.get<se::RenderComponent>(_Entity).Callback(se::Entity(_Entity, GetScene()));
 		 auto* _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
+
+		 for (auto& _Enviroment : _Enviroments)
+		 {
+			 _Enviroments.get<se::EnvironmentComponent>(_Enviroment).Instance->Process(_Entities.get<se::ShaderComponent>(_Entity).Shader);
+		 }
+
 		 for (auto& _Mesh: _Model->m_Meshes)
 		 {
-			
-			for (auto& _Enviroment : _Enviroments)
-			{
-				_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Instance->Process(_Entities.get<se::ShaderComponent>(_Entity).Shader);
-			}
-			se::Renderer::Draw(_Mesh);
+			 _Mesh.TexturesBind();
+			 se::Renderer::Draw(_Mesh);
+			 _Mesh.TexturesUnBind();
 		 }
 	}
 }

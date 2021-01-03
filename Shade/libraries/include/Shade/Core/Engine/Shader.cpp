@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Shader.h"
 
-se::Shader::Shader(const AssetData* data) :se::Asset(data),
+se::Shader::Shader(const std::string& parrentClassName, const se::AssetData* data) :se::Asset(parrentClassName, data),
     m_Program(NULL)
 {
 }

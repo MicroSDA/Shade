@@ -2,8 +2,8 @@
 #include "Asset.h"
 #include "Shade/Core/Util/Log.h"
 
-se::Asset::Asset(const se::AssetData* data)
-	:m_AssetData(data)
+se::Asset::Asset(const std::string& parrentClassName, const se::AssetData* data) :
+	m_ParrentClassName(parrentClassName), m_AssetData(data)
 {
 }
 se::Asset::~Asset()

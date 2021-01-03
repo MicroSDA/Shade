@@ -5,12 +5,14 @@
 
 namespace se
 {
-	class SE_API GeneralLightController : public se::ScriptableEntity
+	class SE_API LightController : public se::ScriptableEntity
 	{
 	public:
 		void OnCreate()
 		{
-			
+			m_GeneralLight = dynamic_cast<se::GeneralLight*>(this->GetComponent<se::EnvironmentComponent>().Instance);
+			m_PointLight   = dynamic_cast<se::PointLight*>(this->GetComponent<se::EnvironmentComponent>().Instance);
+			m_SpotLight    = dynamic_cast<se::SpotLight*>(this->GetComponent<se::EnvironmentComponent>().Instance);
 		}
 		void OnDestroy()
 		{
@@ -18,27 +20,45 @@ namespace se
 		}
 		void OnUpdate(const se::Timer& deltaTime)
 		{
-			auto* _Light = static_cast<se::GeneralLight*>(GetComponent<se::EnvironmentComponent>().Instance);
-			glm::fvec3 _Dir = _Light->GetDirection();
-
-			if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_UP))
-				_Light->SetDirection(_Dir.x, _Dir.y + (m_MovementSpeed * deltaTime), _Dir.z);
-			if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_DOWN))
-				_Light->SetDirection(_Dir.x, _Dir.y - (m_MovementSpeed * deltaTime), _Dir.z);
-
-			
-			if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_LEFT))
-				_Light->SetDirection(_Dir.x + (m_MovementSpeed * deltaTime), _Dir.y, _Dir.z);
-			if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_RIGHT))
-				_Light->SetDirection(_Dir.x - (m_MovementSpeed * deltaTime), _Dir.y, _Dir.z);
-
-			_Dir = glm::normalize(_Light->GetDirection());// anyway z coord will be undefined big
-			_Light->SetDirection(_Dir);
+			if (m_GeneralLight)
+			{
+				se::Camera* _Camera = se::Application::GetApp().GetActiveScene()->GetMainCamera();
+				if(se::Input::IsKeyboardBPressed(SDL_SCANCODE_LALT))
+					m_GeneralLight->SetDirection(_Camera->GetForwardDirrection());
+			}
+			else if (m_PointLight)
+			{
+				{
+					glm::fvec3 _Position = m_PointLight->GetPosition();
+					if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_UP))
+						m_PointLight->SetPosition(_Position.x, _Position.y, _Position.z + (m_MovementSpeed * deltaTime));
+					if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_DOWN))
+						m_PointLight->SetPosition(_Position.x, _Position.y, _Position.z - (m_MovementSpeed * deltaTime));
+				}
+				{
+					glm::fvec3 _Position = m_PointLight->GetPosition();
+					if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_LEFT))
+						m_PointLight->SetPosition(_Position.x + (m_MovementSpeed * deltaTime), _Position.y, _Position.z);
+					if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_RIGHT))
+						m_PointLight->SetPosition(_Position.x - (m_MovementSpeed * deltaTime), _Position.y, _Position.z);
+				}
+			}
+			else if(m_SpotLight)
+			{
+				se::Camera* _Camera = se::Application::GetApp().GetActiveScene()->GetMainCamera();
+				m_SpotLight->SetPosition(_Camera->GetPosition());
+				m_SpotLight->SetDirection(_Camera->GetForwardDirrection());
+			}
 		}
 
 	private:
-		float m_MovementSpeed = 7.0f;
+		float             m_MovementSpeed = 7.0f;
+		se::GeneralLight* m_GeneralLight  = nullptr;
+		se::PointLight*   m_PointLight    = nullptr;
+		se::SpotLight*    m_SpotLight     = nullptr;
 	};
+
+
 	class SE_API FreeCameraController : public se::ScriptableEntity
 	{
 	public:
