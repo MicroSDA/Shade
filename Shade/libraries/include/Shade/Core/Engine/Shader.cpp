@@ -44,7 +44,7 @@ void se::Shader::Load()
 				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_FRAGMENT_SHADER));
 		
 			if (line == "#geometry")
-				//m_Shaders.push_back(CreateShader(LoadShader(_File), GL_GEOMETRY_SHADER));
+				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_GEOMETRY_SHADER));
 		
 			if (line == "#---")
 				break;

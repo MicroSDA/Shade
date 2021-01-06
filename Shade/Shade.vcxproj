@@ -35,6 +35,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Input.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Light.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Material.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Mesh.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Model3D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\PointLight.h" />
@@ -77,6 +78,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Input.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Light.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Material.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Mesh.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Model3D.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\PointLight.cpp" />

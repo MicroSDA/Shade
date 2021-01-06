@@ -53,9 +53,10 @@ se::Application::~Application()
 void se::Application::Start()
 {
 	se::Timer _DeltaTime;
+
 	while (!m_IsQuitRequested)
 	{
-		_DeltaTime.Update();
+		_DeltaTime.Update(); // TODO Check
 
 		try
 		{
@@ -139,7 +140,7 @@ void se::Application::InitScene(const std::string& name)
 		else
 		{
 			std::string _Msg("Scene '" + name + "' is already initialized!");
-			se::Log::Print(_Msg.c_str(), se::SLCode::Warning);
+			SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Warning);
 		}
 		
 	}

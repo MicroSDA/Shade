@@ -70,8 +70,42 @@ void se::Scene::InitLayers()
 {
 	for (auto& layer : m_Layers)
 	{
-		layer->OnInit();
+		if (!layer->m_IsInitalized)
+		{
+			layer->OnInit();
+			layer->m_IsInitalized = true;
+		}
+		else
+		{
+			std::string _Msg("Layer '" + layer->GetName() + "' is already initialized!");
+			SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Warning);
+		}
+			
 	}
+}
+
+void se::Scene::InitLayer(const std::string& name)
+{
+	for (auto& layer : m_Layers)
+	{
+		if (layer->GetName() == name)
+		{
+			if (!layer->m_IsInitalized)
+			{
+				layer->OnInit();
+				layer->m_IsInitalized = true;
+				return;
+			}
+			else
+			{
+				std::string _Msg("Layer '" + layer->GetName() + "' is already initialized!");
+				SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Warning);
+				return;
+			}
+		}	
+	}
+
+	throw se::ShadeException(std::string("Layer intializing failed, layer '"+ name +"' isn't found !").c_str(), se::SECode::Warning);
 }
 
 se::Camera* se::Scene::GetMainCamera()

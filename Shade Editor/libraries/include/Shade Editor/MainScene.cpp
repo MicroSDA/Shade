@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MainScene.h"
 
-MainScene::MainScene(const std::string& name):se::Scene(name)
+MainScene::MainScene(const std::string& name) :se::Scene(name)
 {
 
 }
@@ -13,63 +13,82 @@ MainScene::~MainScene()
 
 void MainScene::OnCreate()
 {
-	se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
+	
+	se::EventManager::RegSceneEventCallback(se::EventType::SDL_KEYDOWN, this, 
+		[&](se::Event const& event) {
+		
+			if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
+			{
+				se::Entity _CubeEntity = this->CreateEntity();
+				_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3(0 + rand() % 50, 0, 5));
+				_CubeEntity.AddComponent<se::Model3DComponent>(se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube"));
+			}
+
+			return false;
+		});
+
+	//se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
 }
 
 void MainScene::OnInit()
 {
+	se::Camera* _MainCamera = new se::Camera();
+	_MainCamera->SetPosition(0, 3, -5);
+	SetMainCamera(_MainCamera);
+
+
 	{// Assets
-		se::Camera*  _MainCamera = new se::Camera();
-		se::Model3D* _Model3D	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
-		se::Shader*  _Shader	 = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel");
-	
-		//se::Texture* _Texture = se::AssetManager::Hold<se::Texture>("Assets.Models.Cube.Image");
-		SetMainCamera(_MainCamera);
+		se::Model3D* _Floor	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor");
+		se::Model3D* _Cube	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
 
-		se::Entity _CubeEntity = CreateEntity();
-		_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3(0,0, 5));
-		_CubeEntity.AddComponent<se::ShaderComponent>(_Shader);
-		_CubeEntity.AddComponent<se::CameraComponent>(_MainCamera);
-		_CubeEntity.AddComponent<se::Model3DComponent>(_Model3D);
-		//_CubeEntity.AddComponent<se::TextureComponent>(_Texture);
+		se::Entity _FloorEntity = CreateEntity();
+		_FloorEntity.AddComponent<se::TransformComponent>();
+		_FloorEntity.AddComponent<se::Model3DComponent>(_Floor);
 
-		se::RenderComponent  _RenderComponent([](se::Entity entity) {
-			auto& transform = entity.GetComponent<se::TransformComponent>().Transform;
-			auto* shader = entity.GetComponent<se::ShaderComponent>().Shader;
-			auto* camera = entity.GetComponent<se::CameraComponent>().Camera;
-
-			shader->Bind();
-			shader->SendUniformMatrix4Float("ModelM", GL_FALSE, transform.GetModel());
-			shader->SendUniformMatrix4Float("ViewM", GL_FALSE, camera->GetView());
-			shader->SendUniformMatrix4Float("ProjectionM", GL_FALSE, camera->GetProjection());
-			shader->SendUniform3Float("CameraPosition", camera->GetPosition());
-			});
-		_CubeEntity.AddComponent<se::RenderComponent>(_RenderComponent);
+		for (auto i = 0; i < 10; i++)
+		{
+			se::Entity _CubeEntity = CreateEntity();
+			_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3(i*3, 1, 5));
+			_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
+		}
+		
 	}
-	{// Controllers
-		se::Entity _CameraController = CreateEntity();
-		_CameraController.AddComponent<se::CameraComponent>(GetMainCamera());
-		_CameraController.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
+	{// Light
+		se::PointLight* _PointLight = new se::PointLight();
+		_PointLight->SetPosition(0.0f, 3.0f, 0.0f);
+		_PointLight->SetDiffuseColor(1.0f, 1.0f, 0.917f);
+		_PointLight->SetSpecularColor(1.0f, 1.0f, 0.917f);
 
-		se::Entity _GeneralLighController = CreateEntity();
-		_GeneralLighController.AddComponent<se::EnvironmentComponent>(new se::PointLight());
-		_GeneralLighController.AddComponent<se::NativeScriptComponent>().Bind<se::LightController>();
+		_PointLight->SetLinear(0.14f);
+		_PointLight->SetQaudratic(0.07f);
+
+		se::GeneralLight* _GeneraLight = new se::GeneralLight();
+		_GeneraLight->SetDirection(0.0198322f,-0.675238f, 0.737333f);
+		
+		se::Entity _LightEntity = CreateEntity();
+		_LightEntity.AddComponent<se::EnvironmentComponent>(_PointLight);
+		_LightEntity.AddComponent<se::NativeScriptComponent>().Bind<se::LightController>();
+
+		se::Entity   _CameraEntity = CreateEntity();
+		_CameraEntity.AddComponent<se::CameraComponent>(_MainCamera);
+		_CameraEntity.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
 	}
 
 	CreateLayer<MainLayer>("MainLayer");
-	InitLayers();
-	//InitLayer TODO !
+	InitLayer("MainLayer");
+	//InitLayers();
 }
 	
 void MainScene::OnUpdate(const se::Timer& deltaTime)
 {
 	{
-		UpdateNativeScripts(deltaTime);
+		UpdateNativeScripts(deltaTime); // Can be moved to layer specific object ?
 	}
 
 	for (auto& layer : GetLayers())
 	{
-		layer->OnUpdate(deltaTime);
+		if (layer->IsActive())
+			layer->OnUpdate(deltaTime);
 	}
 }
 
@@ -77,7 +96,8 @@ void MainScene::OnRender()
 {
 	for (auto& layer : GetLayers())
 	{
-		layer->OnRender();
+		if (layer->IsActive())
+			layer->OnRender();
 	}
 }
 
@@ -89,7 +109,7 @@ void MainScene::OnDelete()
 		delete _Lights.get<se::EnvironmentComponent>(_Lights[0]).Instance;
 	}
 	{
-		auto _Camera = GetRegistry().view<se::CameraComponent>();
-		delete _Camera.get<se::CameraComponent>(_Camera[0]).Camera;
+		/*auto _Camera = GetRegistry().view<se::CameraComponent>();
+		delete _Camera.get<se::CameraComponent>(_Camera[0]).Camera;*/
 	}
 }

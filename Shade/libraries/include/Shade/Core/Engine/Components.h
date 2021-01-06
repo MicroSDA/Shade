@@ -9,6 +9,8 @@
 #include "Shade/Core/Engine/GeneralLight.h"
 #include "Shade/Core/Engine/PointLight.h"
 #include "Shade/Core/Engine/SpotLight.h"
+#include "Shade/Core/Engine/Material.h"
+
 
 namespace se
 {
@@ -111,14 +113,17 @@ namespace se
 		{
 		}
 	};
-	struct LightComponent : EnvironmentComponent
+
+	struct MaterialComponent
 	{
-		//se::Light* Light = nullptr;
-		/*LightComponent() = default;
-		LightComponent(const LightComponent&) = default;
-		LightComponent(se::Light* other)
-			:Light(other)
+		se::Material Material;
+		MaterialComponent() = default;
+		MaterialComponent(const MaterialComponent&) = default;
+		MaterialComponent(const se::Material& other)
+			:Material(other)
 		{
-		}*/
+		}
+		operator se::Material& () { return Material; }
+		operator const se::Material& () const { return Material; }
 	};
 }

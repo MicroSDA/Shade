@@ -7,7 +7,7 @@ se::Drawable::Drawable():
 	m_IndicesCount(NULL),
 	m_DrawMode(DrawMode::TRIANGLES)
 {
-
+	
 }
 
 se::Drawable::~Drawable()

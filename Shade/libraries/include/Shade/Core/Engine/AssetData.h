@@ -10,7 +10,8 @@ namespace se
 		Model3D,
 		Mesh,
 		Texture,
-		Shader
+		Shader,
+		Material
 	};
 	enum class AssetDataSubType
 	{

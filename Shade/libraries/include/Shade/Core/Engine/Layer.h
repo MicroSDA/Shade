@@ -17,6 +17,7 @@ namespace se
 	class SE_API Layer
 	{
 	public:
+		friend class Scene;
 		Layer(const std::string& name, se::Scene* scene);
 		virtual ~Layer();
 
@@ -26,15 +27,17 @@ namespace se
 		virtual void OnUpdate(const se::Timer& deltaTime) = 0; //TODO:Delta as args
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
+		void SetActive(const bool& isActive);
+		const bool& IsActive() const;
 
 		se::Scene* GetScene() { return m_pScene; }
-
 		const std::string& GetName() const { return m_Name; }
 	protected:
 		std::string m_Name;
 	private:
 		se::Scene* m_pScene;
-
+		bool m_IsActive;
+		bool m_IsInitalized = false;
 	};
 
 }

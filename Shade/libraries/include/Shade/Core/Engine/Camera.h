@@ -14,7 +14,7 @@ namespace se
 			   const float& aspect,
 			   const float& zNear,
 			   const float& zFar);
-		~Camera();
+		virtual ~Camera();
 		inline glm::mat4 GetView()              const { return glm::lookAt(m_Position, m_Position + m_Forward, m_Up); };
 		inline glm::mat4 GetProjection()        const { return m_Perpective; };
 		inline glm::mat4 GetViewProjection()    const { return m_Perpective * glm::lookAt(m_Position, m_Position + m_Forward, m_Up); }
@@ -22,6 +22,8 @@ namespace se
 		inline glm::vec3 GetUpDirrection()      const { return m_Up; }
 		inline glm::vec3 GetPosition()          const { return m_Position; }
 
+		inline void SetPosition(const float& x, const float& y, const float& z) { m_Position = glm::vec3(x, y, z); }
+		inline void SetPosition(const glm::vec3& position) { m_Position = position; }
 		inline void MoveForward(const float& value) { m_Position += m_Forward * value; }
 		inline void MoveBack(const float& value) { m_Position -= m_Forward * value; }
 		inline void MoveRight(const float& value) { m_Position -= glm::cross(m_Up, m_Forward) * value; }

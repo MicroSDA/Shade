@@ -1,14 +1,39 @@
 #include "stdafx.h"
 #include "SpotLight.h"
+/*  Range Constant Linear  Quadratic
 
+	3250, 1.0,     0.0014  0.000007
+
+	600,  1.0,     0.007   0.0002
+
+	325,  1.0,     0.014,  0.0007
+
+	200,  1.0,     0.022,  0.0019
+
+	160,  1.0,     0.027,  0.0028
+
+	100,  1.0,     0.045,  0.0075
+
+	65,   1.0,     0.07,   0.017
+
+	50,   1.0,     0.09,   0.032
+
+	32,   1.0,     0.14,   0.07
+
+	20,   1.0,     0.22,   0.20
+
+	13,   1.0,     0.35,   0.44
+
+	7,    1.0,     0.7,    1.8
+*/
 se::SpotLight::SpotLight() : se::Light(),
 	m_Direction(0.0, 0.0f, 1.0f),
-	m_Position(0.0f, 0.0f, -5.0f),
-	m_Constant(1),
-	m_Linear(0.027),
-	m_Qaudratic(0.0028),
-	m_MinAngle(glm::cos(glm::radians(5.5))),
-	m_MaxAngle(glm::cos(glm::radians(7.5))),
+	m_Position(0.0f, 0.0f, 0.0f),
+	m_Constant(1.0f),
+	m_Linear(0.7f),
+	m_Qaudratic(1.8f),
+	m_MinAngle(glm::cos(glm::radians(5.5f))),
+	m_MaxAngle(glm::cos(glm::radians(7.5f))),
 	m_Id(0)
 {
 }
@@ -76,7 +101,6 @@ void se::SpotLight::Process(const se::Shader* shader)
 	shader->SendUniform3Float("spotL.Light.Light.ColorAmbient",	    m_AmbientColor);
 	shader->SendUniform3Float("spotL.Light.Light.ColorDiffuse",	    m_DiffuseColor);
 	shader->SendUniform3Float("spotL.Light.Light.ColorSpecular",    m_SpecularColor);
-	shader->SendUniform1Float("spotL.Light.Light.ShininesStrength", m_ShininesStrength);
 	shader->SendUniform3Float("spotL.Light.Light.Direction",        m_Direction);
 	shader->SendUniform3Float("spotL.Light.Position",               m_Position);
 	shader->SendUniform1Float("spotL.Light.Constant",               m_Constant);

@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "Mesh.h"
 
-se::Mesh::Mesh(std::vector<se::Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<se::Texture*>& textures):se::Drawable()
+se::Mesh::Mesh(const std::vector<se::Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<se::Texture*>& textures, const se::Material& material):se::Drawable()
 {
 	m_Vertices  = std::move(vertices); // std::move to keep from distructor calling !
 	m_Indices   = std::move(indices);
 	m_Textures  = std::move(textures);
+	m_Material  = material;
 
 	m_IndicesCount = m_Indices.size();
 	m_AttribCount = 4; // DO NOT FORGET //

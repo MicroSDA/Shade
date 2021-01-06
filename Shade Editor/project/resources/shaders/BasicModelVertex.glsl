@@ -1,5 +1,6 @@
 #version 440
 #include "./project/resources/shaders/VertexUtility.glsl"
+
 	layout (location = 0) in vec3 Position;
 	layout (location = 1) in vec2 TextureCoords;
 	layout (location = 2) in vec3 Normals;
@@ -15,9 +16,6 @@
 	layout (location = 2) out vec3 out_ToCameraDirection;
 	layout (location = 3) out vec3 out_ModelPosition;
 
-	layout(binding = 2) uniform sampler2D NORMAL_MAP;
-	
-	
 	out mat3 out_TBN;
 
 	void main()

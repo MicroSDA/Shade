@@ -1,61 +1,53 @@
 #include "stdafx.h"
 #include "ShadeEditor.h"
-#include "Serializer.h"
+
+#include "Serrializer.h"
 
 ShadeEditor::ShadeEditor()
 {
-	
-	
-	Serializer _Serializer;
-	_Serializer.SerializeShader({
-		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
-		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"} }, *new se::AssetData());
-
-	/*se::AssetData _Packet;
-	se::AssetData _Shaders;
-	se::AssetData _Models;
+	se::AssetData _Container;
+	se::AssetData _ModelsPacket;
+	se::AssetData _ShaderPacket;
 	se::AssetData _Model;
-	se::AssetData _Asset;
+	se::AssetData _Shader;
 
-	_Packet._Name = "Assets";
+	/*_Container._Name = "Assets";
 
-	_Shaders._Name = "Shaders";
-	_Shaders._Path = "./resources/shaders/shaders.bin";
-	_Shaders._Offset = 0;
-
-	_Asset._Name = "BasicModel";
-	_Asset._Path = "./resources/shaders/shaders.bin";
-	_Asset._Offset = 0;
-	_Shaders._Dependency.push_back(_Asset);
-
-	_Models._Name = "Models";
-	_Models._Path = "./resources/models/";
-	_Models._Offset = 0;
+	_ModelsPacket._Name = "Models";
+	_ShaderPacket._Name = "Shaders";
 
 	_Model._Name = "Cube";
-	_Model._Path = "./resources/models/";
-	_Serializer.SerializeModel("./project/resources/models/cube.obj", _Model);
-	_Models._Dependency.push_back(_Model);
+	_Model._Path = "./resources/models/cube/";
+	TestSerrializer::Serrialize3DModel("./project/resources/models/cube/cube.obj", &_Model, true);
+	_ModelsPacket._Dependency.push_back(_Model);
 
-	_Packet._Dependency.push_back(_Shaders);
-	_Packet._Dependency.push_back(_Models);
+	_Model = se::AssetData{};
+	_Model._Name = "Floor";
+	_Model._Path = "./resources/models/floor/";
+	TestSerrializer::Serrialize3DModel("./project/resources/models/floor/floor.obj", &_Model, true);
+	_ModelsPacket._Dependency.push_back(_Model);*/
 
-	se::AssetManager::WriteRoadMap(_Packet); */
 
-	//_Serializer.SerializeImage("./project/resources/images/CubeDiffuse.png");
-	//_Serializer.SerializeModel("./project/resources/models/nanosuit.obj");
-	/*_Serializer.SerializeShader({
+	/*_Shader._Name = "BasicModel";
+	_Shader._Path = "./resources/shaders/";
+
+	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
-		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}}, {});
+		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);*/
 
-	_Packet._Dependency.push_back(_Models);
+	/*_ShaderPacket._Dependency.push_back(_Shader);
 
-	se::AssetManager::WriteRoadMap(_Packet);*/
+
+	_Container._Dependency.push_back(_ShaderPacket);
+	_Container._Dependency.push_back(_ModelsPacket);
+
+	se::AssetManager::WriteRoadMap(_Container);*/
 
 }
 
 ShadeEditor::~ShadeEditor()
 {
+
 }
 
 void ShadeEditor::OnInit()

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Shade/Core/Engine/Asset.h"
 #include "Shade/Core/Util/Binarizer.h"
 #include "Shade/Core/Util/ShadeException.h"
@@ -17,19 +17,111 @@ namespace se
 		using Assets = std::map<ClassName, AssetReferences>;
 		using RoadMap = std::map<ClassName, const se::AssetData*>;
 	public:
-
 		template<typename T>
 		static T* Hold(const ClassName& className)
 		{
-			auto* _Asset = dynamic_cast<T*>(GetInstance()._Hold<T>(className));
-
-			if (_Asset)
+			auto& _Instance = GetInstance();
+			// Trying to find in Assets map
+			auto _AElement = _Instance.m_Assets.find(className);
+			if (_AElement != _Instance.m_Assets.end())
 			{
-				return _Asset;
+				// If already loaded
+				
+				if (dynamic_cast<T*>(_AElement->second.m_Ref))
+				{
+					_AElement->second.m_Count++;
+					return (T*)_AElement->second.m_Ref;
+				}
+				else
+				{
+					std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
+					throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+				}
+			
 			}
 			else
 			{
-				std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
+				// Trying to find in road map
+				auto _RElement = _Instance.m_RoadMap.find(className);
+				if (_RElement != _Instance.m_RoadMap.end())
+				{
+					// Load asset
+					auto* _Asset = dynamic_cast<T*>(new T(_RElement->first, _RElement->second));
+					if (_Asset)
+					{
+						_Asset->Load();
+						_Asset->Init(); // Temporary here 
+						// Create asset ref and incease asset count + one ref;
+						_Instance.m_Assets.insert(std::pair<ClassName, AssetReferences>(className, AssetReferences{ _Asset, 1 }));
+						return (T*)_Asset;
+					}
+					else 
+					{
+						std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
+						throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+					}
+					
+				}
+				else
+				{
+					std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
+					throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+				}
+
+				std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
+				throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+			}
+		}
+		template<typename T>
+		static T* Get(const ClassName& className)
+		{
+			auto& _Instance = GetInstance();
+
+			auto _AElement = _Instance.m_Assets.find(className);
+			if (_AElement != _Instance.m_Assets.end())
+			{
+				// If already loaded
+				if (dynamic_cast<T*>(_AElement->second.m_Ref))
+				{
+					// _AElement->second.m_Count++; // Dont need there, potential issue ¯\_(ツ)_/¯
+					return (T*)_AElement->second.m_Ref;
+				}
+				else
+				{
+					std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
+						throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+				}
+			}
+			else
+			{
+				// Trying to find in road map
+				auto _RElement = _Instance.m_RoadMap.find(className);
+				if (_RElement != _Instance.m_RoadMap.end())
+				{
+					// Load asset
+					auto* _Asset = dynamic_cast<T*>(new T(_RElement->first, _RElement->second));
+
+					if (_Asset)
+					{
+						_Asset->Load();
+						_Asset->Init(); // Temporary here 
+						// Create asset ref and incease asset count + one ref;
+						_Instance.m_Assets.insert(std::pair<ClassName, AssetReferences>(className, AssetReferences{ _Asset, 1 }));
+						return (T*)_Asset;
+					}
+					else
+					{
+						std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
+						throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+					}
+				}
+				else
+				{
+					std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
+					throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+				}
+
+				std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
 				throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
 			}
 		}
@@ -47,8 +139,6 @@ namespace se
 		AssetManager& operator= (const AssetManager&&) = delete;
 		static AssetManager& GetInstance();
 		/////////////////////////////////
-		template<typename T>
-		se::Asset* _Hold(const ClassName& className);
 		void _Free(const ClassName& className);
 		void _WriteRoadMap(std::ofstream& file, const se::AssetData& asset);
 		void _ReadRoadMap();
@@ -61,41 +151,3 @@ namespace se
 		RoadMap   m_RoadMap;
 	};
 }
-
-template<typename T>
-se::Asset* se::AssetManager::_Hold(const ClassName& className)
-{
-	// Trying to find in Assets map
-	auto _AElement = m_Assets.find(className);
-	if (_AElement != m_Assets.end())
-	{
-		// If already loaded
-		_AElement->second.m_Count++;
-		return _AElement->second.m_Ref;
-	}
-	else
-	{
-		// Trying to find in road map
-		auto _RElement = m_RoadMap.find(className);
-		if (_RElement != m_RoadMap.end())
-		{
-			// Load asset
-			auto* _Asset = new T(_RElement->first, _RElement->second);
-			_Asset->Load();
-			_Asset->Init(); // Temporary here 
-			// Create asset ref and incease asset count + one ref;
-			m_Assets.insert(std::pair<ClassName, AssetReferences>(className, AssetReferences{ _Asset, 1 }));
-			return _Asset;
-		}
-		else
-		{
-			std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
-			throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
-		}
-
-		std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
-		throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
-	}
-
-}
-

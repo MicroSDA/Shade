@@ -10,6 +10,7 @@ void se::Renderer::SetClearColor(const float& r, const float& g, const float& b,
 
 void se::Renderer::Draw(const se::Drawable& entity)
 {
+	//entity.GetMaterial().
 	//Bit textures and etc/.. Todo !!
 	glBindVertexArray(entity.GetVAO());
 

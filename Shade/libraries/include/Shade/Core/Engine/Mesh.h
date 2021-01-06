@@ -3,13 +3,14 @@
 #include "Shade/Core/Engine/Vertex.h"
 #include "Shade/Core/Engine/Drawable.h"
 #include "Shade/Core/Engine/Texture.h"
+#include "Shade/Core/Engine/Material.h"
 
 namespace se
 {
 	class SE_API Mesh :public se::Drawable
 	{
 	public:
-		Mesh(std::vector<se::Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<se::Texture*>& textures);
+		Mesh(const std::vector<se::Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<se::Texture*>& textures, const se::Material& material);
 		~Mesh();
 		void TexturesBind();
 		void TexturesUnBind();

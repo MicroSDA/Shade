@@ -13,6 +13,7 @@ mat3 CalculateTBNMatrix(mat4 ModelMatrix, vec3 Normals, vec3 Tangents)
 
 	return mat3(T, B, N);
 }
+
 	layout (location = 0) in vec3 Position;
 	layout (location = 1) in vec2 TextureCoords;
 	layout (location = 2) in vec3 Normals;
@@ -28,9 +29,6 @@ mat3 CalculateTBNMatrix(mat4 ModelMatrix, vec3 Normals, vec3 Tangents)
 	layout (location = 2) out vec3 out_ToCameraDirection;
 	layout (location = 3) out vec3 out_ModelPosition;
 
-	layout(binding = 2) uniform sampler2D NORMAL_MAP;
-	
-	
 	out mat3 out_TBN;
 
 	void main()
@@ -51,7 +49,7 @@ struct BaseLight
    vec3  ColorAmbient;
    vec3  ColorDiffuse;
    vec3  ColorSpecular;
-   float ShininesStrength;
+   float ShininesStrength; // move To material
 };
 struct PointLight 
 {
@@ -72,8 +70,10 @@ struct Material
    vec3  colorAmbient;
    vec3  colorDiffuse;
    vec3  colorSpecular;
+   vec3  transparentMask;
    float shinines;
-   float transparency;
+   float shininesStrength;
+ 
 };
 
 uniform BaseLight         generalL;
@@ -83,23 +83,23 @@ uniform Material          material;
 
 vec4 ProcessGeneralLight(vec3 Normals, BaseLight Light, Material material, vec3 ToCameraDirection, vec4 DiffuseTexture, vec4 SpecularTexture)
 {                                                          //Material
-    vec4  m_AmbientColor   = vec4((DiffuseTexture.rgb * vec3(0.1,0.1,0.1) * Light.ColorAmbient), DiffuseTexture.a);
+    vec4  m_AmbientColor   = vec4((DiffuseTexture.rgb * material.colorAmbient * Light.ColorAmbient), DiffuseTexture.a);
     vec4  m_DiffuesColor   = vec4(0.0, 0.0, 0.0, 0.0);
     vec4  m_SpecularColor  = vec4(0.0, 0.0, 0.0, 0.0);
 
     float m_DiffuesShading = dot(Normals, -Light.Direction);
 
     if(m_DiffuesShading > 0.0)
-    {                                                //Material
-       m_DiffuesColor    = vec4((DiffuseTexture.rgb * vec3(1,1,1) * Light.ColorDiffuse * m_DiffuesShading), DiffuseTexture.a);
-       vec3 LightReflect = normalize(reflect(Light.Direction, Normals));
+    {                                                       // Material
+       m_DiffuesColor          = vec4((DiffuseTexture.rgb * material.colorDiffuse * Light.ColorDiffuse * m_DiffuesShading), DiffuseTexture.a);
+       vec3 LightReflect       = reflect(Light.Direction, Normals); // normalize(reflect(Light.Direction, Normals));
        float m_SpecularShading = dot(ToCameraDirection, LightReflect);
 
        if(m_SpecularShading > 0.0)
        {
-          m_SpecularShading = pow(m_SpecularShading, 10);
+          m_SpecularShading = pow(m_SpecularShading, material.shinines);
                                                          //Material
-          m_SpecularColor = vec4((SpecularTexture.rgb * vec3(1,1,1) * 5 * m_SpecularShading), SpecularTexture.a);
+          m_SpecularColor = vec4((SpecularTexture.rgb * material.colorSpecular * Light.ColorSpecular * material.shininesStrength * m_SpecularShading), SpecularTexture.a);
       }
 
     }
@@ -140,7 +140,13 @@ vec4 ProcessSpotLight(vec3 Normals, SpotLight spotLight, Material material, vec3
         return vec4(0, 0, 0, 0);
     }
 }
-//#include "./project/resources/shaders/FragmentUnility.glsl" // Isnt supported more then one include, should be enhance
+vec3 CalculateTBNNormal(vec3 NormalMap, mat3 TBNMatrix)
+{
+   vec3 m_TBNNormal = NormalMap;
+   m_TBNNormal = 2.0 * m_TBNNormal  - vec3(1.0, 1.0, 1.0);   
+   m_TBNNormal = normalize(TBNMatrix * m_TBNNormal);
+   return m_TBNNormal;
+}
 
 	layout(binding = 0) uniform sampler2D DIFFUSE_TEXTURE;
 	layout(binding = 1) uniform sampler2D SPECULAR_TEXTURE;
@@ -155,17 +161,13 @@ vec4 ProcessSpotLight(vec3 Normals, SpotLight spotLight, Material material, vec3
 
 	void main()
 	{
-	   // vec3 TBNNormal = CalculateTBNNormal(texture(NORMAL_MAP, TextureCoords).rgb, out_TBN);
-		vec3 TBNNormal = texture(NORMAL_MAP, TextureCoords).rgb;
-		TBNNormal = 2.0 * TBNNormal  - vec3(1.0, 1.0, 1.0);   
-		TBNNormal = normalize(out_TBN * TBNNormal);
+	    vec3 TBNNormal = CalculateTBNNormal(texture(NORMAL_MAP, TextureCoords).rgb, out_TBN);
 	
-
 	    //vec4 m_TotalColor = ProcessGeneralLight(TBNNormal, generalL, material, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
 		vec4 m_TotalColor = ProcessPointLight(TBNNormal, pointL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
 		//vec4 m_TotalColor = ProcessSpotLight(TBNNormal, spotL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
 		
-		gl_FragColor = vec4(pow(m_TotalColor.rgb, vec3(0.8/1)), m_TotalColor.a);
+		gl_FragColor = vec4(pow(m_TotalColor.rgb, vec3(0.6/1)), m_TotalColor.a);
 	}
 #end
 #---

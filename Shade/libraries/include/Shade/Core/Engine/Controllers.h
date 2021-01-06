@@ -25,6 +25,12 @@ namespace se
 				se::Camera* _Camera = se::Application::GetApp().GetActiveScene()->GetMainCamera();
 				if(se::Input::IsKeyboardBPressed(SDL_SCANCODE_LALT))
 					m_GeneralLight->SetDirection(_Camera->GetForwardDirrection());
+
+				/*std::cout 
+					<< "X: "  << _Camera->GetForwardDirrection().x
+					<< " Y: " <<_Camera->GetForwardDirrection().y
+					<< " Z: " <<_Camera->GetForwardDirrection().z
+					<< std::endl;*/
 			}
 			else if (m_PointLight)
 			{
@@ -41,6 +47,13 @@ namespace se
 						m_PointLight->SetPosition(_Position.x + (m_MovementSpeed * deltaTime), _Position.y, _Position.z);
 					if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_RIGHT))
 						m_PointLight->SetPosition(_Position.x - (m_MovementSpeed * deltaTime), _Position.y, _Position.z);
+				}
+				{
+					glm::fvec3 _Position = m_PointLight->GetPosition();
+					if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_KP_PLUS))
+						m_PointLight->SetPosition(_Position.x , _Position.y + (m_MovementSpeed * deltaTime), _Position.z);
+					if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_KP_MINUS))
+						m_PointLight->SetPosition(_Position.x , _Position.y - (m_MovementSpeed * deltaTime), _Position.z);
 				}
 			}
 			else if(m_SpotLight)
@@ -92,8 +105,8 @@ namespace se
 					_DeltaPos = _DeltaPos - glm::ivec2(se::WindowManager::GetWindow().Width / 2,
 						se::WindowManager::GetWindow().Height / 2);
 
-					_Camera->RotateYaw(-(_DeltaPos.x * deltaTime) * m_RotationSpeed);
-					_Camera->RotatePitch(-(_DeltaPos.y * deltaTime) * m_RotationSpeed);
+					_Camera->RotateYaw(  -(_DeltaPos.x * m_RotationSpeed) / 100); // No deltaTime here 
+					_Camera->RotatePitch(-(_DeltaPos.y * m_RotationSpeed) / 100);
 
 					se::Input::SetMousePosition(
 						se::WindowManager::GetWindow().Width / 2,
@@ -108,7 +121,7 @@ namespace se
 		}
 
 	private:
-		float m_RotationSpeed = 7.0f;
+		float m_RotationSpeed = 5.0f;
 		float m_MovementSpeed = 7.0f;
 	};
 }

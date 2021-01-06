@@ -33,6 +33,7 @@ namespace se
 		void         UpdateNativeScripts(const se::Timer& deltaTime);
 		void         DeleteLayers();
 		void         InitLayers();
+		void         InitLayer(const std::string& name);
 		inline       std::vector<se::Layer*>& GetLayers() { return m_Layers; };
 		template<typename T>
 		se::Layer* CreateLayer(const std::string& name)
@@ -47,7 +48,6 @@ namespace se
 		}
 
 		std::string    m_Name;
-		bool m_IsInitalized = false;
 	private:
 		std::vector<se::Layer*> m_Layers;
 		entt::registry m_Registry;
@@ -55,6 +55,7 @@ namespace se
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
 		se::Camera* m_pMainCamera;
+		bool m_IsInitalized;
 	};
 
 }

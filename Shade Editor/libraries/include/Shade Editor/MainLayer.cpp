@@ -31,27 +31,41 @@ void MainLayer::OnUpdate(const se::Timer& deltaTime)
 
 void MainLayer::OnRender()
 {
-	auto _Entities    = GetScene()->GetRegistry().view<se::Model3DComponent, se::RenderComponent, se::ShaderComponent>();
-	auto _Enviroments = GetScene()->GetRegistry().view<se::EnvironmentComponent>();
-	for (auto& _Entity : _Entities) {
-		_Entities.get<se::RenderComponent>(_Entity).Callback(se::Entity(_Entity, GetScene()));
-		 auto* _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
+	auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.BasicModel");
+	auto* _MainCamera = GetScene()->GetMainCamera();
 
-		 for (auto& _Enviroment : _Enviroments)
-		 {
-			 _Enviroments.get<se::EnvironmentComponent>(_Enviroment).Instance->Process(_Entities.get<se::ShaderComponent>(_Entity).Shader);
-		 }
+	_Shader->Bind();
+	_Shader->SendUniformMatrix4Float("ViewM",       GL_FALSE, _MainCamera->GetView());
+	_Shader->SendUniformMatrix4Float("ProjectionM", GL_FALSE, _MainCamera->GetProjection());
+	_Shader->SendUniform3Float("CameraPosition",              _MainCamera->GetPosition());
 
-		 for (auto& _Mesh: _Model->m_Meshes)
-		 {
-			 _Mesh.TexturesBind();
-			 se::Renderer::Draw(_Mesh);
-			 _Mesh.TexturesUnBind();
-		 }
+	{
+		auto _Enviroments = GetScene()->GetRegistry().view<se::EnvironmentComponent>();
+		for (auto& _Enviroment : _Enviroments)
+		{
+			_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Instance->Process(_Shader);
+		}
 	}
+	{
+		auto _Entities = GetScene()->GetRegistry().view<se::Model3DComponent, se::TransformComponent>();
+		for (auto& _Entity : _Entities) {
+
+			auto* _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
+			_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::TransformComponent>(_Entity).Transform.GetModel());
+
+			for (auto& _Mesh : _Model->m_Meshes)
+			{
+				_Mesh.GetMaterial().Process(_Shader);
+				_Mesh.TexturesBind();
+				se::Renderer::Draw(_Mesh);
+				_Mesh.TexturesUnBind();
+			}
+		}
+	}
+	
 }
 
 void MainLayer::OnDelete()
 {
-	
+
 }

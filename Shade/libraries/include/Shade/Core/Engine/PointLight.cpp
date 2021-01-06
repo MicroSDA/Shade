@@ -27,10 +27,10 @@
 	7,    1.0,     0.7,    1.8
 */
 se::PointLight::PointLight() : se::Light(),
-	m_Position(0.0f, 0.0f, -35.0f),
-	m_Constant(1),
-	m_Linear(0.027),
-	m_Qaudratic(0.0028),
+	m_Position(0.0f, 0.0f, 0.0f),
+	m_Constant(1.0f),
+	m_Linear(0.7f),
+	m_Qaudratic(1.8f),
 	m_Id(0) // Missing id for now
 {
 }
@@ -93,7 +93,6 @@ void se::PointLight::Process(const se::Shader* shader)
 	shader->SendUniform3Float("pointL.Light.ColorAmbient",     m_AmbientColor);
 	shader->SendUniform3Float("pointL.Light.ColorDiffuse",     m_DiffuseColor);
 	shader->SendUniform3Float("pointL.Light.ColorSpecular",    m_SpecularColor);
-	shader->SendUniform1Float("pointL.Light.ShininesStrength", m_ShininesStrength);
 	shader->SendUniform3Float("pointL.Position",			   m_Position);
 	shader->SendUniform1Float("pointL.Constant",			   m_Constant);
 	shader->SendUniform1Float("pointL.Linear",				   m_Linear);

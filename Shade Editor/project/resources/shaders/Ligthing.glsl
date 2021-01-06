@@ -4,7 +4,7 @@ struct BaseLight
    vec3  ColorAmbient;
    vec3  ColorDiffuse;
    vec3  ColorSpecular;
-   float ShininesStrength;
+   float ShininesStrength; // move To material
 };
 struct PointLight 
 {
@@ -25,8 +25,10 @@ struct Material
    vec3  colorAmbient;
    vec3  colorDiffuse;
    vec3  colorSpecular;
+   vec3  transparentMask;
    float shinines;
-   float transparency;
+   float shininesStrength;
+ 
 };
 
 uniform BaseLight         generalL;
@@ -36,23 +38,23 @@ uniform Material          material;
 
 vec4 ProcessGeneralLight(vec3 Normals, BaseLight Light, Material material, vec3 ToCameraDirection, vec4 DiffuseTexture, vec4 SpecularTexture)
 {                                                          //Material
-    vec4  m_AmbientColor   = vec4((DiffuseTexture.rgb * vec3(0.1,0.1,0.1) * Light.ColorAmbient), DiffuseTexture.a);
+    vec4  m_AmbientColor   = vec4((DiffuseTexture.rgb * material.colorAmbient * Light.ColorAmbient), DiffuseTexture.a);
     vec4  m_DiffuesColor   = vec4(0.0, 0.0, 0.0, 0.0);
     vec4  m_SpecularColor  = vec4(0.0, 0.0, 0.0, 0.0);
 
     float m_DiffuesShading = dot(Normals, -Light.Direction);
 
     if(m_DiffuesShading > 0.0)
-    {                                                //Material
-       m_DiffuesColor    = vec4((DiffuseTexture.rgb * vec3(1,1,1) * Light.ColorDiffuse * m_DiffuesShading), DiffuseTexture.a);
-       vec3 LightReflect = normalize(reflect(Light.Direction, Normals));
+    {                                                       // Material
+       m_DiffuesColor          = vec4((DiffuseTexture.rgb * material.colorDiffuse * Light.ColorDiffuse * m_DiffuesShading), DiffuseTexture.a);
+       vec3 LightReflect       = reflect(Light.Direction, Normals); // normalize(reflect(Light.Direction, Normals));
        float m_SpecularShading = dot(ToCameraDirection, LightReflect);
 
        if(m_SpecularShading > 0.0)
        {
-          m_SpecularShading = pow(m_SpecularShading, 10);
+          m_SpecularShading = pow(m_SpecularShading, material.shinines);
                                                          //Material
-          m_SpecularColor = vec4((SpecularTexture.rgb * vec3(1,1,1) * 5 * m_SpecularShading), SpecularTexture.a);
+          m_SpecularColor = vec4((SpecularTexture.rgb * material.colorSpecular * Light.ColorSpecular * material.shininesStrength * m_SpecularShading), SpecularTexture.a);
       }
 
     }

@@ -35,5 +35,4 @@ void se::GeneralLight::Process(const se::Shader* shader)
 	shader->SendUniform3Float("generalL.ColorAmbient",     m_AmbientColor);
 	shader->SendUniform3Float("generalL.ColorDiffuse",     m_DiffuseColor);
 	shader->SendUniform3Float("generalL.ColorSpecular",    m_SpecularColor);
-	shader->SendUniform1Float("generalL.ShininesStrength", m_ShininesStrength);
 }
