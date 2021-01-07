@@ -44,9 +44,11 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\ScriptableEntity.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Shader.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\SpotLight.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Sprite.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Texture.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Timer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Transform.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Transform2D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Vertex.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\WindowManager.h" />
     <ClInclude Include="libraries\include\Shade\Core\Main.h" />
@@ -87,9 +89,11 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\ScriptableEntity.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Shader.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\SpotLight.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Sprite.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Texture.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Timer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Transform.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Transform2D.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Vertex.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp" />

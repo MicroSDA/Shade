@@ -4,3 +4,5 @@ Zoom for fov during resize
 Ligth = environment
 pass to asset link on map with classes names anassetd dtata link
 Check delta time, when fps is drops delta time rising not proportional
+Fix aspect ration when resizing
+Resolve issue with texture postition and size during to window size and opengl

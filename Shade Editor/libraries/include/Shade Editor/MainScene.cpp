@@ -51,6 +51,21 @@ void MainScene::OnInit()
 			_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3(i*3, 1, 5));
 			_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
 		}
+
+		{   // Just for Fun )
+			se::Sprite* _POEInterfaceSprite = new se::Sprite();
+			_POEInterfaceSprite->Init();
+			se::Entity _SpriteEntity = CreateEntity();
+
+			se::Transform2D _Transform;
+			_Transform.SetScale(1.0f, 0.20f);
+			_Transform.SetPostition(0.0f, - 0.8f);
+
+			_SpriteEntity.AddComponent<se::Transform2DComponent>(_Transform);
+			_SpriteEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>("Assets.Images.Image"));
+			_SpriteEntity.AddComponent<se::SpriteComponent>(_POEInterfaceSprite);
+		}
+		
 		
 	}
 	{// Light

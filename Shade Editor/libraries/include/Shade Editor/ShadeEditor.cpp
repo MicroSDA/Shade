@@ -5,41 +5,59 @@
 
 ShadeEditor::ShadeEditor()
 {
-	se::AssetData _Container;
+	/*se::AssetData _Container;
 	se::AssetData _ModelsPacket;
 	se::AssetData _ShaderPacket;
 	se::AssetData _Model;
 	se::AssetData _Shader;
 
-	/*_Container._Name = "Assets";
+	_Container._Name = "Assets";
 
 	_ModelsPacket._Name = "Models";
 	_ShaderPacket._Name = "Shaders";
 
 	_Model._Name = "Cube";
 	_Model._Path = "./resources/models/cube/";
-	TestSerrializer::Serrialize3DModel("./project/resources/models/cube/cube.obj", &_Model, true);
+	Serrializer::Serrialize3DModel("./project/resources/models/cube/cube.obj", &_Model, true);
 	_ModelsPacket._Dependency.push_back(_Model);
 
-	_Model = se::AssetData{};
+	_Model = se::AssetData{}; // Reset
 	_Model._Name = "Floor";
 	_Model._Path = "./resources/models/floor/";
-	TestSerrializer::Serrialize3DModel("./project/resources/models/floor/floor.obj", &_Model, true);
-	_ModelsPacket._Dependency.push_back(_Model);*/
+	Serrializer::Serrialize3DModel("./project/resources/models/floor/floor.obj", &_Model, true);
+	_ModelsPacket._Dependency.push_back(_Model);
 
 
-	/*_Shader._Name = "BasicModel";
+	_Shader._Name = "BasicModel";
 	_Shader._Path = "./resources/shaders/";
 
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
-		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);*/
+		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);
+	_ShaderPacket._Dependency.push_back(_Shader);
 
-	/*_ShaderPacket._Dependency.push_back(_Shader);
+	_Shader = se::AssetData{}; // Reset
+	_Shader._Name = "Sprite";
+	_Shader._Path = "./resources/shaders/";
+	Serrializer::SerrializeShader({
+		{"./project/resources/shaders/SpriteVertex.glsl","#vertex"},
+		{"./project/resources/shaders/SpriteFragment.glsl","#fragment"}, }, &_Shader);
+	_ShaderPacket._Dependency.push_back(_Shader);
 
+
+	se::AssetData _ImagePacket;
+	_ImagePacket._Name = "Images";
+	_ImagePacket._Path = "./resources/textures/";
+	se::AssetData _Image;
+
+	_Image._Name = "Image";
+	_Image._Path = "./resources/textures/image.bin"; // if serialize like that need to specify full path and name
+	Serrializer::SerrializeTexture("./project/resources/images/image.png", &_Image);
+	_ImagePacket._Dependency.push_back(_Image);
 
 	_Container._Dependency.push_back(_ShaderPacket);
 	_Container._Dependency.push_back(_ModelsPacket);
+	_Container._Dependency.push_back(_ImagePacket);
 
 	se::AssetManager::WriteRoadMap(_Container);*/
 

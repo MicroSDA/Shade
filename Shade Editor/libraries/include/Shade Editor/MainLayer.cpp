@@ -31,35 +31,50 @@ void MainLayer::OnUpdate(const se::Timer& deltaTime)
 
 void MainLayer::OnRender()
 {
-	auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.BasicModel");
 	auto* _MainCamera = GetScene()->GetMainCamera();
 
-	_Shader->Bind();
-	_Shader->SendUniformMatrix4Float("ViewM",       GL_FALSE, _MainCamera->GetView());
-	_Shader->SendUniformMatrix4Float("ProjectionM", GL_FALSE, _MainCamera->GetProjection());
-	_Shader->SendUniform3Float("CameraPosition",              _MainCamera->GetPosition());
-
 	{
-		auto _Enviroments = GetScene()->GetRegistry().view<se::EnvironmentComponent>();
-		for (auto& _Enviroment : _Enviroments)
+		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.BasicModel");
+	
+
+		_Shader->Bind();
+		_Shader->SendUniformMatrix4Float("ViewM", GL_FALSE, _MainCamera->GetView());
+		_Shader->SendUniformMatrix4Float("ProjectionM", GL_FALSE, _MainCamera->GetProjection());
+		_Shader->SendUniform3Float("CameraPosition", _MainCamera->GetPosition());
+
 		{
-			_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Instance->Process(_Shader);
+			auto _Enviroments = GetScene()->GetRegistry().view<se::EnvironmentComponent>();
+			for (auto& _Enviroment : _Enviroments)
+			{
+				_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Instance->Process(_Shader);
+			}
+		}
+		{
+			auto _Entities = GetScene()->GetRegistry().view<se::Model3DComponent, se::TransformComponent>();
+			for (auto& _Entity : _Entities) {
+
+				auto* _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
+				_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::TransformComponent>(_Entity).Transform.GetModel());
+
+				for (auto& _Mesh : _Model->m_Meshes)
+				{
+					_Mesh.GetMaterial().Process(_Shader);
+					_Mesh.TexturesBind();
+					se::Renderer::Draw(_Mesh);
+					_Mesh.TexturesUnBind();
+				}
+			}
 		}
 	}
 	{
-		auto _Entities = GetScene()->GetRegistry().view<se::Model3DComponent, se::TransformComponent>();
+		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.Sprite");
+		_Shader->Bind();
+		auto _Entities = GetScene()->GetRegistry().view<se::TextureComponent, se::Transform2DComponent, se::SpriteComponent>();
 		for (auto& _Entity : _Entities) {
-
-			auto* _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
-			_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::TransformComponent>(_Entity).Transform.GetModel());
-
-			for (auto& _Mesh : _Model->m_Meshes)
-			{
-				_Mesh.GetMaterial().Process(_Shader);
-				_Mesh.TexturesBind();
-				se::Renderer::Draw(_Mesh);
-				_Mesh.TexturesUnBind();
-			}
+			_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::Transform2DComponent>(_Entity).Transform.GetModel());
+			_Entities.get<se::TextureComponent>(_Entity).Texture->Bind(0);
+			se::Renderer::Draw(*_Entities.get<se::SpriteComponent>(_Entity).Sprite);
+			se::Texture::UnBind(0);
 		}
 	}
 	

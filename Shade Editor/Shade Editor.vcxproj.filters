@@ -46,22 +46,34 @@
     <Filter Include="Vendors">
       <UniqueIdentifier>{caf50bda-6e7f-4a80-8369-3a4455018288}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Models">
+      <UniqueIdentifier>{82343a84-7b41-4731-bcc8-ab8c8e675e8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Sprite">
+      <UniqueIdentifier>{e3791f81-50d6-41dc-8e27-7d5db2469438}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="project\resources\shaders\BasicModelFragment.glsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Models</Filter>
     </None>
     <None Include="project\resources\shaders\BasicModelVertex.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="project\resources\shaders\Ligthing.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="project\resources\shaders\VertexUtility.glsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Models</Filter>
     </None>
     <None Include="project\resources\shaders\FragmentUtility.glsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shaders\Models</Filter>
+    </None>
+    <None Include="project\resources\shaders\VertexUtility.glsl">
+      <Filter>Shaders\Models</Filter>
+    </None>
+    <None Include="project\resources\shaders\Ligthing.glsl">
+      <Filter>Shaders\Models</Filter>
+    </None>
+    <None Include="project\resources\shaders\SpriteVertex.glsl">
+      <Filter>Shaders\Sprite</Filter>
+    </None>
+    <None Include="project\resources\shaders\SpriteFragment.glsl">
+      <Filter>Shaders\Sprite</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "Shade/Core/Engine/Transform.h"
+#include "Shade/Core/Engine/Transform2D.h"
 #include "Shade/Core/Engine/Model3D.h"
 #include "Shade/Core/Engine/Mesh.h"
 #include "Shade/Core/Engine/Camera.h"
@@ -10,7 +11,7 @@
 #include "Shade/Core/Engine/PointLight.h"
 #include "Shade/Core/Engine/SpotLight.h"
 #include "Shade/Core/Engine/Material.h"
-
+#include "Shade/Core/Engine/Sprite.h"
 
 namespace se
 {
@@ -27,6 +28,18 @@ namespace se
 		}
 		operator se::Transform& () { return Transform; }
 		operator const se::Transform& () const { return Transform; }
+	};
+	struct Transform2DComponent
+	{
+		se::Transform2D Transform;
+		Transform2DComponent() = default;
+		Transform2DComponent(const Transform2DComponent&) = default;
+		Transform2DComponent(const se::Transform2D& other)
+			:Transform(other)
+		{
+		}
+		operator se::Transform2D& () { return Transform; }
+		operator const se::Transform2D& () const { return Transform; }
 	};
 	
 	struct CameraComponent
@@ -125,5 +138,16 @@ namespace se
 		}
 		operator se::Material& () { return Material; }
 		operator const se::Material& () const { return Material; }
+	};
+
+	struct SpriteComponent
+	{
+		se::Sprite* Sprite = nullptr;
+		SpriteComponent() = default;
+		SpriteComponent(const SpriteComponent&) = default;
+		SpriteComponent(se::Sprite* other)
+			:Sprite(other)
+		{
+		}
 	};
 }
