@@ -14,8 +14,8 @@ namespace se
 		};
 
 		using ClassName = std::string;
-		using Assets = std::map<ClassName, AssetReferences>;
-		using RoadMap = std::map<ClassName, const se::AssetData*>;
+		using Assets = std::unordered_map<ClassName, AssetReferences>;
+		using RoadMap = std::unordered_map<ClassName, const se::AssetData*>;
 	public:
 		template<typename T>
 		static T* Hold(const ClassName& className)
@@ -30,7 +30,7 @@ namespace se
 				if (dynamic_cast<T*>(_AElement->second.m_Ref))
 				{
 					_AElement->second.m_Count++;
-					return (T*)_AElement->second.m_Ref;
+					return static_cast<T*>(_AElement->second.m_Ref);
 				}
 				else
 				{
@@ -52,8 +52,8 @@ namespace se
 						_Asset->Load();
 						_Asset->Init(); // Temporary here 
 						// Create asset ref and incease asset count + one ref;
-						_Instance.m_Assets.insert(std::pair<ClassName, AssetReferences>(className, AssetReferences{ _Asset, 1 }));
-						return (T*)_Asset;
+						_Instance.m_Assets[className] = AssetReferences{ _Asset, 1 };
+						return static_cast<T*>(_Asset);
 					}
 					else 
 					{
@@ -84,7 +84,7 @@ namespace se
 				if (dynamic_cast<T*>(_AElement->second.m_Ref))
 				{
 					// _AElement->second.m_Count++; // Dont need there, potential issue ¯\_(ツ)_/¯
-					return (T*)_AElement->second.m_Ref;
+					return static_cast<T*>(_AElement->second.m_Ref);
 				}
 				else
 				{
@@ -106,8 +106,8 @@ namespace se
 						_Asset->Load();
 						_Asset->Init(); // Temporary here 
 						// Create asset ref and incease asset count + one ref;
-						_Instance.m_Assets.insert(std::pair<ClassName, AssetReferences>(className, AssetReferences{ _Asset, 1 }));
-						return (T*)_Asset;
+						_Instance.m_Assets[className] = AssetReferences{ _Asset, 1 };
+						return static_cast<T*>(_Asset);
 					}
 					else
 					{
@@ -144,7 +144,7 @@ namespace se
 		void _ReadRoadMap();
 
 		void ReadAssetsData(std::ifstream& file, se::AssetData& asset);
-		void SetRoadMap(const se::AssetData* asset, std::map<std::string, const se::AssetData*>& map);
+		void SetRoadMap(const se::AssetData* asset, std::unordered_map<std::string, const se::AssetData*>& map);
 
 		Assets    m_Assets;
 		AssetData m_AssetsData;

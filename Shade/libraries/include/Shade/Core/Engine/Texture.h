@@ -12,7 +12,7 @@ namespace se
 		unsigned int   m_BufferSize = 0;
 		int            m_Width      = 0;
 		int            m_Height     = 0;
-		bool           m_HasAlpha   = false;
+		int            m_InternalFormat = 3; // RGB by default
 	};
 
 	class SE_API Texture : public se::Asset

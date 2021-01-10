@@ -15,5 +15,6 @@ namespace se
 		inline static void Enable(const GLenum& capability);
 		inline static void Disable(const GLenum& capability);
 		inline static void CullFace(const GLenum& mode);
+		inline static void BlendFunc(const GLenum& mode, const GLenum& mode2);
 	};
 }

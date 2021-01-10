@@ -50,3 +50,8 @@ inline void se::Renderer::CullFace(const GLenum& mode)
 {
 	glCullFace(mode);
 }
+
+inline void se::Renderer::BlendFunc(const GLenum& mode, const GLenum& mode2)
+{
+	glBlendFunc(mode, mode2);
+}

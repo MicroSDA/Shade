@@ -11,9 +11,9 @@ namespace se {
 		Transform();
 		~Transform();
 
-		inline glm::vec3 GetPosition()                      { return m_Possition; };
-		inline glm::vec3 GetRotation()                      { return m_Rotation; };
-		inline glm::vec3 GetScale()                         { return m_Scale; };
+		inline const glm::vec3& GetPosition()       const               { return m_Possition; };
+		inline const glm::vec3& GetRotation()       const               { return m_Rotation; };
+		inline const glm::vec3& GetScale()          const               { return m_Scale; };
 		inline void SetPostition(const glm::vec3& position) { m_Possition = position; };
 		inline void SetPostition(const float& x, const float& y, const float& z) { m_Possition = glm::vec3(x,y,z); };
 		inline void SetRotation(const glm::vec3& rotation)  { m_Rotation = rotation; }

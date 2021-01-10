@@ -6,15 +6,15 @@
 #include "Shade/Core/Engine/Shader.h"
 #include "Shade/Core/Engine/Camera.h"
 #include "Shade/Core/Engine/Timer.h"
+#include "Shade/Core/Engine/EntitiesDocker.h"
 //#include "Shade/Core/Engine/Layer.h"
 //#include "Shade/Core/Engine/Entity.h"
 
 namespace se
 {
-	class Entity;
 	class Layer;
 
-	class SE_API Scene
+	class SE_API Scene : public EntitiesDocker
 	{
 	public:
 		friend class Application;
@@ -23,8 +23,6 @@ namespace se
 		virtual ~Scene();
 		const std::string& const GetName() { return m_Name; }
 
-		se::Entity CreateEntity();
-		entt::registry& GetRegistry();
 		se::Camera* GetMainCamera();
 		void SetMainCamera(se::Camera* camera);
 	protected:
@@ -50,7 +48,6 @@ namespace se
 		std::string    m_Name;
 	private:
 		std::vector<se::Layer*> m_Layers;
-		entt::registry m_Registry;
 		virtual void OnUpdate(const se::Timer& deltaTime) = 0;
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;

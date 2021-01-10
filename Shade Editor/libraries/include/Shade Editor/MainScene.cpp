@@ -38,20 +38,26 @@ void MainScene::OnInit()
 
 
 	{// Assets
-		se::Model3D* _Floor	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor");
-		se::Model3D* _Cube	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
+		se::Model3D* _Floor	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor");
+		se::Model3D* _Cube	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
+		se::Model3D* _Samurai	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.SamuraiHelmet");
 
 		se::Entity _FloorEntity = CreateEntity();
 		_FloorEntity.AddComponent<se::TransformComponent>();
 		_FloorEntity.AddComponent<se::Model3DComponent>(_Floor);
 
-		for (auto i = 0; i < 10; i++)
-		{
-			se::Entity _CubeEntity = CreateEntity();
-			_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3(i*3, 1, 5));
-			_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
-		}
+		se::Entity _CubeEntity = CreateEntity();
+		_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3(3, 0.5, 2));
+		_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
 
+		{
+			se::Entity _SamuraiEntity = CreateEntity();
+			se::Transform _Transform;
+			_Transform.SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
+			_Transform.SetPostition(glm::vec3(0.0f, 1, 2));
+			_SamuraiEntity.AddComponent<se::TransformComponent>(_Transform);
+			_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
+		}
 		{   // Just for Fun )
 			se::Sprite* _POEInterfaceSprite = new se::Sprite();
 			_POEInterfaceSprite->Init();
@@ -74,8 +80,9 @@ void MainScene::OnInit()
 		_PointLight->SetDiffuseColor(1.0f, 1.0f, 0.917f);
 		_PointLight->SetSpecularColor(1.0f, 1.0f, 0.917f);
 
-		_PointLight->SetLinear(0.14f);
-		_PointLight->SetQaudratic(0.07f);
+	
+		_PointLight->SetLinear(0.07f);
+		_PointLight->SetQaudratic(0.017f);
 
 		se::GeneralLight* _GeneraLight = new se::GeneralLight();
 		_GeneraLight->SetDirection(0.0198322f,-0.675238f, 0.737333f);
@@ -120,7 +127,7 @@ void MainScene::OnDelete()
 {
 	// Delete Camera and light jsut for now here
 	{
-		auto _Lights = GetRegistry().view<se::EnvironmentComponent>();
+		auto _Lights = GetEntities().view<se::EnvironmentComponent>();
 		delete _Lights.get<se::EnvironmentComponent>(_Lights[0]).Instance;
 	}
 	{

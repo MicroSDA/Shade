@@ -1,19 +1,19 @@
 #pragma once
 #include "Shade/Core/CoreAPI.h"
 #include "Vendors/entt/entt.hpp"
-#include "Shade/Core/Engine/Scene.h"
+#include "Shade/Core/Engine/EntitiesDocker.h"
+#include "Shade/Core/Util/ShadeException.h"
 
 namespace se
 {
-
 	class SE_API Entity
 	{
 	public:
 		Entity() = default;
-		Entity(entt::entity handle, se::Scene* scene);
+		Entity(entt::entity handle, se::EntitiesDocker* docker);
 		Entity(const Entity& other) : 
 			m_EntityHandle(other.m_EntityHandle),
-			m_pScene(other.m_pScene)
+			m_pDocker(other.m_pDocker)
 		{ }
 		~Entity();
 
@@ -22,7 +22,7 @@ namespace se
 		{
 			if (HasComponent<T>())
 				throw se::ShadeException("Entity already has component!", se::SECode::Error);
-			return m_pScene->GetRegistry().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+			return m_pDocker->GetEntities().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
 		}
 
 		template<typename T>
@@ -30,7 +30,7 @@ namespace se
 		{
 			if (!HasComponent<T>())
 				throw se::ShadeException("Entity does not have component!", se::SECode::Error);
-			return m_pScene->GetRegistry().get<T>(m_EntityHandle);
+			return m_pDocker->GetEntities().get<T>(m_EntityHandle);
 		}
 
 		template<typename T>
@@ -38,13 +38,13 @@ namespace se
 		{
 			if (!HasComponent<T>())
 				throw se::ShadeException("Entity does not have component!", se::SECode::Error);
-			m_pScene->GetRegistry().remove<T>(m_EntityHandle);
+			m_pDocker->GetEntities().remove<T>(m_EntityHandle);
 		}
 
 		template<typename T>
 		bool HasComponent() const
 		{
-			return m_pScene->GetRegistry().has<T>(m_EntityHandle);
+			return m_pDocker->GetEntities().has<T>(m_EntityHandle);
 		}
 
 		operator bool() const { return m_EntityHandle != entt::null; }
@@ -53,7 +53,7 @@ namespace se
 
 		bool operator==(const Entity& other) const
 		{
-			return m_EntityHandle == other.m_EntityHandle && m_pScene == other.m_pScene;
+			return m_EntityHandle == other.m_EntityHandle && m_pDocker == other.m_pDocker;
 		}
 
 		bool operator!=(const Entity& other) const
@@ -62,7 +62,7 @@ namespace se
 		}
 	private:
 		entt::entity m_EntityHandle{ entt::null };
-		se::Scene* m_pScene = nullptr;
+		se::EntitiesDocker* m_pDocker = nullptr;
 	};
 
 }

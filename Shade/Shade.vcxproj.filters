@@ -34,6 +34,9 @@
     <Filter Include="Core\Engine\Environment">
       <UniqueIdentifier>{1fa300fb-621e-4bc1-8fe1-d2d418f00fb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Engine\Entities">
+      <UniqueIdentifier>{55907054-6610-48ae-ad2a-7770b4ec9bfa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -72,9 +75,6 @@
       <Filter>Core\Engine</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h">
-      <Filter>Core\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h">
       <Filter>Core\Engine</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Components.h">
@@ -155,6 +155,12 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Transform2D.h">
       <Filter>Core\Engine\Render</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h">
+      <Filter>Core\Engine\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\EntitiesDocker.h">
+      <Filter>Core\Engine\Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -180,9 +186,6 @@
       <Filter>Core\Engine</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp">
-      <Filter>Core\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp">
       <Filter>Core\Engine</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Asset.cpp">
@@ -253,6 +256,12 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Transform2D.cpp">
       <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp">
+      <Filter>Core\Engine\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\EntitiesDocker.cpp">
+      <Filter>Core\Engine\Entities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

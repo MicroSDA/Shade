@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "Scene.h"
-#include "Shade/Core/Engine/Entity.h"
 #include "Shade/Core/Engine/Layer.h"
 
-se::Scene::Scene(const std::string& name) : 
+se::Scene::Scene(const std::string& name) :
 	m_IsInitalized(false), m_pMainCamera(nullptr)
 {
 	m_Name = name;
@@ -18,7 +17,7 @@ se::Scene::~Scene()
 	}
 	m_Layers.clear();
 
-	m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+	this->GetEntities().view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 		{
 			if (nsc.Instance)
 			{
@@ -27,22 +26,12 @@ se::Scene::~Scene()
 			}
 		});
 
-	SE_DEBUG_PRINT(std::string("Scene '"+ m_Name +"' has been destroyed").c_str(), se::SLCode::InfoSecondary);
-}
-
-se::Entity se::Scene::CreateEntity()
-{
-	return { m_Registry.create(), this };
-}
-
-entt::registry& se::Scene::GetRegistry()
-{
-	return m_Registry;
+	SE_DEBUG_PRINT(std::string("Scene '" + m_Name + "' has been destroyed").c_str(), se::SLCode::InfoSecondary);
 }
 
 void se::Scene::UpdateNativeScripts(const se::Timer& deltaTime)
 {
-	m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+	this->GetEntities().view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 		{
 			// TODO: Move to Scene::OnScenePlay
 			if (!nsc.Instance)
@@ -80,7 +69,7 @@ void se::Scene::InitLayers()
 			std::string _Msg("Layer '" + layer->GetName() + "' is already initialized!");
 			SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Warning);
 		}
-			
+
 	}
 }
 
@@ -102,10 +91,10 @@ void se::Scene::InitLayer(const std::string& name)
 				SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Warning);
 				return;
 			}
-		}	
+		}
 	}
 
-	throw se::ShadeException(std::string("Layer intializing failed, layer '"+ name +"' isn't found !").c_str(), se::SECode::Warning);
+	throw se::ShadeException(std::string("Layer intializing failed, layer '" + name + "' isn't found !").c_str(), se::SECode::Warning);
 }
 
 se::Camera* se::Scene::GetMainCamera()

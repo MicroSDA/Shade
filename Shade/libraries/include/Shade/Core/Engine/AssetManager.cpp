@@ -63,16 +63,19 @@ void se::AssetManager::_ReadRoadMap()
 {
 
 	std::ifstream _File;
-	_File.open("./project/RoadMap.bin", std::ifstream::binary);
+	_File.open("././project/RoadMap.bin", std::ifstream::binary); //TODO resolve issue wiht path 
 
 	if (!_File.is_open())
 	{
 		throw se::ShadeException("Error: Road map file cannot be open!", se::SECode::Error);
 	}
 
+	// Clear if it was loaded before
+	m_AssetsData = se::AssetData();
+	m_RoadMap.clear();
+
 	ReadAssetsData(_File, m_AssetsData);
 	_File.close();
-
 	SetRoadMap(&m_AssetsData, m_RoadMap);
 
 }
@@ -90,7 +93,7 @@ void se::AssetManager::_WriteRoadMap(std::ofstream& file, const se::AssetData& a
 	se::Binarizer::WriteNext<se::AssetDataSubType>(file, asset._SubType);
 	se::Binarizer::WriteNext<std::string>(file, asset._Path);
 	se::Binarizer::WriteNext<long long>(file, asset._Offset);
-	se::Binarizer::WriteNext<size_t>(file, asset._Dependency.size());
+	se::Binarizer::WriteNext<uint32_t>(file, asset._Dependency.size());
 
 	if (asset._Dependency.size())
 	{
@@ -112,7 +115,7 @@ void se::AssetManager::ReadAssetsData(std::ifstream& file, se::AssetData& asset)
 	asset._Path = se::Binarizer::ReadNext<std::string>(file);
 	asset._Path.pop_back();// Remove \0
 	asset._Offset = se::Binarizer::ReadNext<long long>(file);
-	size_t _DependencyCount = se::Binarizer::ReadNext<size_t>(file);
+	uint32_t _DependencyCount = se::Binarizer::ReadNext<uint32_t>(file);
 
 	if (_DependencyCount)
 	{
@@ -127,7 +130,7 @@ void se::AssetManager::ReadAssetsData(std::ifstream& file, se::AssetData& asset)
 	}
 }
 
-void se::AssetManager::SetRoadMap(const se::AssetData* asset, std::map<std::string, const se::AssetData*>& map)
+void se::AssetManager::SetRoadMap(const se::AssetData* asset, std::unordered_map<std::string, const se::AssetData*>& map)
 {
 	if (asset->_Parrent != nullptr)
 	{

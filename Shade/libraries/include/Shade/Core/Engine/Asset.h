@@ -15,6 +15,7 @@ namespace se
 	protected:
 		const se::AssetData* m_AssetData;
 		const std::string    m_ParrentClassName;
+		bool m_IsInitialized;
 	private:
 	};
 }

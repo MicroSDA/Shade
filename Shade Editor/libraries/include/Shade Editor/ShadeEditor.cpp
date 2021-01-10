@@ -28,6 +28,13 @@ ShadeEditor::ShadeEditor()
 	_ModelsPacket._Dependency.push_back(_Model);
 
 
+	_Model = se::AssetData{}; // Reset
+	_Model._Name = "SamuraiHelmet";
+	_Model._Path = "./resources/models/samurai-helmet/";
+	Serrializer::Serrialize3DModel("./project/resources/models/samurai-helmet/samurai-helmet.obj", &_Model, true);
+	_ModelsPacket._Dependency.push_back(_Model);
+
+/////////////////////////////////////
 	_Shader._Name = "BasicModel";
 	_Shader._Path = "./resources/shaders/";
 
@@ -59,7 +66,8 @@ ShadeEditor::ShadeEditor()
 	_Container._Dependency.push_back(_ModelsPacket);
 	_Container._Dependency.push_back(_ImagePacket);
 
-	se::AssetManager::WriteRoadMap(_Container);*/
+	se::AssetManager::WriteRoadMap(_Container);
+	exit(0);*/
 
 }
 
@@ -70,6 +78,8 @@ ShadeEditor::~ShadeEditor()
 
 void ShadeEditor::OnInit()
 {
+	se::AssetManager::ReadRoadMap();
+
 	//Events call back an other stuff 
 	se::EventManager::RegAppEventCallback(se::EventType::SDL_QUIT,
 		[&](se::Event const& event) {

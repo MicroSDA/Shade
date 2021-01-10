@@ -46,7 +46,7 @@ void se::Texture::Load()
 			if (m_ImageData.m_Height < 1 || m_ImageData.m_Height > 10000)
 				throw se::ShadeException(std::string("Wrong image height '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
 
-			m_ImageData.m_HasAlpha = (se::Binarizer::ReadNext<int>(_File) == 4) ? true : false;
+			m_ImageData.m_InternalFormat = se::Binarizer::ReadNext<int>(_File) ;
 			m_ImageData.m_BufferSize = se::Binarizer::ReadNext<unsigned int>(_File);
 
 			if (m_ImageData.m_BufferSize < 1 || m_ImageData.m_BufferSize > 104857600)
@@ -70,41 +70,69 @@ void se::Texture::Load()
 
 void se::Texture::Init()
 {
-	m_AssetData;
-	if (m_ImageData.m_pImageData)
-	{
-		glGenTextures(1, &m_Texture);
-		glBindTexture(GL_TEXTURE_2D, m_Texture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		if (m_ImageData.m_HasAlpha)
+	if(!m_IsInitialized)
+	{ 
+		if (m_ImageData.m_pImageData)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_ImageData.m_Width, m_ImageData.m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_ImageData.m_pImageData);
+			GLint _InternalFormat = 0;
+
+			// If texture has gray scale or something else, can thorw an exeption, so keep it in mind
+			switch (m_ImageData.m_InternalFormat)
+			{
+				case 1:
+					_InternalFormat = GL_R8;
+					break;
+				case 2:
+					_InternalFormat = GL_RG8;
+					break;
+				case 3:
+				{
+					/*if(m_AssetData->_SubType != se::AssetDataSubType::NormalMap)
+						_InternalFormat = GL_SRGB8;*/
+					_InternalFormat = GL_RGB8;
+					break;
+				}
+				case 4:
+					/*if(m_AssetData->_SubType != se::AssetDataSubType::NormalMap)
+						_InternalFormat = GL_SRGB8_ALPHA8;*/
+					_InternalFormat = GL_RGBA8;
+					break;
+				default:
+					throw se::ShadeException(std::string("Unsupported texture format in '" + m_AssetData->_Path + "'!").c_str(), se::SECode::Warning);
+					break;
+			}
+
+			glGenTextures(1, &m_Texture);
+			glBindTexture(GL_TEXTURE_2D, m_Texture);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexImage2D(GL_TEXTURE_2D, 0, _InternalFormat, m_ImageData.m_Width, m_ImageData.m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_ImageData.m_pImageData);
+		
+			// Anisotropic filtering
+			GLfloat _Anisotropic;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &_Anisotropic);
+			if(_Anisotropic)
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, _Anisotropic);
+
+			glGenerateMipmap(GL_TEXTURE_2D);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
+			delete m_ImageData.m_pImageData;
+			m_ImageData.m_pImageData = nullptr;
+			m_IsInitialized = true;
 		}
 		else
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_ImageData.m_Width, m_ImageData.m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, m_ImageData.m_pImageData);
+			throw se::ShadeException(std::string("Failed to initialize texure '" + m_AssetData->_Path + "' image data is nullptr !").c_str(), se::SECode::Warning);
 		}
 
-		// Anisotropic filtering
-		GLfloat _Anisotropic;
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &_Anisotropic);
-		if(_Anisotropic)
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, _Anisotropic);
-
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-		delete m_ImageData.m_pImageData;
 	}
 	else
 	{
-		throw se::ShadeException(std::string("Failed to initialize texure '"+ m_AssetData->_Path +"' image data is nullptr !").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->_Path + "'").c_str(), se::SECode::Warning);
 	}
-	
 }

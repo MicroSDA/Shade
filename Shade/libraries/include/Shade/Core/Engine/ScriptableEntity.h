@@ -1,13 +1,16 @@
 #pragma once
 #include "Shade/Core/Engine/Entity.h"
 #include "Shade/Core/Engine/Timer.h"
+#include "Shade/Core/Engine/Application.h"
 
 namespace se
 {
 	class SE_API ScriptableEntity
 	{
 	public:
+
 		friend class Scene;
+
 		virtual ~ScriptableEntity();
 		template<typename T>
 		T& GetComponent()

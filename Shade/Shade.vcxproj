@@ -28,6 +28,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Components.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Controllers.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Drawable.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\EntitiesDocker.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Environment.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h" />
@@ -60,8 +61,8 @@
     <ClInclude Include="libraries\include\stdafx.h" />
     <ClInclude Include="libraries\include\Vendors\entt\entt.hpp" />
     <ClInclude Include="libraries\include\Vendors\glad\glad.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -73,6 +74,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Camera.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Controllers.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Drawable.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\EntitiesDocker.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Environment.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp" />
@@ -105,12 +107,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="libraries\include\Vendors\glad\glad.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -202,7 +206,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x86\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade Editor\"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(Platform)\$(Configuration)\Shade Editor\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -226,7 +230,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x86\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade Editor\"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(Platform)\$(Configuration)\Shade Editor\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

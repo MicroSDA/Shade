@@ -106,7 +106,7 @@
       <AdditionalDependencies>assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)bin\$(Platform)\$(Configuration)\Shade\*.dll" "$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -129,7 +129,7 @@
       <AdditionalDependencies>assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)"</Command>
+      <Command>xcopy /y /d "$(SolutionDir)bin\$(Platform)\$(Configuration)\Shade\*.dll" "$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

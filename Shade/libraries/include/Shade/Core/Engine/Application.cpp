@@ -10,7 +10,7 @@ se::Application::Application()
 	m_pInstance = this;
 	SE_DEBUG_PRINT("Application has been created.", se::SLCode::InfoSecondary);
 
-	se::AssetManager::ReadRoadMap(); //Temporary here
+	
 
 	/*SDL_Init(SDL_INIT_AUDIO);
 	SDL_AudioSpec wavSpec;

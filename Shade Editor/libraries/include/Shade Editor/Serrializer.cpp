@@ -78,7 +78,7 @@ void Serrializer::Serrialize3DModel(const std::string& filePath, se::AssetData* 
 			_Path = GetPath(filePath);
 		}
 
-		std::vector<AssimpMesh> _Meshes = ProcessModel3DNode(_Path,m_pScene->mRootNode, m_pScene, *assetData);
+		std::vector<AssimpMesh> _Meshes = ProcessModel3DNode(_Path, m_pScene->mRootNode, m_pScene, *assetData);
 		assetData->_Path += assetData->_Name + ".bin";
 
 		std::ofstream _File;
@@ -405,8 +405,10 @@ AssimpMesh Serrializer::ProcessModel3DMesh(const std::string& filePath, aiMesh* 
 		_Mesh._Material.SetShinines(value);
 
 		_Mesh._HasMaterial = true;
-		return _Mesh;
+		
 	}
+
+	return _Mesh;
 }
 
 std::string Serrializer::ProcessShaderInclude(const std::string& filePath, const std::regex& pattern)

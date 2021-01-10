@@ -43,14 +43,14 @@ void MainLayer::OnRender()
 		_Shader->SendUniform3Float("CameraPosition", _MainCamera->GetPosition());
 
 		{
-			auto _Enviroments = GetScene()->GetRegistry().view<se::EnvironmentComponent>();
+			auto _Enviroments = GetScene()->GetEntities().view<se::EnvironmentComponent>();
 			for (auto& _Enviroment : _Enviroments)
 			{
 				_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Instance->Process(_Shader);
 			}
 		}
 		{
-			auto _Entities = GetScene()->GetRegistry().view<se::Model3DComponent, se::TransformComponent>();
+			auto _Entities = GetScene()->GetEntities().view<se::Model3DComponent, se::TransformComponent>();
 			for (auto& _Entity : _Entities) {
 
 				auto* _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
@@ -69,7 +69,7 @@ void MainLayer::OnRender()
 	{
 		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.Sprite");
 		_Shader->Bind();
-		auto _Entities = GetScene()->GetRegistry().view<se::TextureComponent, se::Transform2DComponent, se::SpriteComponent>();
+		auto _Entities = GetScene()->GetEntities().view<se::TextureComponent, se::Transform2DComponent, se::SpriteComponent>();
 		for (auto& _Entity : _Entities) {
 			_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::Transform2DComponent>(_Entity).Transform.GetModel());
 			_Entities.get<se::TextureComponent>(_Entity).Texture->Bind(0);
