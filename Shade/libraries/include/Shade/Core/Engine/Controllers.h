@@ -27,7 +27,6 @@ namespace se
 		{
 			auto& _Tansform = GetComponent<se::Transform3DComponent>().Transform;
 			_Tansform.SetRotation(0, _Tansform.GetRotation().y + (deltaTime * m_RotationSpeed), 0);
-			std::cout << _Tansform.GetRotation().y << std::endl;
 		}
 	private:
 		float m_RotationSpeed = 5.0f;
@@ -54,12 +53,6 @@ namespace se
 				se::Camera* _Camera = se::Application::GetApp().GetActiveScene()->GetMainCamera();
 				if(se::Input::IsKeyboardBPressed(SDL_SCANCODE_LALT))
 					m_GeneralLight->SetDirection(_Camera->GetForwardDirrection());
-
-				/*std::cout 
-					<< "X: "  << _Camera->GetForwardDirrection().x
-					<< " Y: " <<_Camera->GetForwardDirrection().y
-					<< " Z: " <<_Camera->GetForwardDirrection().z
-					<< std::endl;*/
 			}
 			else if (m_PointLight)
 			{

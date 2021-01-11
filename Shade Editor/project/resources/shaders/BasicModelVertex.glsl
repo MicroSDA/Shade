@@ -20,7 +20,7 @@
 
 	void main()
 	{
-		gl_Position = ProjectionM * ViewM * ModelM *  vec4(Position, 2.0f);
+		gl_Position = ProjectionM * ViewM * ModelM *  vec4(Position, 1.0f);
 	    out_TBN =  CalculateTBNMatrix(ModelM, Normals, Tangents);
 		out_TextureCoords = TextureCoords;
 		out_Normals  = (ModelM * vec4(Normals, 0.0)).xyz;

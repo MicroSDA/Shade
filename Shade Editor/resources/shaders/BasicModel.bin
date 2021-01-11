@@ -33,7 +33,7 @@ mat3 CalculateTBNMatrix(mat4 ModelMatrix, vec3 Normals, vec3 Tangents)
 
 	void main()
 	{
-		gl_Position = ProjectionM * ViewM * ModelM *  vec4(Position, 2.0f);
+		gl_Position = ProjectionM * ViewM * ModelM *  vec4(Position, 1.0f);
 	    out_TBN =  CalculateTBNMatrix(ModelM, Normals, Tangents);
 		out_TextureCoords = TextureCoords;
 		out_Normals  = (ModelM * vec4(Normals, 0.0)).xyz;
@@ -62,8 +62,8 @@ struct PointLight
 struct SpotLight
 {
   PointLight Light;
-  float MinAngle;
-  float MaxAngle;
+  float      MinAngle;
+  float      MaxAngle;
 };
 struct Material 
 {
@@ -132,7 +132,7 @@ vec4 ProcessSpotLight(vec3 Normals, SpotLight spotLight, Material material, vec3
         float m_Epsilon     = spotLight.MinAngle - spotLight.MaxAngle;
         m_SpotFactor        = smoothstep(0.0, m_Smooth, (m_SpotFactor - spotLight.MaxAngle) / m_Epsilon);
         SpotLight m_Light   = spotLight;
-        vec4 m_Color     = ProcessPointLight(Normals, spotLight.Light, material, ModelPosition, ToCameraDirection, DiffuseTexture, SpecularTexture);
+        vec4 m_Color        = ProcessPointLight(Normals, spotLight.Light, material, ModelPosition, ToCameraDirection, DiffuseTexture, SpecularTexture);
         return m_Color * m_SpotFactor;
     }
     else

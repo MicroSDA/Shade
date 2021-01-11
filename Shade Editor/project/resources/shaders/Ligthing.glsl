@@ -17,8 +17,8 @@ struct PointLight
 struct SpotLight
 {
   PointLight Light;
-  float MinAngle;
-  float MaxAngle;
+  float      MinAngle;
+  float      MaxAngle;
 };
 struct Material 
 {
@@ -87,7 +87,7 @@ vec4 ProcessSpotLight(vec3 Normals, SpotLight spotLight, Material material, vec3
         float m_Epsilon     = spotLight.MinAngle - spotLight.MaxAngle;
         m_SpotFactor        = smoothstep(0.0, m_Smooth, (m_SpotFactor - spotLight.MaxAngle) / m_Epsilon);
         SpotLight m_Light   = spotLight;
-        vec4 m_Color     = ProcessPointLight(Normals, spotLight.Light, material, ModelPosition, ToCameraDirection, DiffuseTexture, SpecularTexture);
+        vec4 m_Color        = ProcessPointLight(Normals, spotLight.Light, material, ModelPosition, ToCameraDirection, DiffuseTexture, SpecularTexture);
         return m_Color * m_SpotFactor;
     }
     else

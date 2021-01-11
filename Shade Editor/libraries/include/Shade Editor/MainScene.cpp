@@ -47,14 +47,14 @@ void MainScene::OnInit()
 		_FloorEntity.AddComponent<se::Model3DComponent>(_Floor);
 
 		se::Entity _CubeEntity = CreateEntity();
-		_CubeEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(glm::vec3(3, 0.5, 2));
+		_CubeEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(glm::vec3(5, 1, 2));
 		_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
 
 		{
 			se::Entity _SamuraiEntity = CreateEntity();
 			se::Transform3D _Transform;
 			_Transform.SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
-			_Transform.SetPostition(glm::vec3(0.0f, 1, 2));
+			_Transform.SetPostition(glm::vec3(0.0f, 2, 2));
 			_SamuraiEntity.AddComponent<se::Transform3DComponent>(_Transform);
 			_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
 			_SamuraiEntity.AddComponent<se::NativeScriptComponent>().Bind<se::Mode3DController>();
