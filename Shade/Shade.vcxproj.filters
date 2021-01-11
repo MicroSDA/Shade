@@ -92,9 +92,6 @@
     <ClInclude Include="libraries\include\Shade\Core\Util\Binarizer.h">
       <Filter>Core\Util</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Transform.h">
-      <Filter>Core\Engine\Render</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Shader.h">
       <Filter>Core\Engine\Render</Filter>
     </ClInclude>
@@ -161,6 +158,9 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\EntitiesDocker.h">
       <Filter>Core\Engine\Entities</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Transform3D.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -193,9 +193,6 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\AssetManager.cpp">
       <Filter>Core\Engine\Asset</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Transform.cpp">
-      <Filter>Core\Engine\Render</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Shader.cpp">
       <Filter>Core\Engine\Render</Filter>
@@ -262,6 +259,9 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\EntitiesDocker.cpp">
       <Filter>Core\Engine\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Transform3D.cpp">
+      <Filter>Core\Engine\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

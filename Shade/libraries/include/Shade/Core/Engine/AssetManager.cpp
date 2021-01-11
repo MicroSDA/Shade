@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AssetManager.h"
+#include "Shade/Core/Util/Log.h"
 
 se::AssetManager::AssetManager()
 {
@@ -11,14 +12,10 @@ se::AssetManager::~AssetManager()
 
 void se::AssetManager::Free(const ClassName& className)
 {
-	GetInstance()._Free(className);
-}
+	auto& _Instance = GetInstance();
+	auto _AElement = _Instance.m_Assets.find(className);
 
-void se::AssetManager::_Free(const ClassName& className)
-{
-	auto _AElement = m_Assets.find(className);
-
-	if (_AElement != m_Assets.end())
+	if (_AElement != _Instance.m_Assets.end())
 	{
 		// Discrase count of refs
 		if (_AElement->second.m_Count > 1)
@@ -28,14 +25,38 @@ void se::AssetManager::_Free(const ClassName& className)
 		else
 		{
 			delete _AElement->second.m_Ref;
-			m_Assets.erase(_AElement);
+			_Instance.m_Assets.erase(_AElement);
 		}
 	}
 	else
 	{
 		std::string _Msg("Error: Trying to free unloaded asset '" + className + "'");
-		throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+		SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Warning);
+	}
+}
 
+void se::AssetManager::Inseart(const ClassName& className, se::Asset* asset)
+{
+	auto& _Instance = GetInstance();
+	auto _AElement = _Instance.m_Assets.find(className);
+
+	if (_AElement == _Instance.m_Assets.end())
+	{
+		auto _RElement = _Instance.m_RoadMap.find(className);
+		if (_RElement != _Instance.m_RoadMap.end())
+		{
+			_Instance.m_Assets[className] = AssetReferences{ asset, 1 };
+		}
+		else
+		{
+			std::string _Msg("Error: Trying to insreat asset which isn't exist in reoad map'" + className + "'!");
+			throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+		}
+	}
+	else
+	{
+		std::string _Msg("Warning: Asset is already exist '" + className + "', try to use Hold!");
+		SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Warning);
 	}
 }
 
@@ -63,7 +84,7 @@ void se::AssetManager::_ReadRoadMap()
 {
 
 	std::ifstream _File;
-	_File.open("././project/RoadMap.bin", std::ifstream::binary); //TODO resolve issue wiht path 
+	_File.open("././project/RoadMap.bin", std::ifstream::binary); //TODO resolve issue with path 
 
 	if (!_File.is_open())
 	{

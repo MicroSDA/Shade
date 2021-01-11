@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "Sprite.h"
 
-se::Sprite::Sprite() : se::Drawable(),
+const GLfloat se::Sprite::m_Quad[] = { -1.0,1.0,  -1.0,-1.0, 1.0,1.0,  1.0,-1.0 };
+
+se::Sprite::Sprite(): se::Drawable(),
 	m_Texture(nullptr)
 {
 	m_DrawMode = se::DrawMode::TRIANGLE_STRIP;
@@ -12,16 +14,6 @@ se::Sprite::~Sprite()
 {
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
-}
-
-void se::Sprite::SetTexture(const se::Texture* texture)
-{
-	m_Texture = texture;
-}
-
-const se::Texture* se::Sprite::GetTexture() const
-{
-	return m_Texture;
 }
 
 void se::Sprite::Init()

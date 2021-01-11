@@ -26,6 +26,7 @@ se::Scene::~Scene()
 			}
 		});
 
+	this->GetEntities().clear();
 	SE_DEBUG_PRINT(std::string("Scene '" + m_Name + "' has been destroyed").c_str(), se::SLCode::InfoSecondary);
 }
 

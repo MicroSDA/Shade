@@ -5,19 +5,22 @@
 
 namespace se {
 
-	class SE_API Transform
+	class SE_API Transform3D
 	{
 	public:
-		Transform();
-		~Transform();
+		Transform3D();
+		~Transform3D();
 
-		inline const glm::vec3& GetPosition()       const               { return m_Possition; };
-		inline const glm::vec3& GetRotation()       const               { return m_Rotation; };
-		inline const glm::vec3& GetScale()          const               { return m_Scale; };
-		inline void SetPostition(const glm::vec3& position) { m_Possition = position; };
-		inline void SetPostition(const float& x, const float& y, const float& z) { m_Possition = glm::vec3(x,y,z); };
-		inline void SetRotation(const glm::vec3& rotation)  { m_Rotation = rotation; }
-		inline void SetScale(const glm::vec3& scale)        { m_Scale = scale; };
+		inline const glm::fvec3& GetPosition() const;
+		inline const glm::fvec3& GetRotation() const;
+		inline const glm::fvec3& GetScale()    const;
+		inline void SetPostition(const glm::vec3& position);
+		inline void SetPostition(const float& x, const float& y, const float& z);
+		inline void SetRotation(const float& x, const float& y, const float& z);
+		inline void SetRotation(const glm::vec3& rotation);
+		inline void SetScale(const float& x, const float& y, const float& z);
+		inline void SetScale(const glm::vec3& scale);
+
 		inline glm::mat4 GetModel() const
 		{
 			glm::mat4 _PositionMatrix  = glm::translate(m_Possition);

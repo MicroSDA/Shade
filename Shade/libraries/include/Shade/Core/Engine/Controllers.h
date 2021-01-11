@@ -5,6 +5,34 @@
 
 namespace se
 {
+	class SE_API Mode3DController : public se::ScriptableEntity
+	{
+	public:
+
+		void OnCreate()
+		{
+			/*auto _Models = se::Application::GetApp().GetActiveScene()->GetEntities().view<se::Model3DComponent>();
+			auto& Model  = _Models.get<se::Model3DComponent>(_Models[1]); // Suppose to be cube
+			auto _Meshes =  Model.Model3D->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
+
+			auto entt = this->m_Entity.GetComponent<se::Model3DComponent>().Model3D->CreateEntity();
+			entt.AddComponent<se::MeshComponent>(_Meshes.get<se::MeshComponent>(entt::entity(0)));
+			entt.AddComponent<se::MaterialComponent>(_Meshes.get<se::MaterialComponent>(entt::entity(0)));*/
+		}
+		void OnDestroy()
+		{
+
+		}
+		void OnUpdate(const se::Timer& deltaTime)
+		{
+			auto& _Tansform = GetComponent<se::Transform3DComponent>().Transform;
+			_Tansform.SetRotation(0, _Tansform.GetRotation().y + (deltaTime * m_RotationSpeed), 0);
+			std::cout << _Tansform.GetRotation().y << std::endl;
+		}
+	private:
+		float m_RotationSpeed = 5.0f;
+	};
+
 	class SE_API LightController : public se::ScriptableEntity
 	{
 	public:
@@ -20,6 +48,7 @@ namespace se
 		}
 		void OnUpdate(const se::Timer& deltaTime)
 		{
+
 			if (m_GeneralLight)
 			{
 				se::Camera* _Camera = se::Application::GetApp().GetActiveScene()->GetMainCamera();

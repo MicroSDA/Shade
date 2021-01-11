@@ -9,10 +9,11 @@ namespace se
 	class SE_API EntitiesDocker
 	{
 	public:
-		EntitiesDocker();
+		EntitiesDocker() = default;
 		virtual ~EntitiesDocker();
 
 		se::Entity CreateEntity();
+		void DestroyEntity(const Entity& entity);
 		entt::registry& GetEntities();
 	private:
 		entt::registry m_Registry;

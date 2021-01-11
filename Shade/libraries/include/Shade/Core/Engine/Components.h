@@ -1,6 +1,6 @@
 #pragma once
 #include "stdafx.h"
-#include "Shade/Core/Engine/Transform.h"
+#include "Shade/Core/Engine/Transform3D.h"
 #include "Shade/Core/Engine/Transform2D.h"
 #include "Shade/Core/Engine/Model3D.h"
 #include "Shade/Core/Engine/Mesh.h"
@@ -17,19 +17,29 @@ namespace se
 {
 	class Entity;
 
-	struct TransformComponent
+	struct ComponentBase
 	{
-		se::Transform Transform;
-		TransformComponent() = default;
-		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const se::Transform& other)
+		ComponentBase() = default;
+		~ComponentBase() = default;
+		virtual void OnCreate() {};
+		virtual void OnDestroy() {};
+	};
+
+	struct Transform3DComponent : ComponentBase
+	{
+		se::Transform3D Transform;
+		Transform3DComponent() = default;
+		~Transform3DComponent() = default;
+
+		Transform3DComponent(const Transform3DComponent&) = default;
+		Transform3DComponent(const se::Transform3D& other)
 			:Transform(other)
 		{
 		}
-		operator se::Transform& () { return Transform; }
-		operator const se::Transform& () const { return Transform; }
+		operator se::Transform3D& () { return Transform; }
+		operator const se::Transform3D& () const { return Transform; }
 	};
-	struct Transform2DComponent
+	struct Transform2DComponent : ComponentBase
 	{
 		se::Transform2D Transform;
 		Transform2DComponent() = default;
@@ -42,7 +52,7 @@ namespace se
 		operator const se::Transform2D& () const { return Transform; }
 	};
 	
-	struct CameraComponent
+	struct CameraComponent : ComponentBase
 	{
 		se::Camera* Camera = nullptr;
 		CameraComponent() = default;
@@ -53,41 +63,151 @@ namespace se
 		}
 	};
 
-	struct ShaderComponent
+	struct ShaderComponent : ComponentBase
 	{
 		se::Shader* Shader = nullptr;
 		ShaderComponent() = default;
+		~ShaderComponent()
+		{
+			se::AssetManager::Free(Shader->GetAssetData()->_Name);
+		};
 		ShaderComponent(const ShaderComponent&) = default;
 		ShaderComponent(se::Shader* other)
 			:Shader(other)
 		{
+			// Free asset data if it was hold
+		};
+	};
+
+	struct MeshComponent : ComponentBase
+	{
+		se::Mesh* Mesh = nullptr;
+		MeshComponent() = default;
+		~MeshComponent()
+		{
+			if (Mesh)
+				se::AssetManager::Free(Mesh->GetAssetClassName());
+		};
+		MeshComponent(se::Mesh* other)
+			:Mesh(other) {};
+		MeshComponent(const MeshComponent& other)
+		{
+			if (this != &other)
+			{
+				this->Mesh = other.Mesh;
+				se::AssetManager::Hold<se::Mesh>(Mesh->GetAssetClassName());
+			}
+		};
+		MeshComponent(MeshComponent&& other) noexcept
+		{
+			if (this != &other)
+			{
+				this->Mesh = other.Mesh;
+				other.Mesh = nullptr;
+			}
+		};
+		MeshComponent& operator=(const MeshComponent& other)
+		{ 
+			this->Mesh = other.Mesh;
+			se::AssetManager::Hold<se::Mesh>(Mesh->GetAssetClassName());
+		};
+		MeshComponent& operator=(MeshComponent&& other) noexcept
+		{
+			if (this != &other)
+			{
+				this->Mesh = other.Mesh;
+				other.Mesh = nullptr;
+			}
+			return *this;
 		}
 	};
 
-	struct Model3DComponent
+	struct Model3DComponent : ComponentBase
 	{
 		se::Model3D* Model3D = nullptr;
-
 		Model3DComponent() = default;
-		Model3DComponent(const Model3DComponent&) = default;
-		Model3DComponent(se::Model3D* other)
-			:Model3D(other)
+		~Model3DComponent() 
 		{
+			if(Model3D) // Free if not nullptr
+				se::AssetManager::Free(Model3D->GetAssetClassName());
+		};
+		Model3DComponent(se::Model3D* other)
+			: Model3D(other) {}
+		Model3DComponent(const Model3DComponent& other)
+		{
+			if (this != &other)
+			{// Hold when it's copied 
+				this->Model3D = other.Model3D;
+				se::AssetManager::Hold<se::Model3D>(Model3D->GetAssetClassName());
+			}	
+		};
+		Model3DComponent(Model3DComponent&& other) noexcept
+		{
+			if (this != &other)
+			{
+				this->Model3D = other.Model3D;
+				other.Model3D = nullptr;
+			}
+		}
+		Model3DComponent& operator=(const Model3DComponent& other)
+		{
+			this->Model3D = other.Model3D;
+			se::AssetManager::Hold<se::Model3D>(Model3D->GetAssetClassName());
+		}
+		Model3DComponent& operator=(Model3DComponent&& other) noexcept
+		{
+			if (this != &other)
+			{
+				this->Model3D = other.Model3D;
+				other.Model3D = nullptr;
+			}
+			return *this;
 		}
 	};
 
-	struct TextureComponent
+	struct TextureComponent : ComponentBase
 	{
 		se::Texture* Texture = nullptr;
-
 		TextureComponent() = default;
-		TextureComponent(const TextureComponent&) = default;
-		TextureComponent(se::Texture* other)
-			:Texture(other)
+		~TextureComponent()
 		{
+			if(Texture)
+				se::AssetManager::Free(Texture->GetAssetClassName());
+		};
+		TextureComponent(se::Texture* other)
+			: Texture(other) {};
+		TextureComponent(const TextureComponent& other)
+		{
+			if (this != &other)
+			{// Hold when it's copied 
+				this->Texture = other.Texture;
+				se::AssetManager::Hold<se::Texture>(Texture->GetAssetClassName());
+			}
+		};
+		TextureComponent(TextureComponent&& other) noexcept
+		{
+			if (this != &other)
+			{
+				this->Texture = other.Texture;
+				other.Texture = nullptr;
+			}
+		}
+		TextureComponent& operator=(const TextureComponent& other)
+		{
+			this->Texture = other.Texture;
+			se::AssetManager::Hold<se::Texture>(Texture->GetAssetClassName());
+		}
+		TextureComponent& operator=(TextureComponent&& other) noexcept
+		{
+			if (this != &other)
+			{
+				this->Texture = other.Texture;
+				other.Texture = nullptr;
+			}
+			return *this;
 		}
 	};
-	struct RenderComponent
+	struct RenderComponent : ComponentBase
 	{
 		using RenderComponentCallback = void(*)(se::Entity);
 		RenderComponentCallback Callback;
@@ -102,7 +222,7 @@ namespace se
 		operator const RenderComponentCallback& () const { return Callback; }
 	};
 
-	struct NativeScriptComponent
+	struct NativeScriptComponent : ComponentBase
 	{
 		se::ScriptableEntity* Instance = nullptr;
 
@@ -116,10 +236,10 @@ namespace se
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 		}
 	};
-	struct EnvironmentComponent
+	struct EnvironmentComponent : ComponentBase
 	{
 		se::Environment* Instance = nullptr;
-		EnvironmentComponent() = default;
+		EnvironmentComponent() = default; // TODO light should be like asset ?
 		EnvironmentComponent(const EnvironmentComponent&) = default;
 		EnvironmentComponent(se::Environment* other)
 			:Instance(other)
@@ -127,7 +247,7 @@ namespace se
 		}
 	};
 
-	struct MaterialComponent
+	struct MaterialComponent : ComponentBase
 	{
 		se::Material Material;
 		MaterialComponent() = default;
@@ -140,7 +260,7 @@ namespace se
 		operator const se::Material& () const { return Material; }
 	};
 
-	struct SpriteComponent
+	struct SpriteComponent : ComponentBase
 	{
 		se::Sprite* Sprite = nullptr;
 		SpriteComponent() = default;

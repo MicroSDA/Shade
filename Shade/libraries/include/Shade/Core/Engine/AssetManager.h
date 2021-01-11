@@ -14,7 +14,7 @@ namespace se
 		};
 
 		using ClassName = std::string;
-		using Assets = std::unordered_map<ClassName, AssetReferences>;
+		using Assets  = std::unordered_map<ClassName, AssetReferences>;
 		using RoadMap = std::unordered_map<ClassName, const se::AssetData*>;
 	public:
 		template<typename T>
@@ -126,7 +126,7 @@ namespace se
 			}
 		}
 		static void Free(const ClassName& className);
-
+		static void Inseart(const ClassName& className, se::Asset* asset);
 		static void WriteRoadMap(const se::AssetData& asset);
 		static void ReadRoadMap();
 	private:
@@ -139,7 +139,6 @@ namespace se
 		AssetManager& operator= (const AssetManager&&) = delete;
 		static AssetManager& GetInstance();
 		/////////////////////////////////
-		void _Free(const ClassName& className);
 		void _WriteRoadMap(std::ofstream& file, const se::AssetData& asset);
 		void _ReadRoadMap();
 

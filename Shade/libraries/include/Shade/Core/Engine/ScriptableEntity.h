@@ -21,7 +21,7 @@ namespace se
 		virtual void OnCreate()  {}
 		virtual void OnDestroy() {}
 		virtual void OnUpdate(const se::Timer& deltaTime) {}
-	private:
 		se::Entity   m_Entity;
+	private:
 	};
 }

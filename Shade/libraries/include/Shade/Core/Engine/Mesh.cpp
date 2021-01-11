@@ -1,14 +1,8 @@
 #include "stdafx.h"
 #include "Mesh.h"
-
-se::Mesh::Mesh(const std::vector<se::Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<se::Texture*>& textures, const se::Material& material):se::Drawable()
+#include <utility>
+se::Mesh::Mesh(const std::string& fullClassName, const se::AssetData* data) : se::Asset(fullClassName, data), se::Drawable()
 {
-	m_Vertices  = std::move(vertices); // std::move to keep from distructor calling !
-	m_Indices   = std::move(indices);
-	m_Textures  = std::move(textures);
-	m_Material  = material;
-
-	m_IndicesCount = m_Indices.size();
 	m_AttribCount = 4; // DO NOT FORGET //
 }
 
@@ -19,24 +13,20 @@ se::Mesh::~Mesh()
 	glDeleteBuffers(1, &m_EBO);
 }
 
-void se::Mesh::TexturesBind()
+void se::Mesh::SetVertices(std::vector<se::Vertex>& vertices)
 {
-	unsigned int id = 0;
-	for (auto& _Texture : m_Textures)
-	{
-		_Texture->Bind(id);
-		id++;
-	}
+	m_Vertices = std::move(vertices);
 }
 
-void se::Mesh::TexturesUnBind()
+void se::Mesh::SetIndices(std::vector<unsigned int>& indices)
 {
-	unsigned int id = 0;
-	for (auto& _Texture : m_Textures)
-	{
-		_Texture->UnBind(id);
-		id++;
-	}
+	m_Indices = std::move(indices);
+	m_IndicesCount = m_Indices.size();
+}
+
+void se::Mesh::Load()
+{
+	// Nothing to do
 }
 
 void se::Mesh::Init()

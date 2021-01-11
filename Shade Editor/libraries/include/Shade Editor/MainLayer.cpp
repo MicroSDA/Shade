@@ -32,10 +32,9 @@ void MainLayer::OnUpdate(const se::Timer& deltaTime)
 void MainLayer::OnRender()
 {
 	auto* _MainCamera = GetScene()->GetMainCamera();
-
 	{
+		// Modles 
 		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.BasicModel");
-	
 
 		_Shader->Bind();
 		_Shader->SendUniformMatrix4Float("ViewM", GL_FALSE, _MainCamera->GetView());
@@ -50,23 +49,37 @@ void MainLayer::OnRender()
 			}
 		}
 		{
-			auto _Entities = GetScene()->GetEntities().view<se::Model3DComponent, se::TransformComponent>();
+			auto _Entities = GetScene()->GetEntities().view<se::Model3DComponent, se::Transform3DComponent>();
 			for (auto& _Entity : _Entities) {
 
 				auto* _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
-				_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::TransformComponent>(_Entity).Transform.GetModel());
+				_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModel());
 
-				for (auto& _Mesh : _Model->m_Meshes)
+				auto _MesheEntities = _Model->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
+				for (auto& _MeshEnity : _MesheEntities)
 				{
-					_Mesh.GetMaterial().Process(_Shader);
-					_Mesh.TexturesBind();
-					se::Renderer::Draw(_Mesh);
-					_Mesh.TexturesUnBind();
+					auto& _Mesh     = _MesheEntities.get<se::MeshComponent>(_MeshEnity).Mesh;
+					auto& _Material = _MesheEntities.get<se::MaterialComponent>(_MeshEnity).Material;
+					_Material.Process(_Shader);
+
+					auto _TexturesEntities = _Mesh->GetEntities().view<se::TextureComponent>();
+					for (auto& _TextureEnity : _TexturesEntities)
+					{
+						_TexturesEntities.get<se::TextureComponent>(_TextureEnity).Texture->Bind(static_cast<GLuint>(_TextureEnity));
+					}
+
+					se::Renderer::Draw(*_Mesh);
+
+					for (auto& _TextureEnity : _TexturesEntities)
+					{
+						se::Texture::UnBind(static_cast<GLuint>(_TextureEnity));
+					}
 				}
 			}
 		}
 	}
 	{
+		//GUI // TODO move to another layer i guess
 		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.Sprite");
 		_Shader->Bind();
 		auto _Entities = GetScene()->GetEntities().view<se::TextureComponent, se::Transform2DComponent, se::SpriteComponent>();

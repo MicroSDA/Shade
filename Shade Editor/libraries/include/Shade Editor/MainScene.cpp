@@ -20,7 +20,7 @@ void MainScene::OnCreate()
 			if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
 			{
 				se::Entity _CubeEntity = this->CreateEntity();
-				_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3(0 + rand() % 50, 0, 5));
+				_CubeEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(glm::vec3(0 + rand() % 50, 0, 5));
 				_CubeEntity.AddComponent<se::Model3DComponent>(se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube"));
 			}
 
@@ -43,20 +43,21 @@ void MainScene::OnInit()
 		se::Model3D* _Samurai	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.SamuraiHelmet");
 
 		se::Entity _FloorEntity = CreateEntity();
-		_FloorEntity.AddComponent<se::TransformComponent>();
+		_FloorEntity.AddComponent<se::Transform3DComponent>();
 		_FloorEntity.AddComponent<se::Model3DComponent>(_Floor);
 
 		se::Entity _CubeEntity = CreateEntity();
-		_CubeEntity.AddComponent<se::TransformComponent>().Transform.SetPostition(glm::vec3(3, 0.5, 2));
+		_CubeEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(glm::vec3(3, 0.5, 2));
 		_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
 
 		{
 			se::Entity _SamuraiEntity = CreateEntity();
-			se::Transform _Transform;
+			se::Transform3D _Transform;
 			_Transform.SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
 			_Transform.SetPostition(glm::vec3(0.0f, 1, 2));
-			_SamuraiEntity.AddComponent<se::TransformComponent>(_Transform);
+			_SamuraiEntity.AddComponent<se::Transform3DComponent>(_Transform);
 			_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
+			_SamuraiEntity.AddComponent<se::NativeScriptComponent>().Bind<se::Mode3DController>();
 		}
 		{   // Just for Fun )
 			se::Sprite* _POEInterfaceSprite = new se::Sprite();

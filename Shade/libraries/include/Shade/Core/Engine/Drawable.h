@@ -25,15 +25,12 @@ namespace se
 		inline GLuint   GetAttribCount()  const { return m_AttribCount; }
 		inline GLuint   GetIndicesCount() const { return m_IndicesCount; }
 		inline DrawMode GetDrawMode()     const { return m_DrawMode; }
-		inline const se::Material& GetMaterial() const { return m_Material; }
-		virtual void    Init() = 0; // For opengl init
 		//inline const std::function<void()>& GetRenderPattern() const { return m_RenderPattern; }
 	protected:
 		GLuint       m_VAO, m_VBO, m_EBO;
 		GLuint       m_IndicesCount;
 		GLuint       m_AttribCount;
 		DrawMode     m_DrawMode;
-		se::Material m_Material;
 		//std::function<void()> m_RenderPattern;
 	private:
 		

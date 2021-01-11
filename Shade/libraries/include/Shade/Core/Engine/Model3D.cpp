@@ -3,13 +3,15 @@
 #include "Shade/Core/Util/Binarizer.h"
 #include "Shade/Core/Util/Log.h"
 #include "Shade/Core/Engine/AssetManager.h"
+#include "Shade/Core/Engine/Components.h"
 
-se::Model3D::Model3D(const std::string& parrentClassName, const se::AssetData* data) :se::Asset(parrentClassName, data)
+se::Model3D::Model3D(const std::string& fullClassName, const se::AssetData* data) :se::Asset(fullClassName, data)
 {
 }
 
 se::Model3D::~Model3D()
 {
+	
 }
 
 void se::Model3D::Load()
@@ -89,9 +91,10 @@ void se::Model3D::Load()
 	if (!_MeshCount)
 		throw se::ShadeException(std::string("Mesh count = 0 in '" + m_AssetData->_Path + "' file.").c_str(), se::SECode::Warning);
 
-	m_Meshes.reserve(_MeshCount);
 	for (unsigned int m = 0; m < _MeshCount; m++)
 	{
+		se::Entity _MeshEntity = this->CreateEntity();
+
 		std::string _MeshName = se::Binarizer::ReadNext<std::string>(_File);
 		_MeshName.pop_back();
 
@@ -130,34 +133,42 @@ void se::Model3D::Load()
 		_Indices.reserve(_IndicesCount);
 		for (unsigned int i = 0; i < _IndicesCount; i++)
 			_Indices.push_back(se::Binarizer::ReadNext<unsigned int>(_File));
+		
+		// Creating otside of AssetManager
+		se::Mesh* _pMesh = new Mesh(m_FullClassName + "." + m_AssetData->_Dependency[m]._Name, &m_AssetData->_Dependency[m]);
+		_pMesh->SetVertices(_Vertices);
+		_pMesh->SetIndices(_Indices);
+
+		se::AssetManager::Inseart(_pMesh->GetAssetClassName(), _pMesh);
+
+		se::MeshComponent     _MeshComponent     = _pMesh;
+		se::MaterialComponent _MaterialComponent = _MaterialsMap[_MeshName];
 		// Textures
-
-		std::vector<se::Texture*> _Textures;
-
 		if (m_AssetData->_Dependency[m]._Dependency.size())
 		{
 			for (auto& _Asset : m_AssetData->_Dependency[m]._Dependency)
 			{
 				if (_Asset._Type == se::AssetDataType::Texture)
 				{
-					_Textures.emplace_back(se::AssetManager::Hold<se::Texture>(m_ParrentClassName + "." + m_AssetData->_Dependency[m]._Name + "." + _Asset._Name));
+					auto _TextureEntity = _MeshComponent.Mesh->CreateEntity();
+					_TextureEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>(m_FullClassName + "." + m_AssetData->_Dependency[m]._Name + "." + _Asset._Name));
 				}
 			}
 		}
 
-		//TODO Mterial
-		se::Material _Material = _MaterialsMap[_MeshName];
-		//TODO
-		m_Meshes.emplace_back(_Vertices, _Indices, _Textures, _Material); // Textures here temporary
+		_MeshEntity.AddComponent<se::MeshComponent>(_MeshComponent);
+		_MeshEntity.AddComponent<se::MaterialComponent>(_MaterialComponent); 
+	
 	}
-
 	_File.close();
 }
 
 void se::Model3D::Init()
 {
-	for (auto& _Mesh : m_Meshes)
+	auto Meshes = this->GetEntities().view<se::MeshComponent>();
+
+	for (auto& Mesh : Meshes)
 	{
-		_Mesh.Init();
+		Meshes.get<se::MeshComponent>(Mesh).Mesh->Init();
 	}
 }
