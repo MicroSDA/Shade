@@ -3,7 +3,7 @@
 #include "Vendors/entt/entt.hpp"
 #include "Shade/Core/Engine/EntitiesDocker.h"
 #include "Shade/Core/Util/ShadeException.h"
-
+#include "Shade/Core/Util/Log.h"
 namespace se
 {
 	class SE_API Entity
@@ -21,7 +21,7 @@ namespace se
 		T& AddComponent(Args&&... args)
 		{
 			if (HasComponent<T>())
-				throw se::ShadeException("Entity already has component!", se::SECode::Error);
+				throw se::ShadeException(std::string("Entity already has component! : " + std::string(typeid(T).name())).c_str(), se::SECode::Error);
 			return m_pDocker->GetEntities().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
 		}
 

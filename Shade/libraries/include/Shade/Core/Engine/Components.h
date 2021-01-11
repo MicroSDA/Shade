@@ -25,6 +25,16 @@ namespace se
 		virtual void OnDestroy() {};
 	};
 
+	struct TagComponent
+	{
+		std::string Tag;
+		TagComponent() = default;
+		TagComponent(const TagComponent&) = default;
+		TagComponent(const std::string& other)
+			:Tag(other)
+		{
+		}
+	};
 	struct Transform3DComponent : ComponentBase
 	{
 		se::Transform3D Transform;

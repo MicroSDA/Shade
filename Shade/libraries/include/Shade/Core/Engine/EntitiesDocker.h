@@ -12,7 +12,7 @@ namespace se
 		EntitiesDocker() = default;
 		virtual ~EntitiesDocker();
 
-		se::Entity CreateEntity();
+		se::Entity CreateEntity(const std::string& name = "Entity");
 		void DestroyEntity(const Entity& entity);
 		entt::registry& GetEntities();
 	private:

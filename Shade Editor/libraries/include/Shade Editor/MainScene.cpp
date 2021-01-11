@@ -19,9 +19,19 @@ void MainScene::OnCreate()
 		
 			if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
 			{
-				se::Entity _CubeEntity = this->CreateEntity();
+				se::Entity _CubeEntity = this->CreateEntity("Cube");
 				_CubeEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(glm::vec3(0 + rand() % 50, 0, 5));
 				_CubeEntity.AddComponent<se::Model3DComponent>(se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube"));
+			}
+
+			if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE)
+			{
+				auto entities = this->GetEntities().view<se::TagComponent>();
+				for (auto& entity : entities)
+				{
+					if(entities.get<se::TagComponent>(entity).Tag == "Cube")
+						this->GetEntities().destroy(entity);
+				}
 			}
 
 			return false;
@@ -42,7 +52,10 @@ void MainScene::OnInit()
 		se::Model3D* _Cube	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
 		se::Model3D* _Samurai	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.SamuraiHelmet");
 
-		se::Entity _FloorEntity = CreateEntity();
+	
+	
+
+		se::Entity _FloorEntity = CreateEntity("Floor");
 		_FloorEntity.AddComponent<se::Transform3DComponent>();
 		_FloorEntity.AddComponent<se::Model3DComponent>(_Floor);
 

@@ -35,12 +35,12 @@ ShadeEditor::ShadeEditor()
 	_ModelsPacket._Dependency.push_back(_Model);
 
 /////////////////////////////////////*/
-	_Shader._Name = "BasicModel";
+	/*_Shader._Name = "BasicModel";
 	_Shader._Path = "./resources/shaders/";
 
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
-		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);
+		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);*/
 	/*_ShaderPacket._Dependency.push_back(_Shader);
 
 	_Shader = se::AssetData{}; // Reset
