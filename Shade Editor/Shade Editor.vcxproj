@@ -198,6 +198,8 @@
     <None Include="project\resources\shaders\BasicModelFragment.glsl" />
     <None Include="project\resources\shaders\BasicModelVertex.glsl" />
     <None Include="project\resources\shaders\FragmentUtility.glsl" />
+    <None Include="project\resources\shaders\GridFragment.glsl" />
+    <None Include="project\resources\shaders\GridVertex.glsl" />
     <None Include="project\resources\shaders\Ligthing.glsl" />
     <None Include="project\resources\shaders\SpriteFragment.glsl" />
     <None Include="project\resources\shaders\SpriteVertex.glsl" />

@@ -1,10 +1,7 @@
 #include "stdafx.h"
 #include "Sprite.h"
 
-const GLfloat se::Sprite::m_Quad[] = { -1.0,1.0,  -1.0,-1.0, 1.0,1.0,  1.0,-1.0 };
-
-se::Sprite::Sprite(): se::Drawable(),
-	m_Texture(nullptr)
+se::Sprite::Sprite(): se::Drawable()
 {
 	m_DrawMode = se::DrawMode::TRIANGLE_STRIP;
 	m_AttribCount = 1; // DO NOT FORGET //

@@ -75,5 +75,11 @@
     <None Include="project\resources\shaders\SpriteFragment.glsl">
       <Filter>Shaders\Sprite</Filter>
     </None>
+    <None Include="project\resources\shaders\GridFragment.glsl">
+      <Filter>Shaders\Models</Filter>
+    </None>
+    <None Include="project\resources\shaders\GridVertex.glsl">
+      <Filter>Shaders\Models</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -8,10 +8,10 @@ ShadeEditor::ShadeEditor()
 	/*se::AssetData _Container;
 	se::AssetData _ModelsPacket;
 	se::AssetData _ShaderPacket;
-	se::AssetData _Model;*/
+	se::AssetData _Model;
 	se::AssetData _Shader;
 
-	/*_Container._Name = "Assets";
+	_Container._Name = "Assets";
 
 	_ModelsPacket._Name = "Models";
 	_ShaderPacket._Name = "Shaders";
@@ -34,14 +34,14 @@ ShadeEditor::ShadeEditor()
 	Serrializer::Serrialize3DModel("./project/resources/models/samurai-helmet/samurai-helmet.obj", &_Model, true);
 	_ModelsPacket._Dependency.push_back(_Model);
 
-/////////////////////////////////////*/
-	/*_Shader._Name = "BasicModel";
+/////////////////////////////////////
+	_Shader._Name = "BasicModel";
 	_Shader._Path = "./resources/shaders/";
 
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
-		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);*/
-	/*_ShaderPacket._Dependency.push_back(_Shader);
+		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);
+	_ShaderPacket._Dependency.push_back(_Shader);
 
 	_Shader = se::AssetData{}; // Reset
 	_Shader._Name = "Sprite";
@@ -49,6 +49,14 @@ ShadeEditor::ShadeEditor()
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/SpriteVertex.glsl","#vertex"},
 		{"./project/resources/shaders/SpriteFragment.glsl","#fragment"}, }, &_Shader);
+	_ShaderPacket._Dependency.push_back(_Shader);
+
+	_Shader = se::AssetData{}; // Reset
+	_Shader._Name = "Grid";
+	_Shader._Path = "./resources/shaders/";
+	Serrializer::SerrializeShader({
+		{"./project/resources/shaders/GridVertex.glsl","#vertex"},
+		{"./project/resources/shaders/GridFragment.glsl","#fragment"}, }, &_Shader);
 	_ShaderPacket._Dependency.push_back(_Shader);
 
 

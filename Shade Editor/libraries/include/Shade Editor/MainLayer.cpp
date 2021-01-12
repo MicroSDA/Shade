@@ -68,7 +68,7 @@ void MainLayer::OnRender()
 						_TexturesEntities.get<se::TextureComponent>(_TextureEnity).Texture->Bind(static_cast<GLuint>(_TextureEnity));
 					}
 
-					se::Renderer::Draw(*_Mesh);
+					se::Renderer::DrawIndexed(*_Mesh);
 
 					for (auto& _TextureEnity : _TexturesEntities)
 					{
@@ -79,6 +79,23 @@ void MainLayer::OnRender()
 		}
 	}
 	{
+		//Grid// TODO move to another layer i guess
+		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.Grid");
+		_Shader->Bind();
+		_Shader->SendUniformMatrix4Float("ViewM", GL_FALSE, _MainCamera->GetView());
+		_Shader->SendUniformMatrix4Float("ProjectionM", GL_FALSE, _MainCamera->GetProjection());
+
+		auto _Entities = GetScene()->GetEntities().view<se::DrawableComponent, se::Transform3DComponent>();
+		for (auto& _Entity : _Entities) {
+			_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModel());
+			//se::Renderer::Disable(GL_DEPTH_TEST);
+			se::Renderer::DrawIndexed(*_Entities.get<se::DrawableComponent>(_Entity).Drawable);
+			//se::Renderer::Enable(GL_DEPTH_TEST);
+		}
+
+		
+	}
+	{
 		//GUI // TODO move to another layer i guess
 		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.Sprite");
 		_Shader->Bind();
@@ -86,7 +103,7 @@ void MainLayer::OnRender()
 		for (auto& _Entity : _Entities) {
 			_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::Transform2DComponent>(_Entity).Transform.GetModel());
 			_Entities.get<se::TextureComponent>(_Entity).Texture->Bind(0);
-			se::Renderer::Draw(*_Entities.get<se::SpriteComponent>(_Entity).Sprite);
+			se::Renderer::DrawSprite(*_Entities.get<se::SpriteComponent>(_Entity).Sprite);
 			se::Texture::UnBind(0);
 		}
 	}

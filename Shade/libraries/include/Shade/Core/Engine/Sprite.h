@@ -5,15 +5,14 @@
 
 namespace se
 {
-	static class SE_API Sprite :public se::Drawable
+	class SE_API Sprite :public se::Drawable
 	{
 	public:
 		Sprite();
 		virtual ~Sprite();
 		void Init();
 	protected:
-		const se::Texture* m_Texture;
-		static const GLfloat      m_Quad[];
+		const GLfloat m_Quad[8] = { -1.0,1.0,  -1.0,-1.0,  1.0,1.0,  1.0,-1.0 };
 	private:
 	};
 

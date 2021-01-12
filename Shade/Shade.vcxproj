@@ -33,6 +33,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Environment.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\GeneralLight.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Grid.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Input.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Light.h" />
@@ -79,6 +80,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Environment.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\GeneralLight.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Grid.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Input.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Light.cpp" />

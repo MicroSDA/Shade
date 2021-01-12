@@ -12,6 +12,7 @@
 #include "Shade/Core/Engine/SpotLight.h"
 #include "Shade/Core/Engine/Material.h"
 #include "Shade/Core/Engine/Sprite.h"
+#include "Shade/Core/Engine/Grid.h"
 
 namespace se
 {
@@ -24,7 +25,16 @@ namespace se
 		virtual void OnCreate() {};
 		virtual void OnDestroy() {};
 	};
-
+	struct DrawableComponent
+	{
+		se::Drawable* Drawable = nullptr;
+		DrawableComponent() = default;
+		DrawableComponent(const DrawableComponent&) = default;
+		DrawableComponent(se::Drawable* other)
+			:Drawable(other)
+		{
+		}
+	};
 	struct TagComponent
 	{
 		std::string Tag;

@@ -46,14 +46,15 @@ void MainScene::OnInit()
 	_MainCamera->SetPosition(0, 3, -5);
 	SetMainCamera(_MainCamera);
 
+	se::Entity _GridEntity = this->CreateEntity("Grid");
+	_GridEntity.AddComponent<se::Transform3DComponent>();
+	_GridEntity.AddComponent<se::DrawableComponent>(new se::Grid(200, 200, 50));
+
 
 	{// Assets
 		se::Model3D* _Floor	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor");
 		se::Model3D* _Cube	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
 		se::Model3D* _Samurai	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.SamuraiHelmet");
-
-	
-	
 
 		se::Entity _FloorEntity = CreateEntity("Floor");
 		_FloorEntity.AddComponent<se::Transform3DComponent>();
