@@ -8,8 +8,11 @@ ShadeEditor::ShadeEditor()
 	/*se::AssetData _Container;
 	se::AssetData _ModelsPacket;
 	se::AssetData _ShaderPacket;
+	se::AssetData _SpritePacket;
 	se::AssetData _Model;
 	se::AssetData _Shader;
+	se::AssetData _Sprite;
+
 
 	_Container._Name = "Assets";
 
@@ -60,19 +63,23 @@ ShadeEditor::ShadeEditor()
 	_ShaderPacket._Dependency.push_back(_Shader);
 
 
-	se::AssetData _ImagePacket;
-	_ImagePacket._Name = "Images";
-	_ImagePacket._Path = "./resources/textures/";
-	se::AssetData _Image;
+	
+	_SpritePacket._Name = "Sprites";
+	_SpritePacket._Path = "./resources/textures/";
+	se::AssetData _Texture;
 
-	_Image._Name = "Image";
-	_Image._Path = "./resources/textures/image.bin"; // if serialize like that need to specify full path and name
-	Serrializer::SerrializeTexture("./project/resources/images/image.png", &_Image);
-	_ImagePacket._Dependency.push_back(_Image);
+	_Sprite._Name  = "PoeImage";
+	_Sprite._Type  = se::AssetDataType::Sprite;
+	_Texture._Name = "PoeImage";
+	_Texture._Type = se::AssetDataType::Texture;
+	_Texture._Path = "./resources/textures/image.bin"; // if serialize like that need to specify full path and name
+	Serrializer::SerrializeTexture("./project/resources/images/image.png", &_Texture);
+	_Sprite._Dependency.push_back(_Texture);
+	_SpritePacket._Dependency.push_back(_Sprite);
 
 	_Container._Dependency.push_back(_ShaderPacket);
 	_Container._Dependency.push_back(_ModelsPacket);
-	_Container._Dependency.push_back(_ImagePacket);
+	_Container._Dependency.push_back(_SpritePacket);
 
 	se::AssetManager::WriteRoadMap(_Container);
 	exit(0);*/

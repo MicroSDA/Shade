@@ -45,7 +45,7 @@ void MainLayer::OnRender()
 			auto _Enviroments = GetScene()->GetEntities().view<se::EnvironmentComponent>();
 			for (auto& _Enviroment : _Enviroments)
 			{
-				_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Instance->Process(_Shader);
+				_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Environment->Process(_Shader);
 			}
 		}
 		{
@@ -99,12 +99,19 @@ void MainLayer::OnRender()
 		//GUI // TODO move to another layer i guess
 		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.Sprite");
 		_Shader->Bind();
-		auto _Entities = GetScene()->GetEntities().view<se::TextureComponent, se::Transform2DComponent, se::SpriteComponent>();
+		auto _Entities = GetScene()->GetEntities().view<se::Transform2DComponent, se::SpriteComponent>();
 		for (auto& _Entity : _Entities) {
 			_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::Transform2DComponent>(_Entity).Transform.GetModel());
-			_Entities.get<se::TextureComponent>(_Entity).Texture->Bind(0);
-			se::Renderer::DrawSprite(*_Entities.get<se::SpriteComponent>(_Entity).Sprite);
-			se::Texture::UnBind(0);
+
+			se::Renderer::Disable(GL_DEPTH_TEST);
+				se::Renderer::Enable(GL_BLEND);
+				se::Renderer::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+					_Entities.get<se::SpriteComponent>(_Entity).Sprite->GetEntities().get<se::TextureComponent>(entt::entity(0)).Texture->Bind(0);
+				se::Renderer::DrawNotIndexed(*_Entities.get<se::SpriteComponent>(_Entity).Sprite);
+				se::Renderer::Enable(GL_DEPTH_TEST);
+			se::Renderer::Disable(GL_BLEND);
+
+			se::Texture::UnBind(0); // TODO Why ? need test
 		}
 	}
 	

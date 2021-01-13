@@ -48,7 +48,7 @@ void MainScene::OnInit()
 
 	se::Entity _GridEntity = this->CreateEntity("Grid");
 	_GridEntity.AddComponent<se::Transform3DComponent>();
-	_GridEntity.AddComponent<se::DrawableComponent>(new se::Grid(200, 200, 50));
+	_GridEntity.AddComponent<se::DrawableComponent>(new se::Grid(40, 40, 8));
 
 
 	{// Assets
@@ -74,7 +74,7 @@ void MainScene::OnInit()
 			_SamuraiEntity.AddComponent<se::NativeScriptComponent>().Bind<se::Mode3DController>();
 		}
 		{   // Just for Fun )
-			se::Sprite* _POEInterfaceSprite = new se::Sprite();
+			se::Sprite* _POEInterfaceSprite = se::AssetManager::Hold<se::Sprite>("Assets.Sprites.PoeImage");
 			_POEInterfaceSprite->Init();
 			se::Entity _SpriteEntity = CreateEntity();
 
@@ -83,7 +83,7 @@ void MainScene::OnInit()
 			_Transform.SetPostition(0.0f, - 0.8f);
 
 			_SpriteEntity.AddComponent<se::Transform2DComponent>(_Transform);
-			_SpriteEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>("Assets.Images.Image"));
+			//_SpriteEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>("Assets.Images.Image"));
 			_SpriteEntity.AddComponent<se::SpriteComponent>(_POEInterfaceSprite);
 		}
 		
@@ -143,7 +143,7 @@ void MainScene::OnDelete()
 	// Delete Camera and light jsut for now here
 	{
 		auto _Lights = GetEntities().view<se::EnvironmentComponent>();
-		delete _Lights.get<se::EnvironmentComponent>(_Lights[0]).Instance;
+		delete _Lights.get<se::EnvironmentComponent>(_Lights[0]).Environment;
 	}
 	{
 		/*auto _Camera = GetRegistry().view<se::CameraComponent>();

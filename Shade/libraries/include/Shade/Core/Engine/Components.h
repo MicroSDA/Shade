@@ -1,9 +1,8 @@
 #pragma once
 #include "stdafx.h"
-#include "Shade/Core/Engine/Transform3D.h"
-#include "Shade/Core/Engine/Transform2D.h"
+#include "Shade/Core/Engine/TransformComponents.h"
+#include "Shade/Core/Engine/DrawableComponents.h"
 #include "Shade/Core/Engine/Model3D.h"
-#include "Shade/Core/Engine/Mesh.h"
 #include "Shade/Core/Engine/Camera.h"
 #include "Shade/Core/Engine/Texture.h"
 #include "Shade/Core/Engine/ScriptableEntity.h"
@@ -11,8 +10,6 @@
 #include "Shade/Core/Engine/PointLight.h"
 #include "Shade/Core/Engine/SpotLight.h"
 #include "Shade/Core/Engine/Material.h"
-#include "Shade/Core/Engine/Sprite.h"
-#include "Shade/Core/Engine/Grid.h"
 
 namespace se
 {
@@ -25,16 +22,7 @@ namespace se
 		virtual void OnCreate() {};
 		virtual void OnDestroy() {};
 	};
-	struct DrawableComponent
-	{
-		se::Drawable* Drawable = nullptr;
-		DrawableComponent() = default;
-		DrawableComponent(const DrawableComponent&) = default;
-		DrawableComponent(se::Drawable* other)
-			:Drawable(other)
-		{
-		}
-	};
+
 	struct TagComponent
 	{
 		std::string Tag;
@@ -45,33 +33,6 @@ namespace se
 		{
 		}
 	};
-	struct Transform3DComponent : ComponentBase
-	{
-		se::Transform3D Transform;
-		Transform3DComponent() = default;
-		~Transform3DComponent() = default;
-
-		Transform3DComponent(const Transform3DComponent&) = default;
-		Transform3DComponent(const se::Transform3D& other)
-			:Transform(other)
-		{
-		}
-		operator se::Transform3D& () { return Transform; }
-		operator const se::Transform3D& () const { return Transform; }
-	};
-	struct Transform2DComponent : ComponentBase
-	{
-		se::Transform2D Transform;
-		Transform2DComponent() = default;
-		Transform2DComponent(const Transform2DComponent&) = default;
-		Transform2DComponent(const se::Transform2D& other)
-			:Transform(other)
-		{
-		}
-		operator se::Transform2D& () { return Transform; }
-		operator const se::Transform2D& () const { return Transform; }
-	};
-	
 	struct CameraComponent : ComponentBase
 	{
 		se::Camera* Camera = nullptr;
@@ -97,49 +58,6 @@ namespace se
 		{
 			// Free asset data if it was hold
 		};
-	};
-
-	struct MeshComponent : ComponentBase
-	{
-		se::Mesh* Mesh = nullptr;
-		MeshComponent() = default;
-		~MeshComponent()
-		{
-			if (Mesh)
-				se::AssetManager::Free(Mesh->GetAssetClassName());
-		};
-		MeshComponent(se::Mesh* other)
-			:Mesh(other) {};
-		MeshComponent(const MeshComponent& other)
-		{
-			if (this != &other)
-			{
-				this->Mesh = other.Mesh;
-				se::AssetManager::Hold<se::Mesh>(Mesh->GetAssetClassName());
-			}
-		};
-		MeshComponent(MeshComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Mesh = other.Mesh;
-				other.Mesh = nullptr;
-			}
-		};
-		MeshComponent& operator=(const MeshComponent& other)
-		{ 
-			this->Mesh = other.Mesh;
-			se::AssetManager::Hold<se::Mesh>(Mesh->GetAssetClassName());
-		};
-		MeshComponent& operator=(MeshComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Mesh = other.Mesh;
-				other.Mesh = nullptr;
-			}
-			return *this;
-		}
 	};
 
 	struct Model3DComponent : ComponentBase
@@ -258,15 +176,14 @@ namespace se
 	};
 	struct EnvironmentComponent : ComponentBase
 	{
-		se::Environment* Instance = nullptr;
+		se::Environment* Environment = nullptr;
 		EnvironmentComponent() = default; // TODO light should be like asset ?
 		EnvironmentComponent(const EnvironmentComponent&) = default;
 		EnvironmentComponent(se::Environment* other)
-			:Instance(other)
+			:Environment(other)
 		{
 		}
 	};
-
 	struct MaterialComponent : ComponentBase
 	{
 		se::Material Material;
@@ -280,14 +197,4 @@ namespace se
 		operator const se::Material& () const { return Material; }
 	};
 
-	struct SpriteComponent : ComponentBase
-	{
-		se::Sprite* Sprite = nullptr;
-		SpriteComponent() = default;
-		SpriteComponent(const SpriteComponent&) = default;
-		SpriteComponent(se::Sprite* other)
-			:Sprite(other)
-		{
-		}
-	};
 }

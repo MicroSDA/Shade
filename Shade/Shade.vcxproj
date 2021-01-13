@@ -28,6 +28,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Components.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Controllers.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Drawable.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\DrawableComponents.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\EntitiesDocker.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Environment.h" />
@@ -51,6 +52,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Timer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Transform2D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Transform3D.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\TransformComponents.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Vertex.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\WindowManager.h" />
     <ClInclude Include="libraries\include\Shade\Core\Main.h" />

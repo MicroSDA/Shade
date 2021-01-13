@@ -40,6 +40,9 @@
     <Filter Include="Core\Engine\Render\Drawable">
       <UniqueIdentifier>{bbb6376d-2ee4-419d-87f6-cb8a63ce6109}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Engine\Components">
+      <UniqueIdentifier>{941ec1c1-0a9d-4046-9b4a-ea689dc0be4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -79,9 +82,6 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h">
       <Filter>Core\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Components.h">
-      <Filter>Core\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Asset.h">
       <Filter>Core\Engine\Asset</Filter>
     </ClInclude>
@@ -104,9 +104,6 @@
       <Filter>Core\Engine\Render</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Renderer.h">
-      <Filter>Core\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Texture.h">
       <Filter>Core\Engine\Render</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Input.h">
@@ -169,6 +166,18 @@
     <ClInclude Include="libraries\include\Shade\Shade.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Texture.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Components.h">
+      <Filter>Core\Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\TransformComponents.h">
+      <Filter>Core\Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\DrawableComponents.h">
+      <Filter>Core\Engine\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -212,9 +221,6 @@
       <Filter>Core\Engine\Render</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Renderer.cpp">
-      <Filter>Core\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Texture.cpp">
       <Filter>Core\Engine\Render</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Input.cpp">
@@ -273,6 +279,9 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Grid.cpp">
       <Filter>Core\Engine\Render\Drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Texture.cpp">
+      <Filter>Core\Engine\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

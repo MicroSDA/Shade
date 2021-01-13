@@ -48,5 +48,7 @@ se::Grid::Grid(const float& width, const float& height, const int& density)
 
 se::Grid::~Grid()
 {
-
+	/*glDeleteVertexArrays(1, &m_VAO);
+	glDeleteBuffers(1, &m_VBO);
+	glDeleteBuffers(1, &m_EBO);*/
 }

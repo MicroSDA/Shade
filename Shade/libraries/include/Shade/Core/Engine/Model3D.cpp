@@ -165,10 +165,18 @@ void se::Model3D::Load()
 
 void se::Model3D::Init()
 {
-	auto Meshes = this->GetEntities().view<se::MeshComponent>();
-
-	for (auto& Mesh : Meshes)
+	if (!m_IsInitialized)
 	{
-		Meshes.get<se::MeshComponent>(Mesh).Mesh->Init();
+		auto Meshes = this->GetEntities().view<se::MeshComponent>();
+
+		for (auto& Mesh : Meshes)
+		{
+			Meshes.get<se::MeshComponent>(Mesh).Mesh->Init();
+		}
 	}
+	else
+	{
+		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->_Path + "'").c_str(), se::SECode::Warning);
+	}
+	
 }
