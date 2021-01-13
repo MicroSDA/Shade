@@ -47,7 +47,7 @@ vec4 ProcessGeneralLight(vec3 Normals, BaseLight Light, Material material, vec3 
     if(m_DiffuesShading > 0.0)
     {                                                       // Material
        m_DiffuesColor          = vec4((DiffuseTexture.rgb * material.colorDiffuse * Light.ColorDiffuse * m_DiffuesShading), DiffuseTexture.a);
-       vec3 LightReflect       = reflect(Light.Direction, Normals); // normalize(reflect(Light.Direction, Normals));
+       vec3 LightReflect       = normalize(reflect(Light.Direction, Normals)); // normalize(reflect(Light.Direction, Normals));
        float m_SpecularShading = dot(ToCameraDirection, LightReflect);
 
        if(m_SpecularShading > 0.0)

@@ -50,7 +50,7 @@ namespace se
 
 			if (m_GeneralLight)
 			{
-				se::Camera* _Camera = se::Application::GetApp().GetActiveScene()->GetMainCamera();
+				se::Camera* _Camera = se::Application::GetApplication().GetCurrentScene()->GetMainCamera();
 				if(se::Input::IsKeyboardBPressed(SDL_SCANCODE_LALT))
 					m_GeneralLight->SetDirection(_Camera->GetForwardDirrection());
 			}
@@ -80,7 +80,7 @@ namespace se
 			}
 			else if(m_SpotLight)
 			{
-				se::Camera* _Camera = se::Application::GetApp().GetActiveScene()->GetMainCamera();
+				se::Camera* _Camera = se::Application::GetApplication().GetCurrentScene()->GetMainCamera();
 				m_SpotLight->SetPosition(_Camera->GetPosition());
 				m_SpotLight->SetDirection(_Camera->GetForwardDirrection());
 			}

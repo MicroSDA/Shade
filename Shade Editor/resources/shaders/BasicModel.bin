@@ -26,7 +26,7 @@ mat3 CalculateTBNMatrix(mat4 ModelMatrix, vec3 Normals, vec3 Tangents)
 		
 	layout (location = 0) out vec2 out_TextureCoords;
     layout (location = 1) out vec3 out_Normals;
-	layout (location = 2) out vec3 out_ToCameraDirection;
+	layout (location = 2) out vec3 out_CameraPosition;
 	layout (location = 3) out vec3 out_ModelPosition;
 
 	out mat3 out_TBN;
@@ -38,7 +38,7 @@ mat3 CalculateTBNMatrix(mat4 ModelMatrix, vec3 Normals, vec3 Tangents)
 		out_TextureCoords = TextureCoords;
 		out_Normals  = (ModelM * vec4(Normals, 0.0)).xyz;
 		out_ModelPosition = (ModelM * vec4(Position, 1.0f)).xyz;
-        out_ToCameraDirection  = normalize(CameraPosition - out_ModelPosition);
+        out_CameraPosition  = CameraPosition;
 	}
 #end
 #fragment
@@ -92,7 +92,7 @@ vec4 ProcessGeneralLight(vec3 Normals, BaseLight Light, Material material, vec3 
     if(m_DiffuesShading > 0.0)
     {                                                       // Material
        m_DiffuesColor          = vec4((DiffuseTexture.rgb * material.colorDiffuse * Light.ColorDiffuse * m_DiffuesShading), DiffuseTexture.a);
-       vec3 LightReflect       = reflect(Light.Direction, Normals); // normalize(reflect(Light.Direction, Normals));
+       vec3 LightReflect       = normalize(reflect(Light.Direction, Normals)); // normalize(reflect(Light.Direction, Normals));
        float m_SpecularShading = dot(ToCameraDirection, LightReflect);
 
        if(m_SpecularShading > 0.0)
@@ -154,7 +154,7 @@ vec3 CalculateTBNNormal(vec3 NormalMap, mat3 TBNMatrix)
 	
 	layout (location = 0) in vec2 TextureCoords;
 	layout (location = 1) in vec3 Normals;
-	layout (location = 2) in vec3 ToCameraDirection;
+	layout (location = 2) in vec3 CameraPosition;
 	layout (location = 3) in vec3 ModelPosition;
 
 	in mat3 out_TBN;
@@ -163,6 +163,8 @@ vec3 CalculateTBNNormal(vec3 NormalMap, mat3 TBNMatrix)
 	{
 	    vec3 TBNNormal = CalculateTBNNormal(texture(NORMAL_MAP, TextureCoords).rgb, out_TBN);
 	
+		vec3 ToCameraDirection = normalize(CameraPosition - ModelPosition);
+
 	    //vec4 m_TotalColor = ProcessGeneralLight(TBNNormal, generalL, material, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
 		vec4 m_TotalColor = ProcessPointLight(TBNNormal, pointL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
 		//vec4 m_TotalColor = ProcessSpotLight(TBNNormal, spotL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);

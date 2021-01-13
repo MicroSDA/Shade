@@ -108,3 +108,15 @@ void se::Scene::SetMainCamera(se::Camera* camera)
 	m_pMainCamera = camera;
 }
 
+inline se::Layer* se::Scene::GetLayer(const std::string& name)
+{
+	
+	for (auto& _Layer : m_Layers)
+	{
+		if (_Layer->GetName() == name)
+			return _Layer;
+	}
+
+	throw se::ShadeException(std::string("Layer '" + name + "' doesn't exist in '" + m_Name + "' scene!").c_str(), se::SECode::Error);
+}
+

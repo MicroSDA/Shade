@@ -2,7 +2,7 @@
 #include "EventManager.h"
 #include "Shade/Core/Engine/Application.h"
 #include "Shade/Core/Engine/WindowManager.h"
-
+#include "Shade/Core/Engine/Layer.h"
 
 se::EventManager::EventManager():
     m_Event(se::Event())
@@ -63,7 +63,7 @@ void se::EventManager::Update()
 	//Potential momory leak by vector capasity 
 	while (SDL_PollEvent(&m_Event) && !se::WindowManager::IsClosed())
 	{
-		auto* _CurrentScene = se::Application::GetApp().GetActiveScene();
+		auto* _CurrentScene = se::Application::GetApplication().GetCurrentScene();
 		//Core
 		for (auto i = 0; i < m_CoreCallbacks[static_cast<EventType>(m_Event.type)].size(); i++)
 		{
@@ -86,18 +86,21 @@ void se::EventManager::Update()
 				SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
 			}
 		}
-		//Layer // WHY THERE IS DIFERENT ???????????
+		//Layer // WHY THERE IS DIFERENT ??????????? TODO
 		for (auto& scene : m_LayerCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene])
 		{
 			for (int i = 0; i < scene.second.size(); i++)
 			{
-				if (scene.second[i](m_Event))
+				if (scene.first->IsActive() && scene.first->IsEventsUpdating())
 				{
-					scene.second.erase(scene.second.begin() + i);
-					SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
+					if (scene.second[i](m_Event))
+					{
+						scene.second.erase(scene.second.begin() + i);
+						SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
+					}
 				}
+				
 			}
-
 		}
 	}
 }

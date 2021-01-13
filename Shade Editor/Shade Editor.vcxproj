@@ -181,6 +181,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="libraries\include\Shade Editor\GuiLayer.h" />
     <ClInclude Include="libraries\include\Shade Editor\MainLayer.h" />
     <ClInclude Include="libraries\include\Shade Editor\MainScene.h" />
     <ClInclude Include="libraries\include\Shade Editor\ShadeEditor.h" />
@@ -188,6 +189,7 @@
     <ClInclude Include="libraries\include\Vendors\stbi\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="libraries\include\Shade Editor\GuiLayer.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\MainLayer.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\MainScene.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\ShadeEditor.cpp" />

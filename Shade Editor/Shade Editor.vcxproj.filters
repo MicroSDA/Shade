@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade Editor\MainLayer.h">
-      <Filter>Layer</Filter>
+      <Filter>Layers</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade Editor\MainScene.h">
       <Filter>Scene</Filter>
@@ -14,10 +14,13 @@
       <Filter>Vendors</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade Editor\Serrializer.h" />
+    <ClInclude Include="libraries\include\Shade Editor\GuiLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade Editor\MainLayer.cpp">
-      <Filter>Layer</Filter>
+      <Filter>Layers</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade Editor\MainScene.cpp">
       <Filter>Scene</Filter>
@@ -29,13 +32,13 @@
       <Filter>Vendors</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade Editor\Serrializer.cpp" />
+    <ClCompile Include="libraries\include\Shade Editor\GuiLayer.cpp">
+      <Filter>Layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">
       <UniqueIdentifier>{9192bb99-19d7-4a3c-bf54-5f6afc899da7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Layer">
-      <UniqueIdentifier>{9b8250b1-f5f4-4356-8b0a-e83961b7b041}</UniqueIdentifier>
     </Filter>
     <Filter Include="Application">
       <UniqueIdentifier>{5085ae01-a553-4a43-979e-387c742fb766}</UniqueIdentifier>
@@ -51,6 +54,12 @@
     </Filter>
     <Filter Include="Shaders\Sprite">
       <UniqueIdentifier>{e3791f81-50d6-41dc-8e27-7d5db2469438}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Layers">
+      <UniqueIdentifier>{9b8250b1-f5f4-4356-8b0a-e83961b7b041}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Primitives">
+      <UniqueIdentifier>{b3b6358a-d9d5-4df2-9495-b000cdaabddb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,11 +84,11 @@
     <None Include="project\resources\shaders\SpriteFragment.glsl">
       <Filter>Shaders\Sprite</Filter>
     </None>
-    <None Include="project\resources\shaders\GridFragment.glsl">
-      <Filter>Shaders\Models</Filter>
-    </None>
     <None Include="project\resources\shaders\GridVertex.glsl">
-      <Filter>Shaders\Models</Filter>
+      <Filter>Shaders\Primitives</Filter>
+    </None>
+    <None Include="project\resources\shaders\GridFragment.glsl">
+      <Filter>Shaders\Primitives</Filter>
     </None>
   </ItemGroup>
 </Project>

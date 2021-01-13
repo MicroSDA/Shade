@@ -25,6 +25,8 @@ namespace se
 
 		se::Camera* GetMainCamera();
 		void SetMainCamera(se::Camera* camera);
+		inline       std::vector<se::Layer*>& GetLayers() { return m_Layers; };
+		inline       se::Layer* GetLayer(const std::string& name);
 	protected:
 		virtual void OnCreate() = 0;
 		virtual void OnInit() = 0;
@@ -32,7 +34,6 @@ namespace se
 		void         DeleteLayers();
 		void         InitLayers();
 		void         InitLayer(const std::string& name);
-		inline       std::vector<se::Layer*>& GetLayers() { return m_Layers; };
 		template<typename T>
 		se::Layer* CreateLayer(const std::string& name)
 		{
@@ -52,7 +53,7 @@ namespace se
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
 		se::Camera* m_pMainCamera;
-		bool m_IsInitalized;
+		bool		m_IsInitalized;
 	};
 
 }

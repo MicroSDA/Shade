@@ -17,8 +17,8 @@ namespace se
 	public:
 		Application();
 		virtual ~Application();
-		static Application& GetApp() { return *m_pInstance; }
-		inline se::Scene* GetActiveScene() const { return m_ActiveScene; };
+		static Application& GetApplication();
+		inline se::Scene* GetCurrentScene() const  { return m_pCurrentScene; };
 		virtual void OnInit() = 0;
 		void   Start();
 		void   Quit();
@@ -36,11 +36,11 @@ namespace se
 		std::map<std::string, se::Scene*>& GetScenes();
 		se::Scene* GetScene(const std::string& name);
 		void InitScene(const std::string& name);
-		void SetActiveScene(const std::string& name);
+		void SetCurentScene(const std::string& name);
 		void DeleteScene(const std::string& name);
 	private:
 		static Application*               m_pInstance;
-		se::Scene*                        m_ActiveScene;
+		se::Scene*                        m_pCurrentScene;
 		std::map<std::string, se::Scene*> m_Scenes;
 		bool                              m_IsQuitRequested;
 	};

@@ -5,7 +5,7 @@
 
 ShadeEditor::ShadeEditor()
 {
-	/*se::AssetData _Container;
+	se::AssetData _Container;
 	se::AssetData _ModelsPacket;
 	se::AssetData _ShaderPacket;
 	se::AssetData _SpritePacket;
@@ -14,7 +14,7 @@ ShadeEditor::ShadeEditor()
 	se::AssetData _Sprite;
 
 
-	_Container._Name = "Assets";
+	/*_Container._Name = "Assets";
 
 	_ModelsPacket._Name = "Models";
 	_ShaderPacket._Name = "Shaders";
@@ -35,7 +35,7 @@ ShadeEditor::ShadeEditor()
 	_Model._Name = "SamuraiHelmet";
 	_Model._Path = "./resources/models/samurai-helmet/";
 	Serrializer::Serrialize3DModel("./project/resources/models/samurai-helmet/samurai-helmet.obj", &_Model, true);
-	_ModelsPacket._Dependency.push_back(_Model);
+	_ModelsPacket._Dependency.push_back(_Model);*/
 
 /////////////////////////////////////
 	_Shader._Name = "BasicModel";
@@ -44,7 +44,7 @@ ShadeEditor::ShadeEditor()
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
 		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);
-	_ShaderPacket._Dependency.push_back(_Shader);
+	/*_ShaderPacket._Dependency.push_back(_Shader);
 
 	_Shader = se::AssetData{}; // Reset
 	_Shader._Name = "Sprite";
@@ -121,7 +121,7 @@ void ShadeEditor::OnInit()
 		InitScene(name);
 	}
 
-	SetActiveScene("MainScene");
+	SetCurentScene("MainScene");
 	//DeleteScene("MainScene");
 }
 

@@ -1,16 +1,18 @@
 #include "stdafx.h"
 #include "Application.h"
+#include "Shade/Core/Engine/Layer.h"
 //#include "Shade/Core/Engine/Scene.h"
 
 se::Application* se::Application::m_pInstance = nullptr;
 
 se::Application::Application()
-	:m_ActiveScene(nullptr), m_IsQuitRequested(false)
+	:m_pCurrentScene(nullptr), m_IsQuitRequested(false)
 {
+	if (m_pInstance)
+		throw se::ShadeException("Application already exists!", se::SECode::Error);
+
 	m_pInstance = this;
 	SE_DEBUG_PRINT("Application has been created.", se::SLCode::InfoSecondary);
-
-	
 
 	/*SDL_Init(SDL_INIT_AUDIO);
 	SDL_AudioSpec wavSpec;
@@ -30,11 +32,12 @@ se::Application::Application()
 			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
 			{
 				se::WindowManager::Resize();
-				se::Application::GetApp().GetActiveScene()->GetMainCamera()->Resize();
+				auto* _MainCamera = se::Application::GetApplication().GetCurrentScene()->GetMainCamera();
+				if (_MainCamera != nullptr)
+					_MainCamera->Resize();
 			}
 		
 			return false;
-
 		});
 }
 
@@ -50,6 +53,11 @@ se::Application::~Application()
 	SE_DEBUG_PRINT("Application has been destroyed.", se::SLCode::InfoSecondary);
 }
 
+se::Application& se::Application::GetApplication()
+{
+	return *m_pInstance;
+}
+
 void se::Application::Start()
 {
 	se::Timer _DeltaTime;
@@ -62,12 +70,31 @@ void se::Application::Start()
 		{
 			se::EventManager::Get().Update();
 			OnUpdate(_DeltaTime);
-			if (m_ActiveScene)
+			if (m_pCurrentScene)
 			{
-				m_ActiveScene->OnUpdate(_DeltaTime);
-
+				m_pCurrentScene->OnUpdate(_DeltaTime);
+				for (auto _Layer : m_pCurrentScene->GetLayers())
+				{
+					if (_Layer->IsActive())
+					{
+						if (_Layer->IsUpdating())
+						{
+							_Layer->OnUpdate(_DeltaTime);
+						}
+					}
+				}
 				se::WindowManager::Get().Clear();
-				m_ActiveScene->OnRender();
+				m_pCurrentScene->OnRender();
+				for (auto _Layer : m_pCurrentScene->GetLayers())
+				{
+					if (_Layer->IsActive())
+					{
+						if (_Layer->IsRendering())
+						{
+							_Layer->OnRender();
+						}
+					}
+				}
 			}
 			else 
 			{
@@ -151,11 +178,11 @@ void se::Application::InitScene(const std::string& name)
 	}
 }
 
-void se::Application::SetActiveScene(const std::string& name)
+void se::Application::SetCurentScene(const std::string& name)
 {
 	auto _Scene = m_Scenes.find(name);
 	if (_Scene != m_Scenes.end())
-		m_ActiveScene = _Scene->second;
+		m_pCurrentScene = _Scene->second;
 	else
 	{
 		std::string _Msg("Scene '" + name + "' has not been found!");
@@ -168,8 +195,8 @@ void se::Application::DeleteScene(const std::string& name)
 	auto _Scene = m_Scenes.find(name);
 	if (_Scene != m_Scenes.end())
 	{
-		if (m_ActiveScene == _Scene->second)
-			m_ActiveScene = nullptr;
+		if (m_pCurrentScene == _Scene->second)
+			m_pCurrentScene = nullptr;
 
 		_Scene->second->OnDelete();
 		delete _Scene->second;

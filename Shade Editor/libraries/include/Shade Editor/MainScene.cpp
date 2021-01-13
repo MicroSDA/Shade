@@ -34,9 +34,20 @@ void MainScene::OnCreate()
 				}
 			}
 
+			if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
+			{
+				auto* _Layer = this->GetLayer("GuiLayer");
+				if (_Layer->IsActive())
+					_Layer->SetActive(false);
+				else
+				_Layer->SetActive(true);
+				
+			}
+
 			return false;
 		});
 
+	
 	//se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
 }
 
@@ -70,7 +81,7 @@ void MainScene::OnInit()
 			_Transform.SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
 			_Transform.SetPostition(glm::vec3(0.0f, 2, 2));
 			_SamuraiEntity.AddComponent<se::Transform3DComponent>(_Transform);
-			_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
+			//_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
 			_SamuraiEntity.AddComponent<se::NativeScriptComponent>().Bind<se::Mode3DController>();
 		}
 		{   // Just for Fun )
@@ -112,7 +123,9 @@ void MainScene::OnInit()
 	}
 
 	CreateLayer<MainLayer>("MainLayer");
+	CreateLayer<GuiLayer>("GuiLayer");
 	InitLayer("MainLayer");
+	InitLayer("GuiLayer");
 	//InitLayers();
 }
 	
@@ -122,20 +135,11 @@ void MainScene::OnUpdate(const se::Timer& deltaTime)
 		UpdateNativeScripts(deltaTime); // Can be moved to layer specific object ?
 	}
 
-	for (auto& layer : GetLayers())
-	{
-		if (layer->IsActive())
-			layer->OnUpdate(deltaTime);
-	}
 }
 
 void MainScene::OnRender()
 {
-	for (auto& layer : GetLayers())
-	{
-		if (layer->IsActive())
-			layer->OnRender();
-	}
+	
 }
 
 void MainScene::OnDelete()

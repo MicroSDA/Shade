@@ -28,7 +28,14 @@ namespace se
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
 		void SetActive(const bool& isActive);
+		void SetEventsUpdate(const bool& isEventUpdate);
+		void SetRender(const bool& isRender);
+		void SetUpdate(const bool& isUpdate);
+
 		const bool& IsActive() const;
+		const bool& IsEventsUpdating() const;
+		const bool& IsRendering() const;
+		const bool& IsUpdating() const;
 
 		se::Scene* GetScene() { return m_pScene; }
 		const std::string& GetName() const { return m_Name; }
@@ -36,8 +43,11 @@ namespace se
 		std::string m_Name;
 	private:
 		se::Scene* m_pScene;
-		bool m_IsActive;
-		bool m_IsInitalized = false;
+		bool m_IsActive       = true;
+		bool m_IsEventsUpdate = true;
+		bool m_IsRender       = true;
+		bool m_IsUpdate       = true;
+		bool m_IsInitalized   = false;
 	};
 
 }

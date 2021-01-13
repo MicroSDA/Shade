@@ -44,6 +44,8 @@ se::Grid::Grid(const float& width, const float& height, const int& density)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(glm::uvec4), &m_Indices[0], GL_STATIC_DRAW);
 
 	glBindVertexArray(0); // just for save
+
+	glLineWidth(2.0f);
 }
 
 se::Grid::~Grid()
