@@ -44,6 +44,8 @@ void MainScene::OnCreate()
 				
 			}
 
+			
+
 			return false;
 		});
 
@@ -76,12 +78,12 @@ void MainScene::OnInit()
 		_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
 
 		{
-			se::Entity _SamuraiEntity = CreateEntity();
+			se::Entity _SamuraiEntity = CreateEntity("Samurai");
 			se::Transform3D _Transform;
 			_Transform.SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
 			_Transform.SetPostition(glm::vec3(0.0f, 2, 2));
 			_SamuraiEntity.AddComponent<se::Transform3DComponent>(_Transform);
-			//_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
+			_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
 			_SamuraiEntity.AddComponent<se::NativeScriptComponent>().Bind<se::Mode3DController>();
 		}
 		{   // Just for Fun )
@@ -113,9 +115,15 @@ void MainScene::OnInit()
 		se::GeneralLight* _GeneraLight = new se::GeneralLight();
 		_GeneraLight->SetDirection(0.0198322f,-0.675238f, 0.737333f);
 		
+		se::EnvironmentComponent _C = _PointLight;
 		se::Entity _LightEntity = CreateEntity();
-		_LightEntity.AddComponent<se::EnvironmentComponent>(_PointLight);
+
+		_LightEntity.AddComponent<se::EnvironmentComponent>(_C);
 		_LightEntity.AddComponent<se::NativeScriptComponent>().Bind<se::LightController>();
+
+		se::Entity _LightEntity2 = CreateEntity();
+		_LightEntity2.AddComponent<se::EnvironmentComponent>(_C);
+		_LightEntity2.AddComponent<se::NativeScriptComponent>().Bind<se::LightController>();
 
 		se::Entity   _CameraEntity = CreateEntity();
 		_CameraEntity.AddComponent<se::CameraComponent>(_MainCamera);
@@ -135,6 +143,15 @@ void MainScene::OnUpdate(const se::Timer& deltaTime)
 		UpdateNativeScripts(deltaTime); // Can be moved to layer specific object ?
 	}
 
+
+	if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_Q))
+	{
+		se::Renderer::PolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else
+	{
+		se::Renderer::PolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 }
 
 void MainScene::OnRender()
@@ -144,13 +161,5 @@ void MainScene::OnRender()
 
 void MainScene::OnDelete()
 {
-	// Delete Camera and light jsut for now here
-	{
-		auto _Lights = GetEntities().view<se::EnvironmentComponent>();
-		delete _Lights.get<se::EnvironmentComponent>(_Lights[0]).Environment;
-	}
-	{
-		/*auto _Camera = GetRegistry().view<se::CameraComponent>();
-		delete _Camera.get<se::CameraComponent>(_Camera[0]).Camera;*/
-	}
+	
 }

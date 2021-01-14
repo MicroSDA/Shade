@@ -10,6 +10,7 @@ namespace se
 	public:
 
 		friend class Scene;
+		friend class NativeScriptComponent;
 
 		virtual ~ScriptableEntity();
 		template<typename T>

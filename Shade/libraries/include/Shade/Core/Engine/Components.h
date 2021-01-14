@@ -15,6 +15,11 @@ namespace se
 {
 	class Entity;
 
+
+	// Use when you cannot manage life for specific object, see std::shared_ptr
+	template<typename T>
+	using ShadeShared = std::shared_ptr<T>;
+	// Base component, isn't using now
 	struct ComponentBase
 	{
 		ComponentBase() = default;
@@ -22,7 +27,9 @@ namespace se
 		virtual void OnCreate() {};
 		virtual void OnDestroy() {};
 	};
-
+	// Use when you want to name a specific entity
+	// Will be added automatically when an entity is being created
+	// Default value for Tag is 'Entity'
 	struct TagComponent
 	{
 		std::string Tag;
@@ -32,9 +39,12 @@ namespace se
 			:Tag(other)
 		{
 		}
+		operator std::string& () { return Tag; }
+		operator const std::string& () const { return Tag; }
 	};
 	struct CameraComponent : ComponentBase
 	{
+		// Set shared i guess TODO
 		se::Camera* Camera = nullptr;
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
@@ -42,24 +52,10 @@ namespace se
 			:Camera(other)
 		{
 		}
+		operator se::Camera* () { return Camera; }
+		operator const se::Camera* () const { return Camera; }
 	};
-
-	struct ShaderComponent : ComponentBase
-	{
-		se::Shader* Shader = nullptr;
-		ShaderComponent() = default;
-		~ShaderComponent()
-		{
-			se::AssetManager::Free(Shader->GetAssetData()->_Name);
-		};
-		ShaderComponent(const ShaderComponent&) = default;
-		ShaderComponent(se::Shader* other)
-			:Shader(other)
-		{
-			// Free asset data if it was hold
-		};
-	};
-
+	
 	struct Model3DComponent : ComponentBase
 	{
 		se::Model3D* Model3D = nullptr;
@@ -160,12 +156,59 @@ namespace se
 		operator const RenderComponentCallback& () const { return Callback; }
 	};
 
+	// Use for binding controller to an entity, cannot be copied, only move semantic is available
+	// Deleting automatically when Scene is destructing or manually by calling GetEntities()->destroy or Get Entities()->remove
+	// Do not call delete * directly neither for component nor controller.
 	struct NativeScriptComponent : ComponentBase
 	{
 		se::ScriptableEntity* Instance = nullptr;
+		// Copy constructor and assigment were deleted 
+		NativeScriptComponent() = default;
+		NativeScriptComponent(const NativeScriptComponent&) = delete;
+		NativeScriptComponent& operator=(const NativeScriptComponent& other) = delete;
+		// Move constructor
+		NativeScriptComponent(NativeScriptComponent&& other) noexcept
+		{
+			if (this != &other)
+			{
+				this->Instance = other.Instance;
+				other.Instance = nullptr;
 
-		ScriptableEntity* (*InstantiateScript)();
-		void (*DestroyScript)(NativeScriptComponent*);
+				this->InstantiateScript = other.InstantiateScript;
+				other.InstantiateScript = nullptr;
+
+				this->DestroyScript = other.DestroyScript;
+				other.DestroyScript = nullptr;
+			}
+		}
+		// Move assigment
+		NativeScriptComponent& operator=(NativeScriptComponent&& other) noexcept
+		{
+			if (this != &other)
+			{
+				this->Instance = other.Instance;
+				other.Instance = nullptr;
+
+				this->InstantiateScript = other.InstantiateScript;
+				other.InstantiateScript = nullptr;
+
+				this->DestroyScript = other.DestroyScript;
+				other.DestroyScript = nullptr;
+			}
+			return *this;
+		};
+		// Calls only when entity is destructing by GetEntites()->destroy or GetEntites()->remove
+		~NativeScriptComponent()
+		{
+			if (Instance != nullptr)
+			{
+				Instance->OnDestroy();
+				DestroyScript(this);
+			}
+				
+		}
+		ScriptableEntity* (*InstantiateScript)()	  = nullptr;
+		void (*DestroyScript)(NativeScriptComponent*) = nullptr;
 
 		template<typename T>
 		void Bind()
@@ -174,16 +217,23 @@ namespace se
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 		}
 	};
+	// Use for Environment pointer, shouldn't be deleted manually, based on the se::ShadeShared which use std::shared_ptr
 	struct EnvironmentComponent : ComponentBase
 	{
-		se::Environment* Environment = nullptr;
+		se::ShadeShared<se::Environment> Environment = nullptr;
 		EnvironmentComponent() = default; // TODO light should be like asset ?
+		// Default copy
 		EnvironmentComponent(const EnvironmentComponent&) = default;
+		EnvironmentComponent& operator=(const EnvironmentComponent&) = default;
 		EnvironmentComponent(se::Environment* other)
-			:Environment(other)
-		{
-		}
+			:Environment(other) {}
+		EnvironmentComponent(const se::ShadeShared<se::Environment>& other)
+			:Environment(other)	{}
+
+		operator se::Environment* () { return Environment.get(); }
+		operator const se::Environment* () const { return Environment.get(); }
 	};
+	// Base lighting material, usually being used by se::Mesh as entity
 	struct MaterialComponent : ComponentBase
 	{
 		se::Material Material;

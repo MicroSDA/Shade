@@ -37,9 +37,9 @@ namespace se
 	public:
 		void OnCreate()
 		{
-			m_GeneralLight = dynamic_cast<se::GeneralLight*>(this->GetComponent<se::EnvironmentComponent>().Environment);
-			m_PointLight   = dynamic_cast<se::PointLight*>(this->GetComponent<se::EnvironmentComponent>().Environment);
-			m_SpotLight    = dynamic_cast<se::SpotLight*>(this->GetComponent<se::EnvironmentComponent>().Environment);
+			m_GeneralLight = dynamic_cast<se::GeneralLight*>(this->GetComponent<se::EnvironmentComponent>().Environment.get());
+			m_PointLight   = dynamic_cast<se::PointLight*>(this->GetComponent<se::EnvironmentComponent>().Environment.get());
+			m_SpotLight    = dynamic_cast<se::SpotLight*>(this->GetComponent<se::EnvironmentComponent>().Environment.get());
 		}
 		void OnDestroy()
 		{

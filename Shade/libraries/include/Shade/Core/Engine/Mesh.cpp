@@ -3,7 +3,9 @@
 #include <utility>
 se::Mesh::Mesh(const std::string& fullClassName, const se::AssetData* data) : se::Asset(fullClassName, data), se::Drawable()
 {
+	m_DrawMode = se::DrawMode::TRIANGLES;
 	m_AttribCount = 4; // DO NOT FORGET //
+
 }
 
 se::Mesh::~Mesh()

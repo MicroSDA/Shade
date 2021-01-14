@@ -29,7 +29,7 @@ namespace se
 		T& GetComponent() const
 		{
 			if (!HasComponent<T>())
-				throw se::ShadeException("Entity does not have component!", se::SECode::Error);
+				throw se::ShadeException(std::string("Entity does not have component!" + std::string(typeid(T).name())).c_str(), se::SECode::Error);
 			return m_pDocker->GetEntities().get<T>(m_EntityHandle);
 		}
 
@@ -37,7 +37,7 @@ namespace se
 		void RemoveComponent()
 		{
 			if (!HasComponent<T>())
-				throw se::ShadeException("Entity does not have component!", se::SECode::Error);
+				throw se::ShadeException(std::string("Entity does not have component!" + std::string(typeid(T).name())).c_str(), se::SECode::Error);
 			m_pDocker->GetEntities().remove<T>(m_EntityHandle);
 		}
 

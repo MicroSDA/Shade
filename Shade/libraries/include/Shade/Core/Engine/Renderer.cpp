@@ -10,6 +10,7 @@ void se::Renderer::SetClearColor(const float& r, const float& g, const float& b,
 
 void se::Renderer::DrawIndexed(const se::Drawable& entity)
 {
+	
 	glBindVertexArray(entity.GetVAO());
 
 	for (GLuint attr = 0; attr < entity.GetAttribCount(); attr++)
@@ -57,4 +58,9 @@ inline void se::Renderer::CullFace(const GLenum& mode)
 inline void se::Renderer::BlendFunc(const GLenum& sfactor, const GLenum& dfactor)
 {
 	glBlendFunc(sfactor, dfactor);
+}
+
+inline void se::Renderer::PolygonMode(const GLenum& face, const GLenum& mode)
+{
+	glPolygonMode(face, mode);
 }

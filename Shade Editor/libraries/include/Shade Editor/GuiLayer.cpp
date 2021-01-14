@@ -51,7 +51,7 @@ void GuiLayer::OnRender()
 			se::Renderer::Enable(GL_BLEND);
 			se::Renderer::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			_Entities.get<se::SpriteComponent>(_Entity).Sprite->GetEntities().get<se::TextureComponent>(entt::entity(0)).Texture->Bind(0);
-			//se::Renderer::DrawNotIndexed(*_Entities.get<se::SpriteComponent>(_Entity).Sprite);
+			se::Renderer::DrawNotIndexed(*_Entities.get<se::SpriteComponent>(_Entity).Sprite);
 			se::Renderer::Enable(GL_DEPTH_TEST);
 			se::Renderer::Disable(GL_BLEND);
 

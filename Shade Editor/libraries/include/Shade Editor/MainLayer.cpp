@@ -23,14 +23,17 @@ void MainLayer::OnInit()
 
 void MainLayer::OnUpdate(const se::Timer& deltaTime)
 {
-	/*auto entities = GetScene()->GetRegistry().view<se::TransformComponent, se::Model3DComponent>();
-	for (auto& entity : entities) {
-		 auto& transform = entities.get<se::TransformComponent>(entity).Transform;
-	}*/
+	auto _Scypts = this->GetScene()->GetEntities().view<se::NativeScriptComponent>();
+
+	for (auto& scrypt : _Scypts)
+	{
+		//this->GetScene()->GetEntities().destroy(scrypt);
+	}
 }
 
 void MainLayer::OnRender()
 {
+
 	auto* _MainCamera = GetScene()->GetMainCamera();
 	{
 		// Modles 
@@ -78,14 +81,7 @@ void MainLayer::OnRender()
 			}
 		}
 	}
-	{
-		
-		
-	}
-	{
-		
-	}
-	
+
 }
 
 void MainLayer::OnDelete()

@@ -17,5 +17,6 @@ namespace se
 		inline static void Disable(const GLenum& capability);
 		inline static void CullFace(const GLenum& mode);
 		inline static void BlendFunc(const GLenum& sfactor, const GLenum& dfactor);
+		inline static void PolygonMode(const GLenum& face, const GLenum& mode);
 	};
 }
