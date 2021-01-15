@@ -154,9 +154,6 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Mesh.h">
       <Filter>Core\Engine\Render\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Model3D.h">
-      <Filter>Core\Engine\Render\Drawable</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Sprite.h">
       <Filter>Core\Engine\Render\Drawable</Filter>
     </ClInclude>
@@ -177,6 +174,9 @@
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\DrawableComponents.h">
       <Filter>Core\Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Model3D.h">
+      <Filter>Core\Engine\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -271,9 +271,6 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Mesh.cpp">
       <Filter>Core\Engine\Render\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Model3D.cpp">
-      <Filter>Core\Engine\Render\Drawable</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Sprite.cpp">
       <Filter>Core\Engine\Render\Drawable</Filter>
     </ClCompile>
@@ -281,6 +278,9 @@
       <Filter>Core\Engine\Render\Drawable</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Texture.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Model3D.cpp">
       <Filter>Core\Engine\Render</Filter>
     </ClCompile>
   </ItemGroup>

@@ -8,5 +8,4 @@ se::Environment::Environment()
 
 se::Environment::~Environment()
 {
-	std::cout << "Deleted\n";
 }

@@ -10,6 +10,7 @@ se::Mesh::Mesh(const std::string& fullClassName, const se::AssetData* data) : se
 
 se::Mesh::~Mesh()
 {
+	//std::cout << "~Mesh()\n";
 	/*glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);*/

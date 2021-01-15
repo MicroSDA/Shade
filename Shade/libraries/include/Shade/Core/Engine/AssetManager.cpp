@@ -2,6 +2,7 @@
 #include "AssetManager.h"
 #include "Shade/Core/Util/Log.h"
 
+
 se::AssetManager::AssetManager()
 {
 }
@@ -10,32 +11,30 @@ se::AssetManager::~AssetManager()
 {
 }
 
-void se::AssetManager::Free(const ClassName& className)
+void se::AssetManager::Clear()
+{
+	GetInstance().m_Assets.clear();
+}
+
+void se::AssetManager::Update()
 {
 	auto& _Instance = GetInstance();
-	auto _AElement = _Instance.m_Assets.find(className);
 
-	if (_AElement != _Instance.m_Assets.end())
+	auto _Iter = _Instance.m_Assets.begin();
+	while (_Iter != _Instance.m_Assets.end())
 	{
-		// Discrase count of refs
-		if (_AElement->second.m_Count > 1)
+		if (_Iter->second.m_Ref.use_count() == 1 && !_Iter->second.isKeepAlive)
 		{
-			_AElement->second.m_Count--;
+			_Iter = _Instance.m_Assets.erase(_Iter);
 		}
 		else
 		{
-			delete _AElement->second.m_Ref;
-			_Instance.m_Assets.erase(_AElement);
+			_Iter++;
 		}
-	}
-	else
-	{
-		std::string _Msg("Error: Trying to free unloaded asset '" + className + "'");
-		SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Warning);
 	}
 }
 
-void se::AssetManager::Inseart(const ClassName& className, se::Asset* asset)
+void se::AssetManager::Inseart(const ClassName& className, const se::AssetPointer<se::Asset>& asset)
 {
 	auto& _Instance = GetInstance();
 	auto _AElement = _Instance.m_Assets.find(className);
@@ -45,7 +44,7 @@ void se::AssetManager::Inseart(const ClassName& className, se::Asset* asset)
 		auto _RElement = _Instance.m_RoadMap.find(className);
 		if (_RElement != _Instance.m_RoadMap.end())
 		{
-			_Instance.m_Assets[className] = AssetReferences{ asset, 1 };
+			_Instance.m_Assets.emplace(std::pair<ClassName, AssetReferences>(className, AssetReferences{ asset , true }));
 		}
 		else
 		{

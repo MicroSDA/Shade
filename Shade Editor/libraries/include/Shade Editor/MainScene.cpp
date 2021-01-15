@@ -19,9 +19,15 @@ void MainScene::OnCreate()
 		
 			if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
 			{
-				se::Entity _CubeEntity = this->CreateEntity("Cube");
-				_CubeEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(glm::vec3(0 + rand() % 50, 0, 5));
-				_CubeEntity.AddComponent<se::Model3DComponent>(se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube"));
+				auto models = this->GetEntities().view<se::Model3DComponent>();
+				for (auto& model : models)
+				{
+					auto meshes = models.get<se::Model3DComponent>(model).Model3D->GetEntities().view<se::MeshComponent>();
+					for (auto& mesh : meshes)
+					{
+						meshes.get<se::MeshComponent>(mesh).Mesh->GetEntities().clear<se::TextureComponent>();
+					}
+				}	
 			}
 
 			if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE)
@@ -65,9 +71,9 @@ void MainScene::OnInit()
 
 
 	{// Assets
-		se::Model3D* _Floor	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor");
-		se::Model3D* _Cube	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
-		se::Model3D* _Samurai	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.SamuraiHelmet");
+		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor");
+		auto _Cube	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
+		auto _Samurai	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.SamuraiHelmet");
 
 		se::Entity _FloorEntity = CreateEntity("Floor");
 		_FloorEntity.AddComponent<se::Transform3DComponent>();
@@ -87,7 +93,7 @@ void MainScene::OnInit()
 			_SamuraiEntity.AddComponent<se::NativeScriptComponent>().Bind<se::Mode3DController>();
 		}
 		{   // Just for Fun )
-			se::Sprite* _POEInterfaceSprite = se::AssetManager::Hold<se::Sprite>("Assets.Sprites.PoeImage");
+			auto _POEInterfaceSprite = se::AssetManager::Hold<se::Sprite>("Assets.Sprites.PoeImage");
 			_POEInterfaceSprite->Init();
 			se::Entity _SpriteEntity = CreateEntity();
 

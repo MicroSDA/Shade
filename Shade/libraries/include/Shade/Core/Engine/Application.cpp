@@ -102,6 +102,7 @@ void se::Application::Start()
 			}
 			
 			se::WindowManager::Get().Update();
+			se::AssetManager::Update();
 		
 		}
 		catch (se::ShadeException& exception)
@@ -127,6 +128,7 @@ void se::Application::Start()
 	
 	}
 
+	se::AssetManager::Clear();
 	se::WindowManager::DestroyWindow();
 }
 

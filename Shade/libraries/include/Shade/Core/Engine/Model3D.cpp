@@ -135,14 +135,16 @@ void se::Model3D::Load()
 			_Indices.push_back(se::Binarizer::ReadNext<unsigned int>(_File));
 		
 		// Creating otside of AssetManager
-		se::Mesh* _pMesh = new Mesh(m_FullClassName + "." + m_AssetData->_Dependency[m]._Name, &m_AssetData->_Dependency[m]);
+		se::AssetPointer<se::Mesh> _pMesh(new Mesh(m_FullClassName + "." + m_AssetData->_Dependency[m]._Name, &m_AssetData->_Dependency[m]));
 		_pMesh->SetVertices(_Vertices);
 		_pMesh->SetIndices(_Indices);
 
 		se::AssetManager::Inseart(_pMesh->GetAssetClassName(), _pMesh);
 
-		se::MeshComponent     _MeshComponent     = _pMesh;
+		se::MeshComponent     _MeshComponent     = se::AssetPointer<se::Mesh>(_pMesh);
 		se::MaterialComponent _MaterialComponent = _MaterialsMap[_MeshName];
+		se::MeshComponent _c;
+
 		// Textures
 		if (m_AssetData->_Dependency[m]._Dependency.size())
 		{

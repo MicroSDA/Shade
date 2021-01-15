@@ -9,16 +9,18 @@ namespace se
 	{
 		struct AssetReferences
 		{
-			se::Asset* m_Ref;
-			unsigned int m_Count = 0;
+			se::AssetPointer<se::Asset> m_Ref;
+			bool isKeepAlive           = true;
 		};
 
 		using ClassName = std::string;
-		using Assets  = std::unordered_map<ClassName, AssetReferences>;
-		using RoadMap = std::unordered_map<ClassName, const se::AssetData*>;
+		using Assets    = std::unordered_map<ClassName, AssetReferences>;
+		using RoadMap   = std::unordered_map<ClassName, const se::AssetData*>;
 	public:
+		friend class Application;
+
 		template<typename T>
-		static T* Hold(const ClassName& className)
+		static se::AssetPointer<T> Hold(const ClassName& className)
 		{
 			auto& _Instance = GetInstance();
 			// Trying to find in Assets map
@@ -26,11 +28,10 @@ namespace se
 			if (_AElement != _Instance.m_Assets.end())
 			{
 				// If already loaded
-				
-				if (dynamic_cast<T*>(_AElement->second.m_Ref))
+				auto _Ptr = dynamic_cast<T*>(_AElement->second.m_Ref.get());
+				if (_Ptr)
 				{
-					_AElement->second.m_Count++;
-					return static_cast<T*>(_AElement->second.m_Ref);
+					return se::AssetPointer<T>(std::static_pointer_cast<T>(_AElement->second.m_Ref));
 				}
 				else
 				{
@@ -46,14 +47,14 @@ namespace se
 				if (_RElement != _Instance.m_RoadMap.end())
 				{
 					// Load asset
-					auto* _Asset = dynamic_cast<T*>(new T(_RElement->first, _RElement->second));
+					auto _Asset = new T(_RElement->first, _RElement->second);
 					if (_Asset)
 					{
 						_Asset->Load();
 						_Asset->Init(); // Temporary here 
 						// Create asset ref and incease asset count + one ref;
-						_Instance.m_Assets[className] = AssetReferences{ _Asset, 1 };
-						return static_cast<T*>(_Asset);
+						_Instance.m_Assets.emplace(std::pair<ClassName, AssetReferences>(className, AssetReferences { se::AssetPointer<se::Asset>(_Asset) , true}));
+						return se::AssetPointer<T>(std::static_pointer_cast<T>(_Instance.m_Assets[className].m_Ref));
 					}
 					else 
 					{
@@ -72,61 +73,7 @@ namespace se
 				throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
 			}
 		}
-		template<typename T>
-		static T* Get(const ClassName& className)
-		{
-			auto& _Instance = GetInstance();
-
-			auto _AElement = _Instance.m_Assets.find(className);
-			if (_AElement != _Instance.m_Assets.end())
-			{
-				// If already loaded
-				if (dynamic_cast<T*>(_AElement->second.m_Ref))
-				{
-					// _AElement->second.m_Count++; // Dont need there, potential issue ¯\_(ツ)_/¯
-					return static_cast<T*>(_AElement->second.m_Ref);
-				}
-				else
-				{
-					std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
-						throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
-				}
-			}
-			else
-			{
-				// Trying to find in road map
-				auto _RElement = _Instance.m_RoadMap.find(className);
-				if (_RElement != _Instance.m_RoadMap.end())
-				{
-					// Load asset
-					auto* _Asset = dynamic_cast<T*>(new T(_RElement->first, _RElement->second));
-
-					if (_Asset)
-					{
-						_Asset->Load();
-						_Asset->Init(); // Temporary here 
-						// Create asset ref and incease asset count + one ref;
-						_Instance.m_Assets[className] = AssetReferences{ _Asset, 1 };
-						return static_cast<T*>(_Asset);
-					}
-					else
-					{
-						std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
-						throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
-					}
-				}
-				else
-				{
-					std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
-					throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
-				}
-
-				std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
-				throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
-			}
-		}
-		static void Free(const ClassName& className);
-		static void Inseart(const ClassName& className, se::Asset* asset);
+		static void Inseart(const ClassName& className, const se::AssetPointer<se::Asset>& asset);
 		static void WriteRoadMap(const se::AssetData& asset);
 		static void ReadRoadMap();
 	private:
@@ -144,7 +91,8 @@ namespace se
 
 		void ReadAssetsData(std::ifstream& file, se::AssetData& asset);
 		void SetRoadMap(const se::AssetData* asset, std::unordered_map<std::string, const se::AssetData*>& map);
-
+		static void Clear();
+		static void Update();
 		Assets    m_Assets;
 		AssetData m_AssetsData;
 		RoadMap   m_RoadMap;

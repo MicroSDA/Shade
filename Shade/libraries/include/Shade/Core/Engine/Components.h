@@ -58,88 +58,25 @@ namespace se
 	
 	struct Model3DComponent : ComponentBase
 	{
-		se::Model3D* Model3D = nullptr;
+		se::AssetPointer<se::Model3D> Model3D;
 		Model3DComponent() = default;
-		~Model3DComponent() 
-		{
-			if(Model3D) // Free if not nullptr
-				se::AssetManager::Free(Model3D->GetAssetClassName());
-		};
-		Model3DComponent(se::Model3D* other)
-			: Model3D(other) {}
-		Model3DComponent(const Model3DComponent& other)
-		{
-			if (this != &other)
-			{// Hold when it's copied 
-				this->Model3D = other.Model3D;
-				se::AssetManager::Hold<se::Model3D>(Model3D->GetAssetClassName());
-			}	
-		};
-		Model3DComponent(Model3DComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Model3D = other.Model3D;
-				other.Model3D = nullptr;
-			}
-		}
-		Model3DComponent& operator=(const Model3DComponent& other)
-		{
-			this->Model3D = other.Model3D;
-			se::AssetManager::Hold<se::Model3D>(Model3D->GetAssetClassName());
-		}
-		Model3DComponent& operator=(Model3DComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Model3D = other.Model3D;
-				other.Model3D = nullptr;
-			}
-			return *this;
-		}
+		~Model3DComponent() = default;
+		Model3DComponent(se::AssetPointer<se::Model3D> other)
+			: Model3D(other) {};
+		Model3DComponent(const Model3DComponent&) = default;
 	};
 
 	struct TextureComponent : ComponentBase
 	{
-		se::Texture* Texture = nullptr;
+		se::AssetPointer<se::Texture> Texture;
 		TextureComponent() = default;
-		~TextureComponent()
+		~TextureComponent() = default;
+		TextureComponent(const se::AssetPointer<se::Texture>& other)
+			: Texture(other) 
 		{
-			if(Texture)
-				se::AssetManager::Free(Texture->GetAssetClassName());
+
 		};
-		TextureComponent(se::Texture* other)
-			: Texture(other) {};
-		TextureComponent(const TextureComponent& other)
-		{
-			if (this != &other)
-			{// Hold when it's copied 
-				this->Texture = other.Texture;
-				se::AssetManager::Hold<se::Texture>(Texture->GetAssetClassName());
-			}
-		};
-		TextureComponent(TextureComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Texture = other.Texture;
-				other.Texture = nullptr;
-			}
-		}
-		TextureComponent& operator=(const TextureComponent& other)
-		{
-			this->Texture = other.Texture;
-			se::AssetManager::Hold<se::Texture>(Texture->GetAssetClassName());
-		}
-		TextureComponent& operator=(TextureComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Texture = other.Texture;
-				other.Texture = nullptr;
-			}
-			return *this;
-		}
+		TextureComponent(const TextureComponent&) = default;
 	};
 	struct RenderComponent : ComponentBase
 	{

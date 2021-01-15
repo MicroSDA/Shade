@@ -25,7 +25,7 @@ void GuiLayer::OnRender()
 {
 	{
 		//Grid// TODO move to another layer i guess
-		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.Grid");
+		auto _Shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.Grid");
 		_Shader->Bind();
 		_Shader->SendUniformMatrix4Float("ViewM", GL_FALSE, this->GetScene()->GetMainCamera()->GetView());
 		_Shader->SendUniformMatrix4Float("ProjectionM", GL_FALSE, this->GetScene()->GetMainCamera()->GetProjection());
@@ -41,7 +41,7 @@ void GuiLayer::OnRender()
 	}
 	{
 		//GUI // TODO move to another layer i guess
-		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.Sprite");
+		auto _Shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.Sprite");
 		_Shader->Bind();
 		auto _Entities = GetScene()->GetEntities().view<se::Transform2DComponent, se::SpriteComponent>();
 		for (auto& _Entity : _Entities) {

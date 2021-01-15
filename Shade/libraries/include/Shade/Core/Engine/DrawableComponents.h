@@ -56,88 +56,23 @@ namespace se
 
 	struct MeshComponent
 	{
-		se::Mesh* Mesh = nullptr;
+		se::AssetPointer<se::Mesh> Mesh;
 		MeshComponent() = default;
-		~MeshComponent()
-		{
-			if (Mesh)
-				se::AssetManager::Free(Mesh->GetAssetClassName());
-		};
-		MeshComponent(se::Mesh* other)
+		~MeshComponent() = default;
+		MeshComponent(const MeshComponent&) = default;
+		MeshComponent(const se::AssetPointer<se::Mesh>& other)
 			:Mesh(other) {};
-		MeshComponent(const MeshComponent& other)
-		{
-			if (this != &other)
-			{
-				this->Mesh = other.Mesh;
-				se::AssetManager::Hold<se::Mesh>(Mesh->GetAssetClassName());
-			}
-		};
-		MeshComponent(MeshComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Mesh = other.Mesh;
-				other.Mesh = nullptr;
-			}
-		};
-		MeshComponent& operator=(const MeshComponent& other)
-		{
-			this->Mesh = other.Mesh;
-			se::AssetManager::Hold<se::Mesh>(Mesh->GetAssetClassName());
-		};
-		MeshComponent& operator=(MeshComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Mesh = other.Mesh;
-				other.Mesh = nullptr;
-			}
-			return *this;
-		}
+	
 	};
 
 	//TODO Sprite constructs
 	struct SpriteComponent
 	{
-		se::Sprite* Sprite = nullptr;
+		se::AssetPointer<se::Sprite> Sprite;
 		SpriteComponent() = default;
-		~SpriteComponent()
-		{
-			if (Sprite)
-				se::AssetManager::Free(Sprite->GetAssetClassName());
-		};
-		SpriteComponent(se::Sprite* other)
+		~SpriteComponent() = default;
+		SpriteComponent(const SpriteComponent&) = default;
+		SpriteComponent(const se::AssetPointer<se::Sprite>& other)
 			:Sprite(other) {};
-		SpriteComponent(const SpriteComponent& other)
-		{
-			if (this != &other)
-			{
-				this->Sprite = other.Sprite;
-				se::AssetManager::Hold<se::Sprite>(Sprite->GetAssetClassName());
-			}
-		};
-		SpriteComponent(SpriteComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Sprite = other.Sprite;
-				other.Sprite = nullptr;
-			}
-		};
-		SpriteComponent& operator=(const SpriteComponent& other)
-		{
-			this->Sprite = other.Sprite;
-			se::AssetManager::Hold<se::Sprite>(Sprite->GetAssetClassName());
-		};
-		SpriteComponent& operator=(SpriteComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Sprite = other.Sprite;
-				other.Sprite = nullptr;
-			}
-			return *this;
-		}
 	};
 }

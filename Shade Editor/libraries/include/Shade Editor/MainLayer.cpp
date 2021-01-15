@@ -23,12 +23,7 @@ void MainLayer::OnInit()
 
 void MainLayer::OnUpdate(const se::Timer& deltaTime)
 {
-	auto _Scypts = this->GetScene()->GetEntities().view<se::NativeScriptComponent>();
-
-	for (auto& scrypt : _Scypts)
-	{
-		//this->GetScene()->GetEntities().destroy(scrypt);
-	}
+	
 }
 
 void MainLayer::OnRender()
@@ -37,7 +32,7 @@ void MainLayer::OnRender()
 	auto* _MainCamera = GetScene()->GetMainCamera();
 	{
 		// Modles 
-		auto* _Shader = se::AssetManager::Get<se::Shader>("Assets.Shaders.BasicModel");
+		auto _Shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel");
 
 		_Shader->Bind();
 		_Shader->SendUniformMatrix4Float("ViewM", GL_FALSE, _MainCamera->GetView());
@@ -48,14 +43,14 @@ void MainLayer::OnRender()
 			auto _Enviroments = GetScene()->GetEntities().view<se::EnvironmentComponent>();
 			for (auto& _Enviroment : _Enviroments)
 			{
-				_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Environment->Process(_Shader);
+				_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Environment->Process(_Shader.get());
 			}
 		}
 		{
 			auto _Entities = GetScene()->GetEntities().view<se::Model3DComponent, se::Transform3DComponent>();
 			for (auto& _Entity : _Entities) {
 
-				auto* _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
+				auto _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
 				_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModel());
 
 				auto _MesheEntities = _Model->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
@@ -63,7 +58,7 @@ void MainLayer::OnRender()
 				{
 					auto& _Mesh     = _MesheEntities.get<se::MeshComponent>(_MeshEnity).Mesh;
 					auto& _Material = _MesheEntities.get<se::MaterialComponent>(_MeshEnity).Material;
-					_Material.Process(_Shader);
+					_Material.Process(_Shader.get());
 
 					auto _TexturesEntities = _Mesh->GetEntities().view<se::TextureComponent>();
 					for (auto& _TextureEnity : _TexturesEntities)
