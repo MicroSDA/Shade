@@ -32,7 +32,7 @@ void MainLayer::OnRender()
 	auto* _MainCamera = GetScene()->GetMainCamera();
 	{
 		// Modles 
-		auto _Shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel");
+		auto _Shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel", true);
 
 		_Shader->Bind();
 		_Shader->SendUniformMatrix4Float("ViewM", GL_FALSE, _MainCamera->GetView());

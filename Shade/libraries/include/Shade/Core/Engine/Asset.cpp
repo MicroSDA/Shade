@@ -9,6 +9,7 @@ se::Asset::Asset(const std::string& fullClassName, const se::AssetData* data) :
 }
 se::Asset::~Asset()
 {
+	se::AssetManager::ImLast(m_FullClassName);
 	SE_DEBUG_PRINT(std::string("Asset '" + m_FullClassName + "' has beed deleted").c_str(), se::SLCode::InfoSecondary);
 }
 

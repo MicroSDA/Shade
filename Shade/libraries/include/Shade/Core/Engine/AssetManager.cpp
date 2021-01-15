@@ -9,6 +9,7 @@ se::AssetManager::AssetManager()
 
 se::AssetManager::~AssetManager()
 {
+	//GetInstance().m_Assets.clear();
 }
 
 void se::AssetManager::Clear()
@@ -16,47 +17,53 @@ void se::AssetManager::Clear()
 	GetInstance().m_Assets.clear();
 }
 
+void se::AssetManager::Free(const std::string& className)
+{
+	auto& _Instance = GetInstance();
+	auto _AElement = _Instance.m_Assets.find(className);
+
+	if (_AElement != _Instance.m_Assets.end())
+	{
+
+		if (std::get_if<se::AssetPointer<se::Asset>>(&_AElement->second.m_Ref))
+		{
+			if (std::get<se::AssetPointer<se::Asset>>(_AElement->second.m_Ref).use_count() == 1)
+			{
+				_Instance.m_Assets.erase(_AElement);
+			}
+			else
+			{
+				SE_DEBUG_PRINT(std::string("Warning: Trying to free asset '" + className + "' which has more then one uses count.").c_str(), se::SLCode::Warning);
+			}
+
+		}
+		else
+		{
+			SE_DEBUG_PRINT(std::string("Warning: Trying to free weak asset '" + className + "'.").c_str(), se::SLCode::Warning);
+		}
+	}
+	else
+	{
+		SE_DEBUG_PRINT(std::string("Warning: Trying to free unloaded asset '" + className + "'.").c_str(), se::SLCode::Warning);
+	}
+
+}
 void se::AssetManager::Update()
 {
 	auto& _Instance = GetInstance();
 
-	auto _Iter = _Instance.m_Assets.begin();
+	/*auto _Iter = _Instance.m_Assets.begin();
 	while (_Iter != _Instance.m_Assets.end())
 	{
-		if (_Iter->second.m_Ref.use_count() == 1 && !_Iter->second.isKeepAlive)
+		/*if (_Iter->second.m_Ref.use_count() == 1 && !_Iter->second.isKeepAlive)
 		{
-			_Iter = _Instance.m_Assets.erase(_Iter);
+			//_Iter = _Instance.m_Assets.erase(_Iter);
 		}
 		else
 		{
 			_Iter++;
 		}
-	}
-}
-
-void se::AssetManager::Inseart(const ClassName& className, const se::AssetPointer<se::Asset>& asset)
-{
-	auto& _Instance = GetInstance();
-	auto _AElement = _Instance.m_Assets.find(className);
-
-	if (_AElement == _Instance.m_Assets.end())
-	{
-		auto _RElement = _Instance.m_RoadMap.find(className);
-		if (_RElement != _Instance.m_RoadMap.end())
-		{
-			_Instance.m_Assets.emplace(std::pair<ClassName, AssetReferences>(className, AssetReferences{ asset , true }));
-		}
-		else
-		{
-			std::string _Msg("Error: Trying to insreat asset which isn't exist in reoad map'" + className + "'!");
-			throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
-		}
-	}
-	else
-	{
-		std::string _Msg("Warning: Asset is already exist '" + className + "', try to use Hold!");
-		SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Warning);
-	}
+	}*/
 }
 
 void se::AssetManager::WriteRoadMap(const se::AssetData& asset)
@@ -98,6 +105,26 @@ void se::AssetManager::_ReadRoadMap()
 	_File.close();
 	SetRoadMap(&m_AssetsData, m_RoadMap);
 
+}
+
+void se::AssetManager::ImLast(const std::string& className) 
+{
+	auto& _Instance = GetInstance();
+	
+	auto _AElement = _Instance.m_Assets.find(className);
+
+	if (_AElement._Myproxy->_Myfirstiter->_Mynextiter)
+	{
+		if (_AElement != _Instance.m_Assets.end())
+		{
+			_Instance.m_Assets.erase(_AElement);
+		}
+		else
+		{
+			SE_DEBUG_PRINT(std::string("Warning: Trying to free unloaded asset '" + className + "'.").c_str(), se::SLCode::Warning);
+		}
+	}
+	
 }
 
 se::AssetManager& se::AssetManager::GetInstance()

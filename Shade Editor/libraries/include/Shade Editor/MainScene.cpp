@@ -22,12 +22,20 @@ void MainScene::OnCreate()
 				auto models = this->GetEntities().view<se::Model3DComponent>();
 				for (auto& model : models)
 				{
-					auto meshes = models.get<se::Model3DComponent>(model).Model3D->GetEntities().view<se::MeshComponent>();
+					this->GetEntities().destroy(model);
+					/*auto meshes = models.get<se::Model3DComponent>(model).Model3D->GetEntities().view<se::MeshComponent>();
 					for (auto& mesh : meshes)
 					{
 						meshes.get<se::MeshComponent>(mesh).Mesh->GetEntities().clear<se::TextureComponent>();
-					}
+					}*/
 				}	
+
+				
+			}
+
+			if (event.key.keysym.scancode == SDL_SCANCODE_E)
+			{
+				se::AssetManager::Free("Assets.Shaders.BasicModel");
 			}
 
 			if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE)
@@ -71,9 +79,9 @@ void MainScene::OnInit()
 
 
 	{// Assets
-		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor");
-		auto _Cube	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube");
-		auto _Samurai	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.SamuraiHelmet");
+		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor", false);
+		auto _Cube	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube" , false);
+		auto _Samurai	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.SamuraiHelmet", false);
 
 		se::Entity _FloorEntity = CreateEntity("Floor");
 		_FloorEntity.AddComponent<se::Transform3DComponent>();

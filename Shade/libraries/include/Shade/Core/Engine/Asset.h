@@ -5,8 +5,12 @@
 
 namespace se
 {
+	// Based on std::shared_ptr, using for asstes and AssetManager
 	template<typename T>
 	using AssetPointer = std::shared_ptr<T>;
+	// Based on std::weak_ptr, using for asstes and AssetManager
+	template<typename T>
+	using AssetPointerWeak = std::weak_ptr<T>;
 
 	class SE_API Asset
 	{

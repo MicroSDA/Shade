@@ -9,8 +9,7 @@ namespace se
 	{
 		struct AssetReferences
 		{
-			se::AssetPointer<se::Asset> m_Ref;
-			bool isKeepAlive           = true;
+			std::variant<se::AssetPointerWeak<se::Asset>, se::AssetPointer<se::Asset>> m_Ref;
 		};
 
 		using ClassName = std::string;
@@ -18,9 +17,9 @@ namespace se
 		using RoadMap   = std::unordered_map<ClassName, const se::AssetData*>;
 	public:
 		friend class Application;
-
+		friend class Asset;
 		template<typename T>
-		static se::AssetPointer<T> Hold(const ClassName& className)
+		static se::AssetPointer<T> Hold(const ClassName& className, bool keepAlive = true)
 		{
 			auto& _Instance = GetInstance();
 			// Trying to find in Assets map
@@ -28,20 +27,52 @@ namespace se
 			if (_AElement != _Instance.m_Assets.end())
 			{
 				// If already loaded
-				auto _Ptr = dynamic_cast<T*>(_AElement->second.m_Ref.get());
-				if (_Ptr)
+				se::AssetPointer<se::Asset> _Out;
+				if (std::get_if<se::AssetPointerWeak<se::Asset>>(&_AElement->second.m_Ref))
 				{
-					return se::AssetPointer<T>(std::static_pointer_cast<T>(_AElement->second.m_Ref));
+					
+					auto& _Weak = std::get<se::AssetPointerWeak<se::Asset>>(_AElement->second.m_Ref);
+					if (_Weak.expired())
+					{
+						goto load_new;
+					}
+					else
+					{
+						auto _pAsset = dynamic_cast<T*>(_Weak.lock().get());
+						{
+							if (_pAsset)
+							{
+								_Out = std::get<se::AssetPointerWeak<se::Asset>>(_AElement->second.m_Ref).lock();
+								return se::AssetPointer<T>(std::static_pointer_cast<T>(_Out));
+							}
+							else
+							{
+								std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
+								throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+							}
+						}
+					}
+
 				}
-				else
+				else if (std::get_if<se::AssetPointer<se::Asset>>(&_AElement->second.m_Ref))
 				{
-					std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
-					throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+					auto _Ptr = dynamic_cast<T*>(std::get<se::AssetPointer<se::Asset>>(_AElement->second.m_Ref).get());
+					if (_Ptr)
+					{
+						//_Out = std::get<se::AssetPointerWeak<se::Asset>>(_AElement->second.m_Ref).lock();
+						return se::AssetPointer<T>(std::static_pointer_cast<T>(std::get<se::AssetPointer<se::Asset>>(_AElement->second.m_Ref)));
+					}
+					else
+					{
+						std::string _Msg("Error: Wrong asset assignment :'" + className + "'");
+						throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+					}
 				}
-			
+					
 			}
 			else
 			{
+			load_new:
 				// Trying to find in road map
 				auto _RElement = _Instance.m_RoadMap.find(className);
 				if (_RElement != _Instance.m_RoadMap.end())
@@ -53,8 +84,17 @@ namespace se
 						_Asset->Load();
 						_Asset->Init(); // Temporary here 
 						// Create asset ref and incease asset count + one ref;
-						_Instance.m_Assets.emplace(std::pair<ClassName, AssetReferences>(className, AssetReferences { se::AssetPointer<se::Asset>(_Asset) , true}));
-						return se::AssetPointer<T>(std::static_pointer_cast<T>(_Instance.m_Assets[className].m_Ref));
+						se::AssetPointer<se::Asset> _Ptr(_Asset);
+						if (keepAlive)
+						{
+							_Instance.m_Assets.emplace(std::pair<ClassName, AssetReferences>(className, AssetReferences{ _Ptr }));
+						}
+						else
+						{
+							_Instance.m_Assets.emplace(std::pair<ClassName, AssetReferences>(className, AssetReferences{ se::AssetPointerWeak<se::Asset>(_Ptr) }));
+						}
+					
+						return se::AssetPointer<T>(std::static_pointer_cast<T>(_Ptr));
 					}
 					else 
 					{
@@ -73,7 +113,7 @@ namespace se
 				throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
 			}
 		}
-		static void Inseart(const ClassName& className, const se::AssetPointer<se::Asset>& asset);
+		static void Free(const std::string& className);
 		static void WriteRoadMap(const se::AssetData& asset);
 		static void ReadRoadMap();
 	private:
@@ -88,7 +128,7 @@ namespace se
 		/////////////////////////////////
 		void _WriteRoadMap(std::ofstream& file, const se::AssetData& asset);
 		void _ReadRoadMap();
-
+		static void ImLast(const std::string& className) ;
 		void ReadAssetsData(std::ifstream& file, se::AssetData& asset);
 		void SetRoadMap(const se::AssetData* asset, std::unordered_map<std::string, const se::AssetData*>& map);
 		static void Clear();
