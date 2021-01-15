@@ -10,7 +10,7 @@ namespace se
 		~Timer();
 
 		void Update();
-		operator float() const { return m_DeltaTime * 0.001; } // milliseconds
+		operator double() const { return m_DeltaTime * 0.001; } // milliseconds
 	private:
 		double m_TimeLast, m_TimeNow, m_DeltaTime;
 	};

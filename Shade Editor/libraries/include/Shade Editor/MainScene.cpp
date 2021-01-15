@@ -77,7 +77,6 @@ void MainScene::OnInit()
 	_GridEntity.AddComponent<se::Transform3DComponent>();
 	_GridEntity.AddComponent<se::DrawableComponent>(new se::Grid(40, 40, 8));
 
-
 	{// Assets
 		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor", false);
 		auto _Cube	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube" , false);
@@ -128,17 +127,17 @@ void MainScene::OnInit()
 
 		se::GeneralLight* _GeneraLight = new se::GeneralLight();
 		_GeneraLight->SetDirection(0.0198322f,-0.675238f, 0.737333f);
+		_GeneraLight->SetAmbientColor(0.1f, 0.1f, 0.1f);
+		_GeneraLight->SetDiffuseColor(0.8f, 0.8f, 0.7f);
+		_GeneraLight->SetSpecularColor(0.8f, 0.8f, 0.7f);
 		
-		se::EnvironmentComponent _C = _PointLight;
+		
 		se::Entity _LightEntity = CreateEntity();
 
-		_LightEntity.AddComponent<se::EnvironmentComponent>(_C);
+		_LightEntity.AddComponent<se::EnvironmentComponent>(_GeneraLight);
 		_LightEntity.AddComponent<se::NativeScriptComponent>().Bind<se::LightController>();
 
-		se::Entity _LightEntity2 = CreateEntity();
-		_LightEntity2.AddComponent<se::EnvironmentComponent>(_C);
-		_LightEntity2.AddComponent<se::NativeScriptComponent>().Bind<se::LightController>();
-
+	
 		se::Entity   _CameraEntity = CreateEntity();
 		_CameraEntity.AddComponent<se::CameraComponent>(_MainCamera);
 		_CameraEntity.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();

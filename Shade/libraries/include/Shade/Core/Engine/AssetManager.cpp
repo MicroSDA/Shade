@@ -9,11 +9,14 @@ se::AssetManager::AssetManager()
 
 se::AssetManager::~AssetManager()
 {
-	//GetInstance().m_Assets.clear();
+	// Trying to evade recursive deleting
+	GetInstance().m_ImDestructing = true;
 }
 
 void se::AssetManager::Clear()
 {
+	// Trying to evade recursive deleting
+	GetInstance().m_ImDestructing = true;
 	GetInstance().m_Assets.clear();
 }
 
@@ -47,23 +50,6 @@ void se::AssetManager::Free(const std::string& className)
 		SE_DEBUG_PRINT(std::string("Warning: Trying to free unloaded asset '" + className + "'.").c_str(), se::SLCode::Warning);
 	}
 
-}
-void se::AssetManager::Update()
-{
-	auto& _Instance = GetInstance();
-
-	/*auto _Iter = _Instance.m_Assets.begin();
-	while (_Iter != _Instance.m_Assets.end())
-	{
-		/*if (_Iter->second.m_Ref.use_count() == 1 && !_Iter->second.isKeepAlive)
-		{
-			//_Iter = _Instance.m_Assets.erase(_Iter);
-		}
-		else
-		{
-			_Iter++;
-		}
-	}*/
 }
 
 void se::AssetManager::WriteRoadMap(const se::AssetData& asset)
@@ -109,22 +95,16 @@ void se::AssetManager::_ReadRoadMap()
 
 void se::AssetManager::ImLast(const std::string& className) 
 {
-	auto& _Instance = GetInstance();
 	
-	auto _AElement = _Instance.m_Assets.find(className);
-
-	if (_AElement._Myproxy->_Myfirstiter->_Mynextiter)
+	auto& _Instance = GetInstance();
+	if (!_Instance.m_ImDestructing)
 	{
+		auto _AElement = _Instance.m_Assets.find(className);
 		if (_AElement != _Instance.m_Assets.end())
 		{
 			_Instance.m_Assets.erase(_AElement);
 		}
-		else
-		{
-			SE_DEBUG_PRINT(std::string("Warning: Trying to free unloaded asset '" + className + "'.").c_str(), se::SLCode::Warning);
-		}
 	}
-	
 }
 
 se::AssetManager& se::AssetManager::GetInstance()
@@ -140,7 +120,7 @@ void se::AssetManager::_WriteRoadMap(std::ofstream& file, const se::AssetData& a
 	se::Binarizer::WriteNext<se::AssetDataSubType>(file, asset._SubType);
 	se::Binarizer::WriteNext<std::string>(file, asset._Path);
 	se::Binarizer::WriteNext<long long>(file, asset._Offset);
-	se::Binarizer::WriteNext<uint32_t>(file, asset._Dependency.size());
+	se::Binarizer::WriteNext<uint32_t>(file, (uint32_t)asset._Dependency.size());
 
 	if (asset._Dependency.size())
 	{
@@ -168,7 +148,7 @@ void se::AssetManager::ReadAssetsData(std::ifstream& file, se::AssetData& asset)
 	{
 		asset._Dependency.reserve(_DependencyCount);
 
-		for (auto i = 0; i < _DependencyCount; i++)
+		for (uint32_t i = 0; i < _DependencyCount; i++)
 		{
 			asset._Dependency.emplace_back();
 			asset._Dependency.back()._Parrent = &asset;

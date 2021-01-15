@@ -7,6 +7,10 @@
 
 namespace se
 {
+	// Use when you cannot manage life for specific object, see std::shared_ptr
+	template<typename T>
+	using ShadeShared = std::shared_ptr<T>;
+
 	struct DrawableComponent
 	{
 		se::Drawable* Drawable = nullptr;
@@ -62,7 +66,6 @@ namespace se
 		MeshComponent(const MeshComponent&) = default;
 		MeshComponent(const se::AssetPointer<se::Mesh>& other)
 			:Mesh(other) {};
-	
 	};
 
 	//TODO Sprite constructs

@@ -27,7 +27,7 @@ se::Grid::Grid(const float& width, const float& height, const int& density)
 		}
 	}
 
-	m_IndicesCount = m_Indices.size() * 4;
+	m_IndicesCount = static_cast<GLuint>(m_Indices.size() * 4);
 	m_AttribCount  = 1;
 
 	glGenVertexArrays(1, &m_VAO);

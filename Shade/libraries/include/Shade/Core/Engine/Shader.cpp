@@ -8,7 +8,6 @@ se::Shader::Shader(const std::string& parrentClassName, const se::AssetData* dat
 
 se::Shader::~Shader()
 {
-	//std::cout << "~Shader()\n";
 	// Delete program and shader
 	glUseProgram(0);
 	for (unsigned int i = 0; i < m_Shaders.size(); i++) {

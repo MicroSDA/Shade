@@ -102,7 +102,6 @@ void se::Application::Start()
 			}
 			
 			se::WindowManager::Get().Update();
-			se::AssetManager::Update();
 		
 		}
 		catch (se::ShadeException& exception)

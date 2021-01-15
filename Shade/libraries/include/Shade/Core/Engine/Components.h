@@ -15,10 +15,6 @@ namespace se
 {
 	class Entity;
 
-
-	// Use when you cannot manage life for specific object, see std::shared_ptr
-	template<typename T>
-	using ShadeShared = std::shared_ptr<T>;
 	// Base component, isn't using now
 	struct ComponentBase
 	{
@@ -61,7 +57,7 @@ namespace se
 		se::AssetPointer<se::Model3D> Model3D;
 		Model3DComponent() = default;
 		~Model3DComponent() = default;
-		Model3DComponent(se::AssetPointer<se::Model3D> other)
+		Model3DComponent(const se::AssetPointer<se::Model3D>& other)
 			: Model3D(other) {};
 		Model3DComponent(const Model3DComponent&) = default;
 	};
@@ -72,10 +68,7 @@ namespace se
 		TextureComponent() = default;
 		~TextureComponent() = default;
 		TextureComponent(const se::AssetPointer<se::Texture>& other)
-			: Texture(other) 
-		{
-
-		};
+			: Texture(other) {};
 		TextureComponent(const TextureComponent&) = default;
 	};
 	struct RenderComponent : ComponentBase
@@ -157,7 +150,7 @@ namespace se
 	// Use for Environment pointer, shouldn't be deleted manually, based on the se::ShadeShared which use std::shared_ptr
 	struct EnvironmentComponent : ComponentBase
 	{
-		se::ShadeShared<se::Environment> Environment = nullptr;
+		se::ShadeShared<se::Environment> Environment;
 		EnvironmentComponent() = default; // TODO light should be like asset ?
 		// Default copy
 		EnvironmentComponent(const EnvironmentComponent&) = default;
@@ -167,8 +160,6 @@ namespace se
 		EnvironmentComponent(const se::ShadeShared<se::Environment>& other)
 			:Environment(other)	{}
 
-		operator se::Environment* () { return Environment.get(); }
-		operator const se::Environment* () const { return Environment.get(); }
 	};
 	// Base lighting material, usually being used by se::Mesh as entity
 	struct MaterialComponent : ComponentBase

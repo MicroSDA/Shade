@@ -1,6 +1,8 @@
-#pragma once
 #pragma warning (disable:  4251) // DLL warnings
 #pragma warning (disable:  4275) // DLL warnings
+#pragma warning (disable:  4244) // const& warning
+
+#pragma once
 
 #ifdef SE_DEBUG
   #define SE_DEBUG_PRINT(x, y) se::Log::Print(x, y)

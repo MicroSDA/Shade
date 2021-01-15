@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning (disable:  4244) // const& warning
 #include "Shade/Core/CoreAPI.h"
 #include "Vendors/entt/entt.hpp"
 #include "Shade/Core/Engine/Application.h"
@@ -7,8 +8,6 @@
 #include "Shade/Core/Engine/Camera.h"
 #include "Shade/Core/Engine/Timer.h"
 #include "Shade/Core/Engine/EntitiesDocker.h"
-//#include "Shade/Core/Engine/Layer.h"
-//#include "Shade/Core/Engine/Entity.h"
 
 namespace se
 {

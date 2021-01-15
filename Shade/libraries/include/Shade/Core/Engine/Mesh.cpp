@@ -24,7 +24,7 @@ void se::Mesh::SetVertices(std::vector<se::Vertex>& vertices)
 void se::Mesh::SetIndices(std::vector<unsigned int>& indices)
 {
 	m_Indices = std::move(indices);
-	m_IndicesCount = m_Indices.size();
+	m_IndicesCount = static_cast<GLuint>(m_Indices.size());
 }
 
 void se::Mesh::Load()
