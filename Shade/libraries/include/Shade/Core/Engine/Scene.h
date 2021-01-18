@@ -29,7 +29,6 @@ namespace se
 	protected:
 		virtual void OnCreate() = 0;
 		virtual void OnInit() = 0;
-		void         UpdateNativeScripts(const se::Timer& deltaTime);
 		void         DeleteLayers();
 		void         InitLayers();
 		void         InitLayer(const std::string& name);
@@ -48,6 +47,7 @@ namespace se
 		std::string    m_Name;
 	private:
 		std::vector<se::Layer*> m_Layers;
+		void         UpdateNativeScripts(const se::Timer& deltaTime);
 		virtual void OnUpdate(const se::Timer& deltaTime) = 0;
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;

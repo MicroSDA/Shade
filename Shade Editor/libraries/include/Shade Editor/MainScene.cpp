@@ -50,11 +50,21 @@ void MainScene::OnCreate()
 
 			if (event.key.keysym.scancode == SDL_SCANCODE_SPACE)
 			{
-				auto* _Layer = this->GetLayer("GuiLayer");
-				if (_Layer->IsActive())
-					_Layer->SetActive(false);
-				else
-				_Layer->SetActive(true);
+				{
+					auto* _Layer = this->GetLayer("MainLayer");
+					if (_Layer->IsActive())
+						_Layer->SetActive(false);
+					else
+						_Layer->SetActive(true);
+				}
+				
+				{
+					auto* _Layer = this->GetLayer("GuiLayer");
+					if (_Layer->IsActive())
+						_Layer->SetActive(false);
+					else
+						_Layer->SetActive(true);
+				}
 				
 			}
 
@@ -75,18 +85,19 @@ void MainScene::OnInit()
 
 	se::Entity _GridEntity = this->CreateEntity("Grid");
 	_GridEntity.AddComponent<se::Transform3DComponent>();
-	_GridEntity.AddComponent<se::DrawableComponent>(new se::Grid(40, 40, 8));
+
+	_GridEntity.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(1000, 1000, 100)));
 
 	{// Assets
-		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Floor", false);
-		auto _Cube	     = se::AssetManager::Hold<se::Model3D>("Assets.Models.Cube" , false);
-		auto _Samurai	 = se::AssetManager::Hold<se::Model3D>("Assets.Models.SamuraiHelmet", false);
+		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Models.Floor", false);
+		auto _Cube	     = se::AssetManager::Hold<se::Model3D>("Models.Cube" , false);
+		auto _Skull	     = se::AssetManager::Hold<se::Model3D>("Models.SamuraiHelmet", false);
 
 		se::Entity _FloorEntity = CreateEntity("Floor");
 		_FloorEntity.AddComponent<se::Transform3DComponent>();
 		_FloorEntity.AddComponent<se::Model3DComponent>(_Floor);
 
-		se::Entity _CubeEntity = CreateEntity();
+		se::Entity _CubeEntity = CreateEntity("Cube");
 		_CubeEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(glm::vec3(5, 1, 2));
 		_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
 
@@ -96,21 +107,37 @@ void MainScene::OnInit()
 			_Transform.SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
 			_Transform.SetPostition(glm::vec3(0.0f, 2, 2));
 			_SamuraiEntity.AddComponent<se::Transform3DComponent>(_Transform);
-			_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
+			_SamuraiEntity.AddComponent<se::Model3DComponent>(_Skull);
 			_SamuraiEntity.AddComponent<se::NativeScriptComponent>().Bind<se::Mode3DController>();
+
+			auto meshes = _SamuraiEntity.GetComponent<se::Model3DComponent>().Model3D->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
+			for (auto& mesh : meshes)
+			{
+				meshes.get<se::MaterialComponent>(mesh).Material.SetShinines(3);
+				meshes.get<se::MaterialComponent>(mesh).Material.SetShininesStrength(1);	
+				meshes.get<se::MaterialComponent>(mesh).Material.SetDiffuseColor(1.5, 1.5, 1.5);
+			}
+
 		}
 		{   // Just for Fun )
-			auto _POEInterfaceSprite = se::AssetManager::Hold<se::Sprite>("Assets.Sprites.PoeImage");
-			_POEInterfaceSprite->Init();
+			auto _POEInterfaceSprite = se::AssetManager::Hold<se::Sprite>("Sprites.PoeImage");
 			se::Entity _SpriteEntity = CreateEntity();
 
 			se::Transform2D _Transform;
 			_Transform.SetScale(1.0f, 0.20f);
 			_Transform.SetPostition(0.0f, - 0.8f);
-
 			_SpriteEntity.AddComponent<se::Transform2DComponent>(_Transform);
-			//_SpriteEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>("Assets.Images.Image"));
 			_SpriteEntity.AddComponent<se::SpriteComponent>(_POEInterfaceSprite);
+		}
+		{   // Just for Fun )
+			/*auto _POEInterfaceSprite = se::AssetManager::Hold<se::Sprite>("Sprites.PoeImage");
+			se::Entity _SpriteEntity = CreateEntity();
+
+			se::Transform2D _Transform;
+			_Transform.SetScale(1.0f, 0.20f);
+			_Transform.SetPostition(0.0f, 0.8f);
+			_SpriteEntity.AddComponent<se::Transform2DComponent>(_Transform);
+			_SpriteEntity.AddComponent<se::SpriteComponent>(_POEInterfaceSprite);*/
 		}
 		
 		
@@ -134,7 +161,7 @@ void MainScene::OnInit()
 		
 		se::Entity _LightEntity = CreateEntity();
 
-		_LightEntity.AddComponent<se::EnvironmentComponent>(_GeneraLight);
+		_LightEntity.AddComponent<se::EnvironmentComponent>(_PointLight);
 		_LightEntity.AddComponent<se::NativeScriptComponent>().Bind<se::LightController>();
 
 	
@@ -152,11 +179,6 @@ void MainScene::OnInit()
 	
 void MainScene::OnUpdate(const se::Timer& deltaTime)
 {
-	{
-		UpdateNativeScripts(deltaTime); // Can be moved to layer specific object ?
-	}
-
-
 	if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_Q))
 	{
 		se::Renderer::PolygonMode(GL_FRONT_AND_BACK, GL_LINE);

@@ -10,51 +10,15 @@ se::Transform3D::Transform3D():
 
 se::Transform3D::~Transform3D()
 {
-
 }
 
-inline const glm::vec3& se::Transform3D::GetPosition() const
+glm::mat4 se::Transform3D::GetModelMatrix() const
 {
-	return m_Possition;
-}
-
-inline const glm::fvec3& se::Transform3D::GetRotation() const
-{
-	return m_Rotation;
-}
-
-inline const glm::fvec3& se::Transform3D::GetScale() const
-{
-	return m_Scale;
-}
-
-inline void se::Transform3D::SetPostition(const glm::vec3& position)
-{
-	m_Possition = position;
-}
-inline void se::Transform3D::SetPostition(const float& x, const float& y, const float& z)
-{
-	m_Possition.x = x;
-	m_Possition.y = y;
-	m_Possition.z = z;
-}
-inline void se::Transform3D::SetRotation(const float& x, const float& y, const float& z)
-{
-	m_Rotation.x = x;
-	m_Rotation.y = y;
-	m_Rotation.z = z;
-}
-inline void se::Transform3D::SetRotation(const glm::vec3& rotation)
-{
-	m_Rotation = rotation;
-}
-inline void se::Transform3D::SetScale(const float& x, const float& y, const float& z)
-{
-	m_Scale.x = x;
-	m_Scale.y = y;
-	m_Scale.z = z;
-}
-inline void se::Transform3D::SetScale(const glm::vec3& scale)
-{
-	m_Scale = scale;
+	glm::mat4 _PositionMatrix = glm::translate(m_Possition);
+	glm::mat4 _RotationXMatrix = glm::rotate(glm::radians(m_Rotation.x), glm::vec3(1.0, 0.0, 0.0));
+	glm::mat4 _RotationYMatrix = glm::rotate(glm::radians(m_Rotation.y), glm::vec3(0.0, 1.0, 0.0));
+	glm::mat4 _RotationZMatrix = glm::rotate(glm::radians(m_Rotation.z), glm::vec3(0.0, 0.0, 1.0));
+	glm::mat4 _ScaleMatrix = glm::scale(m_Scale);
+	glm::mat4 _RotationMatrix = _RotationXMatrix * _RotationYMatrix * _RotationZMatrix;
+	return glm::mat4(_PositionMatrix * _RotationMatrix * _ScaleMatrix);
 }

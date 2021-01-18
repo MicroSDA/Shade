@@ -25,7 +25,7 @@ namespace se
 		// use tru as second parametr or false if you don't want to keep it in memeory.
 		// All assets that were held with the false flag will be removed automatically !
 		template<typename T>
-		static se::AssetPointer<T> Hold(const ClassName& className, bool keepAlive = true)
+		static se::AssetPointer<T> Hold(const ClassName& className, bool keepAlive = false)
 		{
 			auto& _Instance = GetInstance();
 			// Trying to find in Assets map

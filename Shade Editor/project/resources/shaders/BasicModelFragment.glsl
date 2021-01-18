@@ -19,8 +19,8 @@
 	
 		vec3 ToCameraDirection = normalize(CameraPosition - ModelPosition);
 
-	    vec4 m_TotalColor = ProcessGeneralLight(TBNNormal, generalL, material, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
-		//vec4 m_TotalColor = ProcessPointLight(TBNNormal, pointL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
+	    //vec4 m_TotalColor = ProcessGeneralLight(TBNNormal, generalL, material, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
+		vec4 m_TotalColor = ProcessPointLight(TBNNormal, pointL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
 		//vec4 m_TotalColor = ProcessSpotLight(TBNNormal, spotL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
 		
 		gl_FragColor = vec4(pow(m_TotalColor.rgb, vec3(0.70/1)), m_TotalColor.a);

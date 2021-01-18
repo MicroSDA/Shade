@@ -6,9 +6,9 @@
 	layout (location = 2) in vec3 Normals;
 	layout (location = 3) in vec3 Tangents;
 	
-	uniform mat4 ModelM;
-	uniform mat4 ViewM;
-	uniform mat4 ProjectionM;
+	uniform mat4 ModelMatrix;
+	uniform mat4 ViewMatrix;
+	uniform mat4 ProjectionMatrix;
 	uniform vec3 CameraPosition;
 		
 	layout (location = 0) out vec2 out_TextureCoords;
@@ -20,10 +20,10 @@
 
 	void main()
 	{
-		gl_Position = ProjectionM * ViewM * ModelM *  vec4(Position, 1.0f);
-	    out_TBN =  CalculateTBNMatrix(ModelM, Normals, Tangents);
+		gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix *  vec4(Position, 1.0f);
+	    out_TBN =  CalculateTBNMatrix(ModelMatrix, Normals, Tangents);
 		out_TextureCoords = TextureCoords;
-		out_Normals  = (ModelM * vec4(Normals, 0.0)).xyz;
-		out_ModelPosition = (ModelM * vec4(Position, 1.0f)).xyz;
+		out_Normals  = (ModelMatrix * vec4(Normals, 0.0)).xyz;
+		out_ModelPosition = (ModelMatrix * vec4(Position, 1.0f)).xyz;
         out_CameraPosition  = CameraPosition;
 	}

@@ -52,6 +52,7 @@ void se::WindowManager::Create(const Window& window)
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
 		throw se::ShadeException((std::string("Glad initializing faild!") + SDL_GetError()).c_str(), se::SECode::Error);
 
+	glViewport(0, 0, window.Width, window.Height);
 	_Manager.m_IsWindowCreated = true;
 
 	SE_DEBUG_PRINT(std::string("Display native resolution is:" + std::to_string(_Manager.m_DisplayMode.w) +
@@ -111,9 +112,8 @@ void se::WindowManager::Clear()
 	if (m_IsWindowCreated)
 	{
 		glClearColor(Get().m_ClearR, Get().m_ClearG, Get().m_ClearB, Get().m_ClearA);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	}
-		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}	
 	else
 		throw se::ShadeException("Window has not been created!", se::SECode::Error);
 }

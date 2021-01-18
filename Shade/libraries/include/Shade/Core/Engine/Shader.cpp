@@ -168,6 +168,21 @@ inline GLint se::Shader::GetUniformLocation(const std::string& name) const
 		
 }
 
+inline GLint se::Shader::GetAttribLocation(const std::string& name) const
+{
+	if (m_UniformLocation.find(name) != m_UniformLocation.end())
+	{
+		return m_UniformLocation[name];
+	}
+	else
+	{
+		GLint _Location = glGetAttribLocation(m_Program, name.c_str());
+		m_UniformLocation[name] = _Location;
+		return _Location;
+	}
+	
+}
+
 void se::Shader::Init()
 {
 }
@@ -225,4 +240,9 @@ inline void se::Shader::SendUniform4Float(const std::string& name, const glm::fv
 inline void se::Shader::SendUniformBool(const std::string& name, const bool& value) const
 {
 	glUniform1i(GetUniformLocation(name), value);
+}
+
+inline void se::Shader::SetAttribLocation(const std::string& name) const
+{
+	glBindAttribLocation(m_Program,GetAttribLocation(name), name.c_str());
 }

@@ -45,9 +45,9 @@ namespace se
 		void EraseCallbacks();
 
 		se::Event  m_Event;
-		std::map<EventType, std::vector<EventCallback>> m_CoreCallbacks;
-		std::map<EventType, std::map<const Scene*, std::vector<EventCallback>>> m_SceneCallbacks;
-		std::map<EventType, std::map<const Scene*, std::map<const Layer*, std::vector<EventCallback>>>> m_LayerCallbacks;
+		std::unordered_map<EventType, std::vector<EventCallback>> m_CoreCallbacks;
+		std::unordered_map<EventType, std::unordered_map<const Scene*, std::vector<EventCallback>>> m_SceneCallbacks;
+		std::unordered_map<EventType, std::unordered_map<const Scene*, std::unordered_map<const Layer*, std::vector<EventCallback>>>> m_LayerCallbacks;
 	};
 }
 

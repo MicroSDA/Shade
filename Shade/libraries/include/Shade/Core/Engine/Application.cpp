@@ -73,6 +73,7 @@ void se::Application::Start()
 			if (m_pCurrentScene)
 			{
 				m_pCurrentScene->OnUpdate(_DeltaTime);
+				m_pCurrentScene->UpdateNativeScripts(_DeltaTime);
 				for (auto _Layer : m_pCurrentScene->GetLayers())
 				{
 					if (_Layer->IsActive())
@@ -83,7 +84,6 @@ void se::Application::Start()
 						}
 					}
 				}
-				se::WindowManager::Get().Clear();
 				m_pCurrentScene->OnRender();
 				for (auto _Layer : m_pCurrentScene->GetLayers())
 				{
@@ -101,8 +101,9 @@ void se::Application::Start()
 				throw se::ShadeException("Active scene isn't set!", se::SECode::Error);
 			}
 			
+			
 			se::WindowManager::Get().Update();
-		
+			se::WindowManager::Get().Clear();
 		}
 		catch (se::ShadeException& exception)
 		{
@@ -136,7 +137,7 @@ void se::Application::Quit()
 	m_IsQuitRequested = true;
 }
 
-std::map<std::string, se::Scene*>& se::Application::GetScenes()
+std::unordered_map<std::string, se::Scene*>& se::Application::GetScenes()
 {
 	return m_Scenes;
 }

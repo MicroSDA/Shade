@@ -43,6 +43,12 @@
     <Filter Include="Core\Engine\Components">
       <UniqueIdentifier>{941ec1c1-0a9d-4046-9b4a-ea689dc0be4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Engine\Render\Drawable\Primitives">
+      <UniqueIdentifier>{802c0cae-fbff-40fc-8852-72341a8b8b78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Engine\Render\Buffers">
+      <UniqueIdentifier>{b894c94b-bcd4-418d-baba-0a8e6c63c3b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -157,9 +163,6 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Sprite.h">
       <Filter>Core\Engine\Render\Drawable</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Grid.h">
-      <Filter>Core\Engine\Render\Drawable</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\Shade\Shade.h">
       <Filter>Core</Filter>
     </ClInclude>
@@ -177,6 +180,12 @@
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Model3D.h">
       <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Grid.h">
+      <Filter>Core\Engine\Render\Drawable\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\VertexBuffer.h">
+      <Filter>Core\Engine\Render\Buffers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -274,14 +283,17 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Sprite.cpp">
       <Filter>Core\Engine\Render\Drawable</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Grid.cpp">
-      <Filter>Core\Engine\Render\Drawable</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Texture.cpp">
       <Filter>Core\Engine\Render</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Model3D.cpp">
       <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Grid.cpp">
+      <Filter>Core\Engine\Render\Drawable\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\VertexBuffer.cpp">
+      <Filter>Core\Engine\Render\Buffers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

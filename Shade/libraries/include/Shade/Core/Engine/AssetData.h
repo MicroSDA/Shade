@@ -30,6 +30,7 @@ namespace se
 		long long               _Offset = NULL;
 		std::vector<AssetData>  _Dependency;
 		AssetData*              _Parrent = nullptr;
+		AssetData*              _Alies   = nullptr;
 	};
 };
 

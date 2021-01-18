@@ -27,30 +27,16 @@ se::Grid::Grid(const float& width, const float& height, const int& density)
 		}
 	}
 
-	m_IndicesCount = static_cast<GLuint>(m_Indices.size() * 4);
-	m_AttribCount  = 1;
+	m_DrawCount = static_cast<GLuint>(m_Indices.size() * 4);
 
-	glGenVertexArrays(1, &m_VAO);
-	glGenBuffers(1, &m_VBO);
-
-	glBindVertexArray(m_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(glm::fvec3), &m_Vertices[0], GL_STATIC_DRAW);
-	// Vertex Positions
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-	// Vertex indices
-	glGenBuffers(1, &m_EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(glm::uvec4), &m_Indices[0], GL_STATIC_DRAW);
-
-	glBindVertexArray(0); // just for save
-
+	m_VertexBuffer = se::VertexBuffer::Create<glm::fvec3, glm::uvec4>(
+		{ {se::VertexBufferElementType::Float3, "Position"} },
+		m_Vertices.data(), m_Vertices.size(),
+		m_Indices.data(), m_Indices.size());
 	glLineWidth(2.0f);
 }
 
 se::Grid::~Grid()
 {
-	/*glDeleteVertexArrays(1, &m_VAO);
-	glDeleteBuffers(1, &m_VBO);
-	glDeleteBuffers(1, &m_EBO);*/
 }
+

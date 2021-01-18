@@ -13,49 +13,12 @@ namespace se
 
 	struct DrawableComponent
 	{
-		se::Drawable* Drawable = nullptr;
+		ShadeShared<Drawable> Drawable;
 		DrawableComponent() = default;
-		~DrawableComponent()
-		{
-			if (Drawable)
-				delete Drawable;
-		};
-		DrawableComponent(se::Drawable* other) :
-			Drawable(other) {}; // TODO how to resolve this ort just delete that construct
-		DrawableComponent(const DrawableComponent& other)
-		{
-			if (this != &other)
-			{
-				this->Drawable = new se::Drawable;
-				*this->Drawable = *other.Drawable;
-			}
-		};
-		DrawableComponent(DrawableComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Drawable = other.Drawable;
-				other.Drawable = nullptr;
-			}
-		};
-		DrawableComponent& operator=(const DrawableComponent& other)
-		{
-			if (this != &other)
-			{
-				this->Drawable = new se::Drawable;
-				*this->Drawable = *other.Drawable;
-			}
-			return *this;
-		};
-		DrawableComponent& operator=(DrawableComponent&& other) noexcept
-		{
-			if (this != &other)
-			{
-				this->Drawable = other.Drawable;
-				other.Drawable = nullptr;
-			}
-			return *this;
-		}
+		~DrawableComponent() = default;
+		DrawableComponent(const DrawableComponent&) = default;
+		DrawableComponent(const ShadeShared<se::Drawable>& other)
+			:Drawable(other) {};
 	};
 
 	struct MeshComponent
@@ -67,8 +30,6 @@ namespace se
 		MeshComponent(const se::AssetPointer<se::Mesh>& other)
 			:Mesh(other) {};
 	};
-
-	//TODO Sprite constructs
 	struct SpriteComponent
 	{
 		se::AssetPointer<se::Sprite> Sprite;

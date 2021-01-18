@@ -138,10 +138,8 @@ void se::Model3D::Load()
 		auto _pMesh = se::AssetManager::Hold<se::Mesh>(m_FullClassName + "." + m_AssetData->_Dependency[m]._Name, false);
 		_pMesh->SetVertices(_Vertices);
 		_pMesh->SetIndices(_Indices);
-
-		se::MeshComponent     _MeshComponent     = _pMesh;
-		se::MaterialComponent _MaterialComponent = _MaterialsMap[_MeshName];
-	
+		se::MeshComponent& _MeshComponent = _MeshEntity.AddComponent<se::MeshComponent>(_pMesh);
+		_MeshEntity.AddComponent<se::MaterialComponent>(_MaterialsMap[_MeshName]);
 		// Textures
 		if (m_AssetData->_Dependency[m]._Dependency.size())
 		{
@@ -155,8 +153,6 @@ void se::Model3D::Load()
 			}
 		}
 
-		_MeshEntity.AddComponent<se::MeshComponent>(_MeshComponent);
-		_MeshEntity.AddComponent<se::MaterialComponent>(_MaterialComponent); 
 	
 	}
 	_File.close();

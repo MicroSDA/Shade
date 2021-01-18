@@ -4,16 +4,10 @@
 se::Mesh::Mesh(const std::string& fullClassName, const se::AssetData* data) : se::Asset(fullClassName, data), se::Drawable()
 {
 	m_DrawMode = se::DrawMode::TRIANGLES;
-	m_AttribCount = 4; // DO NOT FORGET //
-
 }
 
 se::Mesh::~Mesh()
 {
-	//std::cout << "~Mesh()\n";
-	/*glDeleteVertexArrays(1, &m_VAO);
-	glDeleteBuffers(1, &m_VBO);
-	glDeleteBuffers(1, &m_EBO);*/
 }
 
 void se::Mesh::SetVertices(std::vector<se::Vertex>& vertices)
@@ -23,8 +17,8 @@ void se::Mesh::SetVertices(std::vector<se::Vertex>& vertices)
 
 void se::Mesh::SetIndices(std::vector<unsigned int>& indices)
 {
-	m_Indices = std::move(indices);
-	m_IndicesCount = static_cast<GLuint>(m_Indices.size());
+	m_Indices   = std::move(indices);
+	m_DrawCount = static_cast<GLuint>(m_Indices.size());
 }
 
 void se::Mesh::Load()
@@ -39,27 +33,15 @@ void se::Mesh::Init()
 		// Protect when mesh should be initialized outside of asset manager and data inst set yeat
 		if (m_Indices.size() || m_Vertices.size())
 		{
-			glGenVertexArrays(1, &m_VAO);
-			glGenBuffers(1, &m_VBO);
-
-			glBindVertexArray(m_VAO);
-			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-			glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(se::Vertex), &m_Vertices[0], GL_STATIC_DRAW);
-			// Vertex Positions
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(se::Vertex), (GLvoid*)0);
-			// Vertex Texture Coords
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex), (GLvoid*)offsetof(se::Vertex, m_TextureCoords));
-			// Vertex Normals
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(se::Vertex), (GLvoid*)offsetof(se::Vertex, m_Normals));
-			// Vertex Tangents
-			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(se::Vertex), (GLvoid*)offsetof(se::Vertex, m_Tangents));
-
-			// Vertex indices
-			glGenBuffers(1, &m_EBO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(GLuint), &m_Indices[0], GL_STATIC_DRAW);
-
-			glBindVertexArray(0); // just for save
+			m_VertexBuffer = se::VertexBuffer::Create<se::Vertex, unsigned int>(
+				{ {se::VertexBufferElementType::Float3, "Position"},
+				  {se::VertexBufferElementType::Float2, "TextureCoords"} ,
+				  {se::VertexBufferElementType::Float3, "Normals"},
+				  {se::VertexBufferElementType::Float3, "Tangents"} },
+				m_Vertices.data(),
+				m_Vertices.size(), 
+				m_Indices.data(),
+				m_Indices.size());
 
 			m_IsInitialized = true;
 		}
@@ -73,5 +55,4 @@ void se::Mesh::Init()
 	{
 		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->_Path + "'").c_str(), se::SECode::Warning);
 	}
-	
 }

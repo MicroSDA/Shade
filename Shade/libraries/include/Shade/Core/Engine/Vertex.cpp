@@ -7,20 +7,17 @@ se::Vertex::Vertex()
 	m_TextureCoords = glm::vec2(0.0f, 0.0f);
 	m_Normals = glm::vec3(0.0f, 0.0f, 0.0f);
 	m_Tangents = glm::vec3(0.0f, 0.0f, 0.0f);
-	m_Id = 0;
 }
 
 se::Vertex::Vertex(const glm::vec3& position,
 	const glm::vec2& textureCoords,
 	const glm::vec3& normals,
-	const glm::vec3& tangents,
-	const unsigned int& id)
+	const glm::vec3& tangents)
 {
 	m_Position = position;
 	m_TextureCoords = textureCoords;
 	m_Normals = normals;
 	m_Tangents = tangents;
-	m_Id = id;
 }
 
 se::Vertex::Vertex(const float& positionX,
@@ -33,8 +30,7 @@ se::Vertex::Vertex(const float& positionX,
 	const float& normalZ,
 	const float& tangentX,
 	const float& tangentY,
-	const float& tangentZ,
-	const unsigned int& id)
+	const float& tangentZ)
 {
 	m_Position.x = positionX;
 	m_Position.y = positionY;
@@ -50,8 +46,6 @@ se::Vertex::Vertex(const float& positionX,
 	m_Tangents.x = tangentX;
 	m_Tangents.y = tangentY;
 	m_Tangents.z = tangentZ;
-
-	m_Id = id;
 }
 
 se::Vertex::~Vertex()

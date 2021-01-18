@@ -163,7 +163,7 @@ void se::AssetManager::SetRoadMap(const se::AssetData* asset, std::unordered_map
 	{
 		auto* _Parrent = asset->_Parrent;
 		std::string name;
-		while (_Parrent != nullptr)
+		while (_Parrent != nullptr && !_Parrent->_Name.empty())
 		{
 			name = _Parrent->_Name + "." + name;
 			_Parrent = _Parrent->_Parrent;

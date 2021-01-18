@@ -32,13 +32,12 @@ void MainLayer::OnRender()
 	auto* _MainCamera = GetScene()->GetMainCamera();
 	{
 		// Modles 
-		auto _Shader = se::AssetManager::Hold<se::Shader>("Assets.Shaders.BasicModel", true);
+		auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.BasicModel", true);
 
 		_Shader->Bind();
-		_Shader->SendUniformMatrix4Float("ViewM", GL_FALSE, _MainCamera->GetView());
-		_Shader->SendUniformMatrix4Float("ProjectionM", GL_FALSE, _MainCamera->GetProjection());
+		_Shader->SendUniformMatrix4Float("ViewMatrix", GL_FALSE, _MainCamera->GetView());
+		_Shader->SendUniformMatrix4Float("ProjectionMatrix", GL_FALSE, _MainCamera->GetProjection());
 		_Shader->SendUniform3Float("CameraPosition", _MainCamera->GetPosition());
-
 		{
 			auto _Enviroments = GetScene()->GetEntities().view<se::EnvironmentComponent>();
 			for (auto& _Enviroment : _Enviroments)
@@ -51,7 +50,7 @@ void MainLayer::OnRender()
 			for (auto& _Entity : _Entities) {
 
 				auto _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
-				_Shader->SendUniformMatrix4Float("ModelM", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModel());
+				_Shader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModelMatrix());
 
 				auto _MesheEntities = _Model->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
 				for (auto& _MeshEnity : _MesheEntities)
@@ -66,12 +65,12 @@ void MainLayer::OnRender()
 						_TexturesEntities.get<se::TextureComponent>(_TextureEnity).Texture->Bind(static_cast<GLuint>(_TextureEnity));
 					}
 
-					se::Renderer::DrawIndexed(*_Mesh);
+					se::Renderer::DrawIndexed(_Shader.get(), *_Mesh);
 
-					for (auto& _TextureEnity : _TexturesEntities)
+					/*for (auto& _TextureEnity : _TexturesEntities)
 					{
 						se::Texture::UnBind(static_cast<GLuint>(_TextureEnity));
-					}
+					}*/
 				}
 			}
 		}

@@ -2,11 +2,13 @@
 #include "Sprite.h"
 #include "Shade/Core/Engine/Components.h"
 
+GLfloat se::Sprite::m_Quad[8] = { -1.0,1.0,  -1.0,-1.0,  1.0,1.0,  1.0,-1.0 };
+se::VertexBuffer se::Sprite::m_VertexBuffer;
+
 se::Sprite::Sprite(const std::string& fullClassName, const se::AssetData* data): se::Asset(fullClassName, data), se::Drawable()
 {
 	m_DrawMode = se::DrawMode::TRIANGLE_STRIP;
-	m_AttribCount = 1; // DO NOT FORGET //
-	m_IndicesCount = 4; // DO NOT FORGET //
+	m_DrawCount = 4; 
 }
 
 se::Sprite::~Sprite()
@@ -17,18 +19,15 @@ se::Sprite::~Sprite()
 void se::Sprite::Init()
 {
 	if (!m_IsInitialized)
-	{
-		glGenVertexArrays(1, &m_VAO);
-		glGenBuffers(1, &m_VBO);
-
-		glBindVertexArray(m_VAO);
-
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(m_Quad), &m_Quad, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-		glBindVertexArray(0);
-
+	{   // Check if it was already initiailized
+		// Sprite must have one static buffer, cause there's same geometry for all
+		if (m_VertexBuffer.GetVAO() == NULL)
+		{
+			m_VertexBuffer = se::VertexBuffer::Create<GLfloat>(
+				{ {se::VertexBufferElementType::Float2, "Position"} },
+				&m_Quad[0], 8);
+		}
+		
 		for (auto& _Asset : m_AssetData->_Dependency)
 		{
 			if (_Asset._Type == se::AssetDataType::Texture)
@@ -37,10 +36,9 @@ void se::Sprite::Init()
 				_TextureEntity.AddComponent<se::TextureComponent>(
 					se::AssetManager::Hold<se::Texture>(m_FullClassName + "." + _Asset._Name));
 			}
-			
-
 		}
 		
+		m_IsInitialized = true;
 	}
 	else
 	{
@@ -53,3 +51,4 @@ void se::Sprite::Load()
 {
 	
 }
+

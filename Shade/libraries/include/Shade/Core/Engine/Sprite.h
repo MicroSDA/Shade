@@ -13,8 +13,13 @@ namespace se
 		virtual ~Sprite();
 		virtual void Load() override;
 		virtual void Init() override;
+		inline virtual const VertexBuffer& GetVertexBuffer() const
+		{
+			return m_VertexBuffer;
+		}
 	protected:
-		const GLfloat m_Quad[8] = { -1.0,1.0,  -1.0,-1.0,  1.0,1.0,  1.0,-1.0 };
+		static GLfloat m_Quad[];
+		static se::VertexBuffer m_VertexBuffer;
 	private:
 	};
 

@@ -5,7 +5,7 @@
 
 ShadeEditor::ShadeEditor()
 {
-	se::AssetData _Container;
+	/*se::AssetData _Container;
 	se::AssetData _ModelsPacket;
 	se::AssetData _ShaderPacket;
 	se::AssetData _SpritePacket;
@@ -14,7 +14,7 @@ ShadeEditor::ShadeEditor()
 	se::AssetData _Sprite;
 
 
-	/*_Container._Name = "Assets";
+	_Container._Name = "";
 
 	_ModelsPacket._Name = "Models";
 	_ShaderPacket._Name = "Shaders";
@@ -35,7 +35,13 @@ ShadeEditor::ShadeEditor()
 	_Model._Name = "SamuraiHelmet";
 	_Model._Path = "./resources/models/samurai-helmet/";
 	Serrializer::Serrialize3DModel("./project/resources/models/samurai-helmet/samurai-helmet.obj", &_Model, true);
-	_ModelsPacket._Dependency.push_back(_Model);*/
+	_ModelsPacket._Dependency.push_back(_Model);
+
+	_Model = se::AssetData{}; // Reset
+	_Model._Name = "Skull";
+	_Model._Path = "./resources/models/skull/";
+	Serrializer::Serrialize3DModel("./project/resources/models/skull/skull.obj", &_Model, true);
+	_ModelsPacket._Dependency.push_back(_Model);
 
 /////////////////////////////////////
 	_Shader._Name = "BasicModel";
@@ -44,7 +50,7 @@ ShadeEditor::ShadeEditor()
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
 		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);
-	/*_ShaderPacket._Dependency.push_back(_Shader);
+	_ShaderPacket._Dependency.push_back(_Shader);
 
 	_Shader = se::AssetData{}; // Reset
 	_Shader._Name = "Sprite";
@@ -68,13 +74,21 @@ ShadeEditor::ShadeEditor()
 	_SpritePacket._Path = "./resources/textures/";
 	se::AssetData _Texture;
 
-	_Sprite._Name  = "PoeImage";
-	_Sprite._Type  = se::AssetDataType::Sprite;
 	_Texture._Name = "PoeImage";
 	_Texture._Type = se::AssetDataType::Texture;
 	_Texture._Path = "./resources/textures/image.bin"; // if serialize like that need to specify full path and name
 	Serrializer::SerrializeTexture("./project/resources/images/image.png", &_Texture);
+
+	_Sprite._Name = "PoeImage";
+	_Sprite._Type = se::AssetDataType::Sprite;
 	_Sprite._Dependency.push_back(_Texture);
+	_SpritePacket._Dependency.push_back(_Sprite);
+
+	_Sprite = se::AssetData{};
+	_Sprite._Name = "PoeImage2";
+	_Sprite._Type = se::AssetDataType::Sprite;
+	_Sprite._Dependency.push_back(_Texture);
+
 	_SpritePacket._Dependency.push_back(_Sprite);
 
 	_Container._Dependency.push_back(_ShaderPacket);

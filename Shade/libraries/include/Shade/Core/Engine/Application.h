@@ -33,16 +33,16 @@ namespace se
 			m_Scenes.insert(std::pair<std::string, Scene*>(name, _Scene));
 			return _Scene;
 		}
-		std::map<std::string, se::Scene*>& GetScenes();
+		std::unordered_map<std::string, se::Scene*>& GetScenes();
 		se::Scene* GetScene(const std::string& name);
 		void InitScene(const std::string& name);
 		void SetCurentScene(const std::string& name);
 		void DeleteScene(const std::string& name);
 	private:
-		static Application*               m_pInstance;
-		se::Scene*                        m_pCurrentScene;
-		std::map<std::string, se::Scene*> m_Scenes;
-		bool                              m_IsQuitRequested;
+		static Application*                         m_pInstance;
+		se::Scene*                                  m_pCurrentScene;
+		std::unordered_map<std::string, se::Scene*> m_Scenes;
+		bool                                        m_IsQuitRequested;
 	};
 
 	Application* CreateApplication();

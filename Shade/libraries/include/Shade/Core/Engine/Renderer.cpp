@@ -8,36 +8,18 @@ void se::Renderer::SetClearColor(const float& r, const float& g, const float& b,
 	se::WindowManager::Get().SetClearColor(r, g, b, a);
 }
 
-void se::Renderer::DrawIndexed(const se::Drawable& entity)
+void se::Renderer::DrawIndexed(const se::Shader* shader, const se::Drawable& entity)
 {
 	
-	glBindVertexArray(entity.GetVAO());
-
-	for (GLuint attr = 0; attr < entity.GetAttribCount(); attr++)
-		glEnableVertexAttribArray(attr);
-
-		glDrawElements(static_cast<GLenum>(entity.GetDrawMode()), entity.GetIndicesCount(), GL_UNSIGNED_INT, NULL);
-
-	for (GLuint attr = 0; attr < entity.GetAttribCount(); attr++)
-		glDisableVertexAttribArray(attr);
-
-	glBindVertexArray(0); // TODO Should be removed ?
+	glBindVertexArray(entity.GetVertexBuffer().GetVAO());
+	glDrawElements(static_cast<GLenum>(entity.GetDrawMode()), entity.GetDrawCount(), GL_UNSIGNED_INT, GLM_NULLPTR);
 }
 
-void se::Renderer::DrawNotIndexed(const se::Drawable& entity, const GLuint& count)
+void se::Renderer::DrawNotIndexed(const se::Shader* shader, const se::Drawable& entity, const GLuint& count)
 {
 
-	glBindVertexArray(entity.GetVAO());
-
-	for (GLuint attr = 0; attr < entity.GetAttribCount(); attr++)
-		glEnableVertexAttribArray(attr);
-
-		glDrawArrays(static_cast<GLenum>(entity.GetDrawMode()), 0, (count == 0) ? entity.GetIndicesCount() : count);
-	
-	for (GLuint attr = 0; attr < entity.GetAttribCount(); attr++)
-		glDisableVertexAttribArray(attr);
-
-	glBindVertexArray(0); // TODO Should be removed?
+	glBindVertexArray(entity.GetVertexBuffer().GetVAO());
+	glDrawArrays(static_cast<GLenum>(entity.GetDrawMode()), 0, (count == 0) ? entity.GetDrawCount() : count);
 }
 
 inline void se::Renderer::Enable(const GLenum& capability)
