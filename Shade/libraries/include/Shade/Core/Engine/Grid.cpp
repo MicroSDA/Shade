@@ -4,7 +4,7 @@
 
 se::Grid::Grid(const float& width, const float& height, const int& density)
 {
-	m_DrawMode = se::DrawMode::LINES;
+	/*m_DrawMode = se::DrawMode::LINES;
 	
 	for (int j = 0; j <= density; ++ j ) {
 		for (int i = 0; i <= density; ++i) {
@@ -33,7 +33,7 @@ se::Grid::Grid(const float& width, const float& height, const int& density)
 		{ {se::VertexBufferElementType::Float3, "Position"} },
 		m_Vertices.data(), m_Vertices.size(),
 		m_Indices.data(), m_Indices.size());
-	glLineWidth(2.0f);
+	glLineWidth(2.0f);*/
 }
 
 se::Grid::~Grid()

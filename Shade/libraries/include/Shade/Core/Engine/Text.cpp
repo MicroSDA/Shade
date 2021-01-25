@@ -44,6 +44,7 @@ void se::Text::SetText(const std::string& text)
 
 		glGenVertexArrays(1, &m_VAO);
 		glGenBuffers(1, &m_VBO);
+		glGenBuffers(1, &m_EBO);
 
 		glBindVertexArray(m_VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -53,6 +54,9 @@ void se::Text::SetText(const std::string& text)
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex2D), (GLvoid*)0);
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex2D), (GLvoid*)offsetof(Vertex2D, m_TextureCoords));
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_BufferSize * 6, nullptr, GL_DYNAMIC_DRAW);
 
 		glBindVertexArray(0);
 	}
@@ -66,6 +70,8 @@ void se::Text::SetText(const std::string& text)
 
 		glGenVertexArrays(1, &m_VAO);
 		glGenBuffers(1, &m_VBO);
+		glGenBuffers(1, &m_EBO);
+
 
 		glBindVertexArray(m_VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -76,13 +82,17 @@ void se::Text::SetText(const std::string& text)
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex2D), (GLvoid*)offsetof(Vertex2D, m_TextureCoords));
 
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_BufferSize * 6, nullptr, GL_DYNAMIC_DRAW);
+
 		glBindVertexArray(0);
 	}
 
 
 	std::vector<se::Vertex2D> Vertices;
 	std::vector<GLuint>		  Indices;
-	Vertices.reserve(text.size() * 6);
+	Indices.reserve(text.size()  * 6);
+	Vertices.reserve(text.size() * 4);
 	float TileSize = 512.0f; // Temporary here
 	float Offset   = 0.0f;
 	size_t IndicesStride = 0;
@@ -92,14 +102,14 @@ void se::Text::SetText(const std::string& text)
 		se::Vertex2D Vertex[4];
 		// Position
 		Vertex[0].m_Position = glm::vec2(-Offset, -CharData.Height - CharData.Yoffset);
-		Vertex[1].m_Position = glm::vec2(-Offset, -CharData.Yoffset);
-		Vertex[2].m_Position = glm::vec2(CharData.Width - Offset, -CharData.Yoffset);
-		Vertex[3].m_Position = glm::vec2(CharData.Width - Offset, -CharData.Height - CharData.Yoffset);
+		Vertex[1].m_Position = glm::vec2(CharData.Width - Offset, -CharData.Height - CharData.Yoffset);
+		Vertex[2].m_Position = glm::vec2(- Offset, - CharData.Yoffset);
+		Vertex[3].m_Position = glm::vec2(CharData.Width - Offset, -CharData.Yoffset);
 		// TexCoords
 		Vertex[0].m_TextureCoords = glm::vec2(CharData.Xpos / TileSize, (CharData.Ypos + CharData.Height) / TileSize);
-		Vertex[1].m_TextureCoords = glm::vec2(CharData.Xpos / TileSize, CharData.Ypos / TileSize);
-		Vertex[2].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, CharData.Ypos / TileSize);
-		Vertex[3].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, (CharData.Ypos + CharData.Height) / TileSize);
+		Vertex[1].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, (CharData.Ypos + CharData.Height) / TileSize);
+		Vertex[2].m_TextureCoords = glm::vec2(CharData.Xpos / TileSize, CharData.Ypos / TileSize);
+		Vertex[3].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, CharData.Ypos / TileSize);
 
 		Vertices.push_back(Vertex[0]); Vertices.push_back(Vertex[1]); Vertices.push_back(Vertex[2]); Vertices.push_back(Vertex[3]);
 
@@ -109,7 +119,7 @@ void se::Text::SetText(const std::string& text)
 		Indices.push_back(i + IndicesStride + 1); // i + 1
 		Indices.push_back(i + IndicesStride + 2); // i + 2
 		Indices.push_back(i + IndicesStride + 2);//  i + 2
-		Indices.push_back(i + IndicesStride); // i
+		Indices.push_back(i + IndicesStride + 1); // i
 		Indices.push_back(i + IndicesStride + 3); // i + 3
 
 		IndicesStride += 3;

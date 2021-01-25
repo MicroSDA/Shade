@@ -52,17 +52,17 @@ void MainScene::OnCreate()
 
 			if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE)
 			{
-				std::string str = m_Text.GetText();
-				if(str.size())
-					str.pop_back();
+				//std::string str = m_Text.GetText();
+				//if(str.size())
+					//str.pop_back();
 
-				m_Text.SetText(str);
+				//m_Text.SetText(str);
 			}
 			else
 			{
-				std::string s;
-				s.push_back((char)event.key.keysym.sym);
-				m_Text.SetText(m_Text.GetText() + s);
+				//std::string s;
+				//s.push_back((char)event.key.keysym.sym);
+				//m_Text.SetText(m_Text.GetText() + s);
 			}
 
 			return false;
@@ -75,7 +75,7 @@ void MainScene::OnCreate()
 void MainScene::OnInit()
 {
 	
-	/*se::Camera* _MainCamera = new se::Camera();
+	se::Camera* _MainCamera = new se::Camera();
 	_MainCamera->SetPosition(0, 3, -5);
 	SetMainCamera(_MainCamera);
 
@@ -83,10 +83,10 @@ void MainScene::OnInit()
 	_CameraEntity.AddComponent<se::CameraComponent>(_MainCamera);
 	_CameraEntity.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
 
-	se::Entity _GridEntity = this->CreateEntity("Grid");
-	_GridEntity.AddComponent<se::Transform3DComponent>();
+	//se::Entity _GridEntity = this->CreateEntity("Grid");
+	//_GridEntity.AddComponent<se::Transform3DComponent>();
 
-	_GridEntity.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(1000, 1000, 100)));
+	//_GridEntity.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(1000, 1000, 100)));
 
 	{// Assets
 		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Models.Floor", false);
@@ -119,7 +119,7 @@ void MainScene::OnInit()
 			}
 
 		}
-		{   // Just for Fun )
+		/*{   // Just for Fun )
 			auto _POEInterfaceSprite = se::AssetManager::Hold<se::Sprite>("Sprites.PoeImage");
 			se::Entity _SpriteEntity = CreateEntity();
 
@@ -128,7 +128,7 @@ void MainScene::OnInit()
 			_Transform.SetPostition(0.0f, - 0.8f);
 			_SpriteEntity.AddComponent<se::Transform2DComponent>(_Transform);
 			_SpriteEntity.AddComponent<se::SpriteComponent>(_POEInterfaceSprite);
-		}
+		}*/
 	}
 	{// Light
 		se::PointLight* _PointLight = new se::PointLight();
@@ -151,15 +151,15 @@ void MainScene::OnInit()
 
 	
 	
-	}*/
+	}
 
-	//CreateLayer<MainLayer>("MainLayer");
+	CreateLayer<MainLayer>("MainLayer");
 	//CreateLayer<GuiLayer>("GuiLayer");
-	//InitLayer("MainLayer");
+	InitLayer("MainLayer");
 	//InitLayer("GuiLayer");
 	//InitLayers();
 
-	m_Text.SetText("Alena");
+	m_Text.SetText("HelloWorld");
 }
 	
 void MainScene::OnUpdate(const se::Timer& deltaTime)
@@ -167,11 +167,12 @@ void MainScene::OnUpdate(const se::Timer& deltaTime)
 	// TODO Change calculatin model matrix, get new matrix every set pos, scale or rotate; and add z rotation to 2dmatrix
 	//m_Text.SetText(std::to_string( 1 / deltaTime));
 
+	//se::Renderer::Disable(GL_CULL_FACE);
 	se::Renderer::Enable(GL_BLEND);
 	se::Renderer::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text", true);
 	se::Transform2D transform;
-	transform.SetPostition(500.0, (float)se::WindowManager::GetWindow().Height);
+	transform.SetPostition(350.0, (float)se::WindowManager::GetWindow().Height);
 	//transform.SetScale(0.001, 0.001);
 	_Shader->Bind();
 
@@ -180,6 +181,7 @@ void MainScene::OnUpdate(const se::Timer& deltaTime)
 	_Shader->SendUniformMatrix4Float("ModelMatrix", false, projection * transform.GetModelMatrix());
 	
 	m_Text.Render();
+	se::Renderer::Disable(GL_BLEND);
 	/*if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_Q))
 	{
 		se::Renderer::PolygonMode(GL_FRONT_AND_BACK, GL_LINE);

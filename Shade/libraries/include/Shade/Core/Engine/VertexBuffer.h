@@ -109,9 +109,15 @@ namespace se
 		std::vector<VertexBufferElement>::iterator end() { return m_Elements.end(); }
 		std::vector<VertexBufferElement>::const_iterator begin() const { return m_Elements.begin(); }
 		std::vector<VertexBufferElement>::const_iterator end() const { return m_Elements.end(); }
+		std::vector<VertexBufferElement>::size_type size() const { return m_Elements.size(); }
 	private:
 		std::vector<VertexBufferElement> m_Elements;
 		size_t							 m_Stride;
+	};
+	enum class VertexBufferType
+	{
+		Static  = GL_STATIC_DRAW,
+		Dynamic = GL_DYNAMIC_DRAW
 	};
 	class SE_API VertexBuffer
 	{
@@ -120,7 +126,7 @@ namespace se
 		VertexBuffer(const se::VertexBuffer& other) = delete;
 		VertexBuffer& operator=(VertexBuffer& other) = delete;
 		VertexBuffer(se::VertexBuffer&& other) noexcept
-			:m_VAO(NULL),m_VBO(NULL), m_EBO(NULL)
+			:m_VAO(NULL),m_VBO(NULL), m_EBO(NULL), m_VBO_Size(0), m_EBO_Size(0)
 		{
 			if (this != &other)
 			{
@@ -128,9 +134,14 @@ namespace se
 				this->m_VBO = other.m_VBO;
 				this->m_EBO = other.m_EBO;
 
+				this->m_EBO_Size = other.m_EBO_Size;
+				this->m_VBO_Size = other.m_VBO_Size;
+
 				other.m_VAO = NULL;
 				other.m_VBO = NULL;
 				other.m_EBO = NULL;
+				other.m_VBO_Size = 0;
+				other.m_EBO_Size = 0;
 			}
 		}
 		VertexBuffer& operator=(VertexBuffer&& other) noexcept
@@ -141,64 +152,42 @@ namespace se
 				this->m_VBO = other.m_VBO;
 				this->m_EBO = other.m_EBO;
 
+				this->m_EBO_Size = other.m_EBO_Size;
+				this->m_VBO_Size = other.m_VBO_Size;
+
 				other.m_VAO = NULL;
 				other.m_VBO = NULL;
 				other.m_EBO = NULL;
+				other.m_VBO_Size = 0;
+				other.m_EBO_Size = 0;
 			}
 			return *this;
 		}
-		template<typename V, typename I>
-		static VertexBuffer Create(const se::VertexBufferLayout& layout, const V* vertices, const size_t& verticesCount, const I* indices, const size_t& indicesCount)
+		
+		
+		static VertexBuffer Create(const se::VertexBufferLayout& layout, const se::VertexBufferType& type, const uint32_t& verticesSize, const uint32_t& indicesSize = 0);
+
+		template<typename T>
+		void SetVBO_Data(const uint32_t& offset, const uint32_t& size, const T* data)
 		{
-			se::VertexBuffer _Buffer;
-			_Buffer.m_Layout = layout;
-			glGenVertexArrays(1, &_Buffer.m_VAO);
-			glGenBuffers(1, &_Buffer.m_VBO);
-			glBindVertexArray(_Buffer.m_VAO);
-			glBindBuffer(GL_ARRAY_BUFFER, _Buffer.m_VBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(V) * verticesCount, vertices, GL_STATIC_DRAW);
-
-			GLuint index = 0;
-			for (auto& element : layout)
+			// If size isnt empty
+			if (size > 0 &&  offset >= 0)
 			{
-				auto v = sizeof(se::Vertex);
-				glEnableVertexAttribArray(index);
-				glVertexAttribPointer(index, element.GeElementTypeCount(), element.ToOpenGLNativeType(), element.Normalized, layout.GetStride(), (const void*)(element.Offset));
-				index++;
-			}
-
-			glGenBuffers(1, &_Buffer.m_EBO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _Buffer.m_EBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(I) * indicesCount, indices, GL_STATIC_DRAW);
-
-			glBindVertexArray(0); // just for save
-
-			return std::move(_Buffer);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+				glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+			}	
 		}
-		template<typename V>
-		static VertexBuffer Create(const se::VertexBufferLayout& layout, const V* vertices, const size_t& verticesCount)
+		template<typename T>
+		void SetEBO_Data(const uint32_t& offset, const uint32_t& size, const T* data)
 		{
-			se::VertexBuffer _Buffer;
-			_Buffer.m_Layout = layout;
-			glGenVertexArrays(1, &_Buffer.m_VAO);
-			glGenBuffers(1, &_Buffer.m_VBO);
-			glBindVertexArray(_Buffer.m_VAO);
-			glBindBuffer(GL_ARRAY_BUFFER, _Buffer.m_VBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(V) * verticesCount, vertices, GL_STATIC_DRAW);
-
-			GLuint index = 0;
-			for (auto& element : layout)
+			// If size isnt empty
+			if (size > 0 && offset >= 0)
 			{
-				auto v = sizeof(se::Vertex);
-				glEnableVertexAttribArray(index);
-				glVertexAttribPointer(index, element.GeElementTypeCount(), element.ToOpenGLNativeType(), element.Normalized, layout.GetStride(), (const void*)(element.Offset));
-				index++;
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+				glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
 			}
-			glBindVertexArray(0); // just for save
-
-			return std::move(_Buffer);
 		}
-
+		void Reset();
 		inline const GLuint& GetVAO() const { return m_VAO; }
 		inline const GLuint& GetVBO() const { return m_VBO; }
 		inline const GLuint& GetEBO() const { return m_EBO; }
@@ -207,5 +196,6 @@ namespace se
 	private:
 		se::VertexBufferLayout m_Layout;
 		GLuint m_VAO, m_VBO, m_EBO;
+		size_t m_VBO_Size, m_EBO_Size;
 	};
 }

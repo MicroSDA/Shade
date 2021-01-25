@@ -30,18 +30,20 @@ void se::Mesh::Init()
 {
 	if (!m_IsInitialized)
 	{
-		// Protect when mesh should be initialized outside of asset manager and data inst set yeat
+		// Protect when mesh should be initialized outside of asset manager and data ins't seted yeat
 		if (m_Indices.size() || m_Vertices.size())
 		{
-			m_VertexBuffer = se::VertexBuffer::Create<se::Vertex, unsigned int>(
+			m_VertexBuffer = se::VertexBuffer::Create(
 				{ {se::VertexBufferElementType::Float3, "Position"},
 				  {se::VertexBufferElementType::Float2, "TextureCoords"} ,
 				  {se::VertexBufferElementType::Float3, "Normals"},
 				  {se::VertexBufferElementType::Float3, "Tangents"} },
-				m_Vertices.data(),
-				m_Vertices.size(), 
-				m_Indices.data(),
-				m_Indices.size());
+				se::VertexBufferType::Dynamic,
+				sizeof(se::Vertex) * m_Vertices.size(),
+				sizeof(unsigned int) * m_Indices.size());
+
+			m_VertexBuffer.SetVBO_Data(0, sizeof(se::Vertex)   * m_Vertices.size(), m_Vertices.data());
+			m_VertexBuffer.SetEBO_Data(0, sizeof(unsigned int) * m_Indices.size(),  m_Indices.data());
 
 			m_IsInitialized = true;
 		}

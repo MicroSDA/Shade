@@ -12,13 +12,13 @@ MainLayer::~MainLayer()
 
 void MainLayer::OnCreate()
 {
-	se::FramebufferSpec fbSpec;
+	/*se::FramebufferSpec fbSpec;
 	fbSpec.Attachments = { se::FrameBufferTextureFormat::RGBA8, se::FrameBufferTextureFormat::Depth };
 	fbSpec.Width = 1000;
 	fbSpec.Height = 800;
 	fbSpec.SwapChainTarget = false;
 
-	m_pFrameBuffer = se::FrameBuffer::Create(fbSpec);
+	m_pFrameBuffer = se::FrameBuffer::Create(fbSpec);*/
 }
 
 void MainLayer::OnInit()

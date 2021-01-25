@@ -18,7 +18,7 @@ se::Sprite::~Sprite()
 
 void se::Sprite::Init()
 {
-	if (!m_IsInitialized)
+	/*if (!m_IsInitialized)
 	{   // Check if it was already initiailized
 		// Sprite must have one static buffer, cause there's same geometry for all
 		if (m_VertexBuffer.GetVAO() == NULL)
@@ -43,7 +43,7 @@ void se::Sprite::Init()
 	else
 	{
 		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->_Path + "'").c_str(), se::SECode::Warning);
-	}
+	}*/
 
 }
 
