@@ -25,8 +25,6 @@ namespace se
 		DrawMode         m_DrawMode;
 		GLuint           m_DrawCount;
 	private:
-		bool         m_wasCopied = false;
 	};
-
 }
 

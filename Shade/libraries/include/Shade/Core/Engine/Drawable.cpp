@@ -9,14 +9,5 @@ se::Drawable::Drawable():
 
 se::Drawable::~Drawable()
 {
-	/*if (!m_wasCopied)
-	{
-		glDeleteVertexArrays(1, &m_VAO);
-		glDeleteBuffers(1, &m_VBO);
-		glDeleteBuffers(1, &m_EBO);
-	}
-	else
-	{
-		m_wasCopied = false;
-	}*/
+	
 }

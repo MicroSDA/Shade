@@ -123,10 +123,10 @@ namespace se
 	{
 	public:
 		VertexBuffer();
-		VertexBuffer(const se::VertexBuffer& other) = delete;
-		VertexBuffer& operator=(VertexBuffer& other) = delete;
+		VertexBuffer(const se::VertexBuffer&)  = delete;
+		VertexBuffer& operator=(VertexBuffer&) = delete;
 		VertexBuffer(se::VertexBuffer&& other) noexcept
-			:m_VAO(NULL),m_VBO(NULL), m_EBO(NULL), m_VBO_Size(0), m_EBO_Size(0)
+			:m_VAO(NULL),m_VBO(NULL), m_EBO(NULL), m_VBO_Size(0), m_EBO_Size(0), m_Type(se::VertexBufferType::Static)
 		{
 			if (this != &other)
 			{
@@ -136,6 +136,7 @@ namespace se
 
 				this->m_EBO_Size = other.m_EBO_Size;
 				this->m_VBO_Size = other.m_VBO_Size;
+				this->m_Type     = other.m_Type;
 
 				other.m_VAO = NULL;
 				other.m_VBO = NULL;
@@ -154,6 +155,7 @@ namespace se
 
 				this->m_EBO_Size = other.m_EBO_Size;
 				this->m_VBO_Size = other.m_VBO_Size;
+				this->m_Type = other.m_Type;
 
 				other.m_VAO = NULL;
 				other.m_VBO = NULL;
@@ -164,15 +166,14 @@ namespace se
 			return *this;
 		}
 		
-		
 		static VertexBuffer Create(const se::VertexBufferLayout& layout, const se::VertexBufferType& type, const uint32_t& verticesSize, const uint32_t& indicesSize = 0);
-
 		template<typename T>
 		void SetVBO_Data(const uint32_t& offset, const uint32_t& size, const T* data)
 		{
 			// If size isnt empty
 			if (size > 0 &&  offset >= 0)
 			{
+				glBindVertexArray(m_VAO);
 				glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 				glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 			}	
@@ -183,19 +184,25 @@ namespace se
 			// If size isnt empty
 			if (size > 0 && offset >= 0)
 			{
+				glBindVertexArray(m_VAO);
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 				glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
 			}
 		}
-		void Reset();
+		// Clear buffer data and create a new buffer with new size if new size is specified
+		// or buffer will be created with current size
+		void Reset(const uint32_t& size = 0);
 		inline const GLuint& GetVAO() const { return m_VAO; }
 		inline const GLuint& GetVBO() const { return m_VBO; }
 		inline const GLuint& GetEBO() const { return m_EBO; }
+		inline const uint32_t& GetVBO_Size() const { return m_VBO_Size; }
+		inline const uint32_t& GetEBO_Size() const { return m_EBO_Size; }
 		inline const se::VertexBufferLayout& GetLayout() const { return m_Layout; }
 		virtual ~VertexBuffer();
 	private:
 		se::VertexBufferLayout m_Layout;
 		GLuint m_VAO, m_VBO, m_EBO;
-		size_t m_VBO_Size, m_EBO_Size;
+		uint32_t m_VBO_Size, m_EBO_Size;
+		se::VertexBufferType m_Type;
 	};
 }

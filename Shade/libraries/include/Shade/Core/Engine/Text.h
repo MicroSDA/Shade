@@ -6,23 +6,27 @@
 #include "Shade/Core/Engine/AssetManager.h"
 #include "Shade/Core/Engine/Vertex2D.h"
 #include "Shade/Core/Engine/Font.h"
+#include "Shade/Core/Engine/Drawable.h"
 
 namespace se
 {
-	class SE_API Text
+	class SE_API Text : public se::Drawable
 	{
 	public:
 		Text();
 		virtual ~Text();
+
 		void SetText(const std::string& text);
 		const std::string& GetText() const;
-		void Render();
-		GLuint VAO, VBO;
+		void SetFont(const se::AssetPointer<se::Font>& font);
+		const se::AssetPointer<se::Font>& GetFont() const;
+		// Inherited via Drawable
+		virtual const VertexBuffer& GetVertexBuffer() const override;
 	private:
-		GLuint m_VAO, m_VBO, m_EBO;
-		std::string m_Text;
 		se::AssetPointer<se::Font> m_Font;
-		GLuint m_BufferSize;
+		se::VertexBuffer           m_VertexBuffer;
+		std::string                m_Text;
+		int                        m_BufferedCharCount;
 	};
 }
 

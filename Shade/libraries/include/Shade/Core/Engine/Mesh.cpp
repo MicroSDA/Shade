@@ -38,7 +38,7 @@ void se::Mesh::Init()
 				  {se::VertexBufferElementType::Float2, "TextureCoords"} ,
 				  {se::VertexBufferElementType::Float3, "Normals"},
 				  {se::VertexBufferElementType::Float3, "Tangents"} },
-				se::VertexBufferType::Dynamic,
+				se::VertexBufferType::Static,
 				sizeof(se::Vertex) * m_Vertices.size(),
 				sizeof(unsigned int) * m_Indices.size());
 

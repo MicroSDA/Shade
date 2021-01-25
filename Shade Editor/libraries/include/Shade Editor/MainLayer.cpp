@@ -75,6 +75,25 @@ void MainLayer::OnRender()
 			}
 		}
 	}
+
+	auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text", true);
+	auto texts = GetScene()->GetEntities().view<se::DrawableTextComponent>();
+	se::Transform2D transform;
+	transform.SetPostition(300.0, (float)se::WindowManager::GetWindow().Height);
+	transform.SetScale(0.8, 0.8);
+	_Shader->Bind();
+	se::Renderer::Enable(GL_BLEND);
+	se::Renderer::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	for (auto text : texts)
+	{
+		glm::mat4 projection = glm::ortho(0.0f, (float)se::WindowManager::GetWindow().Width, 0.0f, (float)se::WindowManager::GetWindow().Height);
+		_Shader->SendUniformMatrix4Float("ModelMatrix", false, projection * transform.GetModelMatrix());
+		auto& t = texts.get<se::DrawableTextComponent>(text).Text;
+		t->GetFont()->GetAtlas()->Bind(0);
+		se::Renderer::DrawIndexed(*t);
+	}
+
+	se::Renderer::Disable(GL_BLEND);
 }
 
 void MainLayer::OnDelete()

@@ -2,28 +2,12 @@
 #include "Text.h"
 #include "Shade/Core/Engine/Vertex.h"
 
-se::Text::Text(): m_BufferSize(100) // for fisrt 100 characters
+se::Text::Text() : se::Drawable(),
+	m_BufferedCharCount(0)
 {
+	m_DrawMode = se::DrawMode::TRIANGLES;
 	se::AssetData s;
-	m_Font = se::AssetPointer<se::Font>(new se::Font("s", &s));
 
-	glGenVertexArrays(1, &m_VAO);
-	glGenBuffers(1, &m_VBO);
-	glGenBuffers(1, &m_EBO);
-
-	glBindVertexArray(m_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(se::Vertex2D) * m_BufferSize * 4, nullptr, GL_DYNAMIC_DRAW);
-	
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex2D), (GLvoid*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex2D), (GLvoid*)offsetof(Vertex2D, m_TextureCoords));
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_BufferSize * 6, nullptr, GL_DYNAMIC_DRAW);
-
-	glBindVertexArray(0);
 }
 
 se::Text::~Text()
@@ -33,107 +17,75 @@ se::Text::~Text()
 void se::Text::SetText(const std::string& text)
 {
 	m_Text = text;
-
-	if (text.size() > m_BufferSize)
+	if ((int)text.size() > m_BufferedCharCount) // 4 is num vertices 
 	{
-		m_BufferSize = m_BufferSize + 100;
+		m_BufferedCharCount = text.size() + 10;
 
-		glDeleteVertexArrays(1, &m_VAO);
-		glDeleteBuffers(1, &m_VBO);
-		glDeleteBuffers(1, &m_EBO);
-
-		glGenVertexArrays(1, &m_VAO);
-		glGenBuffers(1, &m_VBO);
-		glGenBuffers(1, &m_EBO);
-
-		glBindVertexArray(m_VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(se::Vertex2D) * m_BufferSize * 4, nullptr, GL_DYNAMIC_DRAW);
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex2D), (GLvoid*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex2D), (GLvoid*)offsetof(Vertex2D, m_TextureCoords));
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_BufferSize * 6, nullptr, GL_DYNAMIC_DRAW);
-
-		glBindVertexArray(0);
+		m_VertexBuffer = se::VertexBuffer::Create(
+			{ {se::VertexBufferElementType::Float2, "Position"},
+			  {se::VertexBufferElementType::Float2, "TextureCoords"} },
+			se::VertexBufferType::Dynamic,
+			sizeof(se::Vertex2D) * m_BufferedCharCount * 4, // allocate for 100 aditional charaters
+			sizeof(unsigned int) * m_BufferedCharCount * 6); // allocate for 100 aditional charaters
 	}
-	else if (text.size() < m_BufferSize - 100)
+	else if ((int)text.size() < m_BufferedCharCount - 10 && text.size() > 0)
 	{
-		m_BufferSize = m_BufferSize - 100;
+		m_BufferedCharCount = m_BufferedCharCount - 10;
 
-		glDeleteVertexArrays(1, &m_VAO);
-		glDeleteBuffers(1, &m_VBO);
-		glDeleteBuffers(1, &m_EBO);
-
-		glGenVertexArrays(1, &m_VAO);
-		glGenBuffers(1, &m_VBO);
-		glGenBuffers(1, &m_EBO);
-
-
-		glBindVertexArray(m_VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(se::Vertex2D) * m_BufferSize * 4, nullptr, GL_DYNAMIC_DRAW);
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex2D), (GLvoid*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(se::Vertex2D), (GLvoid*)offsetof(Vertex2D, m_TextureCoords));
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * m_BufferSize * 6, nullptr, GL_DYNAMIC_DRAW);
-
-		glBindVertexArray(0);
+		m_VertexBuffer = se::VertexBuffer::Create(
+			{ {se::VertexBufferElementType::Float2, "Position"},
+			  {se::VertexBufferElementType::Float2, "TextureCoords"} },
+			se::VertexBufferType::Dynamic,
+			sizeof(se::Vertex2D) * m_BufferedCharCount * 4, // allocate for 100 aditional charaters
+			sizeof(unsigned int) * m_BufferedCharCount * 6);  // allocate for 100 aditional charaters
 	}
 
-
-	std::vector<se::Vertex2D> Vertices;
-	std::vector<GLuint>		  Indices;
-	Indices.reserve(text.size()  * 6);
-	Vertices.reserve(text.size() * 4);
-	float TileSize = 512.0f; // Temporary here
-	float Offset   = 0.0f;
-	size_t IndicesStride = 0;
-	for (size_t i = 0; i < m_Text.size(); i++)
+	if (m_Font != nullptr)
 	{
-		auto& CharData = m_Font->GetCharData(m_Text[i]);
-		se::Vertex2D Vertex[4];
-		// Position
-		Vertex[0].m_Position = glm::vec2(-Offset, -CharData.Height - CharData.Yoffset);
-		Vertex[1].m_Position = glm::vec2(CharData.Width - Offset, -CharData.Height - CharData.Yoffset);
-		Vertex[2].m_Position = glm::vec2(- Offset, - CharData.Yoffset);
-		Vertex[3].m_Position = glm::vec2(CharData.Width - Offset, -CharData.Yoffset);
-		// TexCoords
-		Vertex[0].m_TextureCoords = glm::vec2(CharData.Xpos / TileSize, (CharData.Ypos + CharData.Height) / TileSize);
-		Vertex[1].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, (CharData.Ypos + CharData.Height) / TileSize);
-		Vertex[2].m_TextureCoords = glm::vec2(CharData.Xpos / TileSize, CharData.Ypos / TileSize);
-		Vertex[3].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, CharData.Ypos / TileSize);
+		std::vector<se::Vertex2D> Vertices;
+		std::vector<unsigned int> Indices;
 
-		Vertices.push_back(Vertex[0]); Vertices.push_back(Vertex[1]); Vertices.push_back(Vertex[2]); Vertices.push_back(Vertex[3]);
+		Vertices.reserve(text.size() * 4);
+		Indices.reserve(text.size() * 6);
 
-		Offset = Offset - (CharData.Width + CharData.Xoffset);
 
-		Indices.push_back(i + IndicesStride); // i
-		Indices.push_back(i + IndicesStride + 1); // i + 1
-		Indices.push_back(i + IndicesStride + 2); // i + 2
-		Indices.push_back(i + IndicesStride + 2);//  i + 2
-		Indices.push_back(i + IndicesStride + 1); // i
-		Indices.push_back(i + IndicesStride + 3); // i + 3
+		float TileSize = 512.0f; // Temporary here TODO Need to parese in font
+		float Offset = 0.0f;
+		size_t IndicesStride = 0;
+		for (size_t i = 0; i < m_Text.size(); i++)
+		{
+			auto& CharData = m_Font->GetCharData(m_Text[i]);
+			se::Vertex2D Vertex[4];
+			// Position
+			Vertex[0].m_Position = glm::vec2(-Offset, -CharData.Height - CharData.Yoffset);
+			Vertex[1].m_Position = glm::vec2(CharData.Width - Offset, -CharData.Height - CharData.Yoffset);
+			Vertex[2].m_Position = glm::vec2(-Offset, -CharData.Yoffset);
+			Vertex[3].m_Position = glm::vec2(CharData.Width - Offset, -CharData.Yoffset);
+			// TexCoords
+			Vertex[0].m_TextureCoords = glm::vec2(CharData.Xpos / TileSize, (CharData.Ypos + CharData.Height) / TileSize);
+			Vertex[1].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, (CharData.Ypos + CharData.Height) / TileSize);
+			Vertex[2].m_TextureCoords = glm::vec2(CharData.Xpos / TileSize, CharData.Ypos / TileSize);
+			Vertex[3].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, CharData.Ypos / TileSize);
 
-		IndicesStride += 3;
+			Vertices.push_back(Vertex[0]); Vertices.push_back(Vertex[1]); Vertices.push_back(Vertex[2]); Vertices.push_back(Vertex[3]);
+
+			Indices.push_back(i + IndicesStride); // i
+			Indices.push_back(i + IndicesStride + 1); // i + 1
+			Indices.push_back(i + IndicesStride + 2); // i + 2
+			Indices.push_back(i + IndicesStride + 2);//  i + 2
+			Indices.push_back(i + IndicesStride + 1); // i
+			Indices.push_back(i + IndicesStride + 3); // i + 3
+
+			IndicesStride += 3;
+
+			Offset = Offset - (CharData.Width + CharData.Xoffset);
+		}
+
+		m_VertexBuffer.SetVBO_Data(0, sizeof(se::Vertex2D) * Vertices.size(), Vertices.data());
+		m_VertexBuffer.SetEBO_Data(0, sizeof(unsigned int) * Indices.size(), Indices.data());
+
+		m_DrawCount = Indices.size();
 	}
-	
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	// If size of vertices isnt empty
-	if(Vertices.size())
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(se::Vertex2D) * Vertices.size(), &Vertices[0]);
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_EBO);
-	// If size of vertices isnt empty
-	if (Indices.size())
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(GLuint) * Indices.size(), &Indices[0]);
 }
 
 const std::string& se::Text::GetText() const
@@ -141,10 +93,25 @@ const std::string& se::Text::GetText() const
 	return m_Text;
 }
 
-void se::Text::Render()
+void se::Text::SetFont(const se::AssetPointer<se::Font>& font)
+{
+	m_Font = font;
+}
+
+const se::AssetPointer<se::Font>& se::Text::GetFont() const
+{
+	return m_Font;
+}
+
+/*void se::Text::Render()
 {
 	m_Font->GetAtlas()->Bind(0);
-	glBindVertexArray(m_VAO);
+	glBindVertexArray(m_VertexBuffer.GetVAO());
 	glDrawElements(GL_TRIANGLES, m_Text.size() * 6, GL_UNSIGNED_INT, NULL);
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
+}*/
+
+const se::VertexBuffer& se::Text::GetVertexBuffer() const
+{
+	return m_VertexBuffer;
 }
+

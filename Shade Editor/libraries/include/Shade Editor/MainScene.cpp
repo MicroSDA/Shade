@@ -50,21 +50,6 @@ void MainScene::OnCreate()
 					_Layer->SetActive(true);
 			}
 
-			if (event.key.keysym.scancode == SDL_SCANCODE_BACKSPACE)
-			{
-				//std::string str = m_Text.GetText();
-				//if(str.size())
-					//str.pop_back();
-
-				//m_Text.SetText(str);
-			}
-			else
-			{
-				//std::string s;
-				//s.push_back((char)event.key.keysym.sym);
-				//m_Text.SetText(m_Text.GetText() + s);
-			}
-
 			return false;
 		});
 
@@ -153,13 +138,19 @@ void MainScene::OnInit()
 	
 	}
 
+
+	se::Entity _TextEntity = CreateEntity();
+	auto text = _TextEntity.AddComponent<se::DrawableTextComponent>(se::ShadeShared<se::Text>(new se::Text())).Text;
+	se::AssetData s;
+	text->SetFont(se::AssetPointer<se::Font>(new se::Font("FontData", &s)));
+	text->SetText("Shade Engine");
+
 	CreateLayer<MainLayer>("MainLayer");
 	//CreateLayer<GuiLayer>("GuiLayer");
 	InitLayer("MainLayer");
 	//InitLayer("GuiLayer");
 	//InitLayers();
 
-	m_Text.SetText("HelloWorld");
 }
 	
 void MainScene::OnUpdate(const se::Timer& deltaTime)
@@ -168,7 +159,7 @@ void MainScene::OnUpdate(const se::Timer& deltaTime)
 	//m_Text.SetText(std::to_string( 1 / deltaTime));
 
 	//se::Renderer::Disable(GL_CULL_FACE);
-	se::Renderer::Enable(GL_BLEND);
+	/*se::Renderer::Enable(GL_BLEND);
 	se::Renderer::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text", true);
 	se::Transform2D transform;
@@ -180,8 +171,10 @@ void MainScene::OnUpdate(const se::Timer& deltaTime)
 	glm::mat4 projection = glm::ortho(0.0f, (float)se::WindowManager::GetWindow().Width, 0.0f, (float)se::WindowManager::GetWindow().Height);
 	_Shader->SendUniformMatrix4Float("ModelMatrix", false, projection * transform.GetModelMatrix());
 	
-	m_Text.Render();
-	se::Renderer::Disable(GL_BLEND);
+	m_Text.Render();*/
+
+	
+	
 	/*if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_Q))
 	{
 		se::Renderer::PolygonMode(GL_FRONT_AND_BACK, GL_LINE);

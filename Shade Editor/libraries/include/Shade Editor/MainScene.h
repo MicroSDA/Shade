@@ -22,6 +22,6 @@ public:
 	virtual void OnDelete() override;
 
 private:
-	se::Text m_Text;
+	
 };
 

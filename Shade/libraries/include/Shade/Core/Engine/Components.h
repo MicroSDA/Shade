@@ -10,6 +10,8 @@
 #include "Shade/Core/Engine/PointLight.h"
 #include "Shade/Core/Engine/SpotLight.h"
 #include "Shade/Core/Engine/Material.h"
+#include "Shade/Core/Engine/Font.h"
+#include "Shade/Core/Engine/Text.h"
 
 namespace se
 {
@@ -175,4 +177,23 @@ namespace se
 		operator const se::Material& () const { return Material; }
 	};
 
+	struct FontComponent : ComponentBase
+	{
+		se::AssetPointer<se::Font> Font;
+		FontComponent() = default;
+		~FontComponent() = default;
+		FontComponent(const se::AssetPointer<se::Font>& other)
+			: Font(other) {};
+		FontComponent(const FontComponent&) = default;
+	};
+
+	struct DrawableTextComponent : ComponentBase
+	{
+		se::ShadeShared<se::Text> Text;
+		DrawableTextComponent() = default;
+		~DrawableTextComponent() = default;
+		DrawableTextComponent(const se::ShadeShared<se::Text>& other) //  TODO Nedd to create copy constructor for vertex buffer
+			: Text(other) {};
+		DrawableTextComponent(const DrawableTextComponent&) = default;
+	};
 }
