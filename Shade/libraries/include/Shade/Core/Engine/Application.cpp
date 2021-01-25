@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "Shade/Core/Engine/Layer.h"
-//#include "Shade/Core/Engine/Scene.h"
 
 se::Application* se::Application::m_pInstance = nullptr;
 
@@ -14,19 +13,6 @@ se::Application::Application()
 	m_pInstance = this;
 	SE_DEBUG_PRINT("Application has been created.", se::SLCode::InfoSecondary);
 
-	/*SDL_Init(SDL_INIT_AUDIO);
-	SDL_AudioSpec wavSpec;
-	Uint32 wavLength;
-	Uint8* wavBuffer;
-
-	SDL_LoadWAV("Test.wav", &wavSpec, &wavBuffer, &wavLength);
-	SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
-	int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
-	SDL_PauseAudioDevice(deviceId, 0);
-	SDL_Delay(300000);
-	SDL_CloseAudioDevice(deviceId);
-	SDL_FreeWAV(wavBuffer);
-	SDL_Quit();*/
 	se::EventManager::RegAppEventCallback(se::EventType::SDL_WINDOWEVENT,
 		[](se::Event const& event) {
 			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
@@ -39,6 +25,8 @@ se::Application::Application()
 		
 			return false;
 		});
+
+
 }
 
 se::Application::~Application()
@@ -74,25 +62,16 @@ void se::Application::Start()
 			{
 				m_pCurrentScene->OnUpdate(_DeltaTime);
 				m_pCurrentScene->UpdateNativeScripts(_DeltaTime);
-				for (auto _Layer : m_pCurrentScene->GetLayers())
-				{
-					if (_Layer->IsActive())
-					{
-						if (_Layer->IsUpdating())
-						{
-							_Layer->OnUpdate(_DeltaTime);
-						}
-					}
-				}
 				m_pCurrentScene->OnRender();
 				for (auto _Layer : m_pCurrentScene->GetLayers())
 				{
 					if (_Layer->IsActive())
 					{
-						if (_Layer->IsRendering())
-						{
+						if (_Layer->IsUpdate())
+							_Layer->OnUpdate(_DeltaTime);
+						
+						if (_Layer->IsRender())
 							_Layer->OnRender();
-						}
 					}
 				}
 			}

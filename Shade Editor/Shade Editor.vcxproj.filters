@@ -61,6 +61,9 @@
     <Filter Include="Shaders\Primitives">
       <UniqueIdentifier>{b3b6358a-d9d5-4df2-9495-b000cdaabddb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Text">
+      <UniqueIdentifier>{2cd2bba2-04d3-4bba-ae89-b93de36fda64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="project\resources\shaders\BasicModelFragment.glsl">
@@ -89,6 +92,12 @@
     </None>
     <None Include="project\resources\shaders\GridFragment.glsl">
       <Filter>Shaders\Primitives</Filter>
+    </None>
+    <None Include="project\resources\shaders\TextVertex.glsl">
+      <Filter>Shaders\Text</Filter>
+    </None>
+    <None Include="project\resources\shaders\TextFragment.glsl">
+      <Filter>Shaders\Text</Filter>
     </None>
   </ItemGroup>
 </Project>

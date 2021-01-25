@@ -12,7 +12,13 @@ MainLayer::~MainLayer()
 
 void MainLayer::OnCreate()
 {
-	
+	se::FramebufferSpec fbSpec;
+	fbSpec.Attachments = { se::FrameBufferTextureFormat::RGBA8, se::FrameBufferTextureFormat::Depth };
+	fbSpec.Width = 1000;
+	fbSpec.Height = 800;
+	fbSpec.SwapChainTarget = false;
+
+	m_pFrameBuffer = se::FrameBuffer::Create(fbSpec);
 }
 
 void MainLayer::OnInit()
@@ -28,7 +34,6 @@ void MainLayer::OnUpdate(const se::Timer& deltaTime)
 
 void MainLayer::OnRender()
 {
-
 	auto* _MainCamera = GetScene()->GetMainCamera();
 	{
 		// Modles 
@@ -55,7 +60,7 @@ void MainLayer::OnRender()
 				auto _MesheEntities = _Model->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
 				for (auto& _MeshEnity : _MesheEntities)
 				{
-					auto& _Mesh     = _MesheEntities.get<se::MeshComponent>(_MeshEnity).Mesh;
+					auto _Mesh     = _MesheEntities.get<se::MeshComponent>(_MeshEnity).Mesh;
 					auto& _Material = _MesheEntities.get<se::MaterialComponent>(_MeshEnity).Material;
 					_Material.Process(_Shader.get());
 
@@ -65,17 +70,11 @@ void MainLayer::OnRender()
 						_TexturesEntities.get<se::TextureComponent>(_TextureEnity).Texture->Bind(static_cast<GLuint>(_TextureEnity));
 					}
 
-					se::Renderer::DrawIndexed(_Shader.get(), *_Mesh);
-
-					/*for (auto& _TextureEnity : _TexturesEntities)
-					{
-						se::Texture::UnBind(static_cast<GLuint>(_TextureEnity));
-					}*/
+					se::Renderer::DrawIndexed(*_Mesh);
 				}
 			}
 		}
 	}
-
 }
 
 void MainLayer::OnDelete()

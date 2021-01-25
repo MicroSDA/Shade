@@ -70,7 +70,7 @@ void se::EventManager::Update()
 			if (m_CoreCallbacks[static_cast<EventType>(m_Event.type)][i](m_Event))
 			{
 				m_CoreCallbacks[static_cast<EventType>(m_Event.type)].erase(
-					m_CoreCallbacks[static_cast<EventType>(m_Event.type)].begin() + i);
+					m_CoreCallbacks[static_cast<EventType>(m_Event.type)].begin() + i);// TODO Issue here, wrong removing, should be removed by while and iterator
 
 				SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
 			}
@@ -78,28 +78,28 @@ void se::EventManager::Update()
 		//Scene
 		for (auto i = 0; i < m_SceneCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene].size(); i++)
 		{
+			// Process scene's events
 			if (m_SceneCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene][i](m_Event))
-			{
+			{   // If event was complited, returned true - remove event from queue
 				m_SceneCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene].erase(
-					m_SceneCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene].begin() + i);
+					m_SceneCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene].begin() + i); // TODO Issue here, wrong removing, should be removed by while and iterator
 
 				SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
 			}
-		}
-		//Layer // WHY THERE IS DIFERENT ??????????? TODO
-		for (auto& scene : m_LayerCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene])
-		{
-			for (int i = 0; i < scene.second.size(); i++)
+
+			for (auto& _Layer : m_LayerCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene])
 			{
-				if (scene.first->IsActive() && scene.first->IsEventsUpdating())
+				if (_Layer.first->IsActive() && _Layer.first->IsEventsUpdate())
 				{
-					if (scene.second[i](m_Event))
+					for (auto j = 0; j < _Layer.second.size(); j++)
 					{
-						scene.second.erase(scene.second.begin() + i);
-						SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
+						if (_Layer.second[j](m_Event))
+						{
+							_Layer.second.erase(_Layer.second.begin() + i); // TODO Issue here, wrong removing, should be removed by while and iterator
+							SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
+						}
 					}
 				}
-				
 			}
 		}
 	}

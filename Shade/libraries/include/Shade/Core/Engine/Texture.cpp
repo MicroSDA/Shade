@@ -14,7 +14,7 @@ se::Texture::~Texture()
 	glDeleteTextures(1, &m_Texture);
 }
 
-inline void se::Texture::Bind(const uint32_t& id)
+inline const void se::Texture::Bind(const uint32_t& id) const
 {
 	glActiveTexture(GL_TEXTURE0 + static_cast<GLuint>(id));
 	glBindTexture(GL_TEXTURE_2D, m_Texture);
@@ -80,22 +80,16 @@ void se::Texture::Init()
 			switch (m_ImageData.m_InternalFormat)
 			{
 				case 1:
-					_InternalFormat = GL_R8;
+					_InternalFormat = GL_RED;
 					break;
 				case 2:
-					_InternalFormat = GL_RG8;
+					_InternalFormat = GL_RG;
 					break;
 				case 3:
-				{
-					/*if(m_AssetData->_SubType != se::AssetDataSubType::NormalMap)
-						_InternalFormat = GL_SRGB8;*/
-					_InternalFormat = GL_RGB8;
+					_InternalFormat = GL_RGB;
 					break;
-				}
 				case 4:
-					/*if(m_AssetData->_SubType != se::AssetDataSubType::NormalMap)
-						_InternalFormat = GL_SRGB8_ALPHA8;*/
-					_InternalFormat = GL_RGBA8;
+					_InternalFormat = GL_RGBA;
 					break;
 				default:
 					throw se::ShadeException(std::string("Unsupported texture format in '" + m_AssetData->_Path + "'!").c_str(), se::SECode::Warning);
@@ -121,7 +115,7 @@ void se::Texture::Init()
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
 
 			glBindTexture(GL_TEXTURE_2D, 0);
-			delete m_ImageData.m_pImageData;
+			delete[] m_ImageData.m_pImageData;
 			m_ImageData.m_pImageData = nullptr;
 			m_IsInitialized = true;
 		}

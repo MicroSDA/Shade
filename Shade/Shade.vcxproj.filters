@@ -49,6 +49,12 @@
     <Filter Include="Core\Engine\Render\Buffers">
       <UniqueIdentifier>{b894c94b-bcd4-418d-baba-0a8e6c63c3b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Engine\Managers">
+      <UniqueIdentifier>{d3ee38fa-9000-4769-9b4a-713c13a77f13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Engine\Render\Drawable\Text">
+      <UniqueIdentifier>{c8764e93-9db6-4cc4-b740-0f82b98bdffa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -76,14 +82,8 @@
     <ClInclude Include="libraries\include\Shade\Core\Util\Macros.h">
       <Filter>Core\Util</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\WindowManager.h">
-      <Filter>Core\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\Vendors\glad\glad.h">
       <Filter>Vendors</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h">
-      <Filter>Core\Engine</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h">
       <Filter>Core\Engine</Filter>
@@ -92,9 +92,6 @@
       <Filter>Core\Engine\Asset</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\AssetData.h">
-      <Filter>Core\Engine\Asset</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\AssetManager.h">
       <Filter>Core\Engine\Asset</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Util\Binarizer.h">
@@ -187,6 +184,30 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\VertexBuffer.h">
       <Filter>Core\Engine\Render\Buffers</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\WindowManager.h">
+      <Filter>Core\Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h">
+      <Filter>Core\Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\AssetManager.h">
+      <Filter>Core\Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\System.h">
+      <Filter>Core\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\FrameBuffer.h">
+      <Filter>Core\Engine\Render\Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Vertex2D.h">
+      <Filter>Core\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Text.h">
+      <Filter>Core\Engine\Render\Drawable\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Font.h">
+      <Filter>Core\Engine\Render\Drawable\Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -202,22 +223,13 @@
     <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp">
       <Filter>Core\Util</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp">
-      <Filter>Core\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\include\Vendors\glad\glad.c">
       <Filter>Vendors</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp">
-      <Filter>Core\Engine</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp">
       <Filter>Core\Engine</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Asset.cpp">
-      <Filter>Core\Engine\Asset</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\AssetManager.cpp">
       <Filter>Core\Engine\Asset</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Shader.cpp">
@@ -294,6 +306,30 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\VertexBuffer.cpp">
       <Filter>Core\Engine\Render\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp">
+      <Filter>Core\Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp">
+      <Filter>Core\Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\AssetManager.cpp">
+      <Filter>Core\Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\System.cpp">
+      <Filter>Core\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\FrameBuffer.cpp">
+      <Filter>Core\Engine\Render\Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Vertex2D.cpp">
+      <Filter>Core\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Text.cpp">
+      <Filter>Core\Engine\Render\Drawable\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Font.cpp">
+      <Filter>Core\Engine\Render\Drawable\Text</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

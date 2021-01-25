@@ -8,14 +8,13 @@ void se::Renderer::SetClearColor(const float& r, const float& g, const float& b,
 	se::WindowManager::Get().SetClearColor(r, g, b, a);
 }
 
-void se::Renderer::DrawIndexed(const se::Shader* shader, const se::Drawable& entity)
+void se::Renderer::DrawIndexed(const se::Drawable& entity)
 {
-	
 	glBindVertexArray(entity.GetVertexBuffer().GetVAO());
-	glDrawElements(static_cast<GLenum>(entity.GetDrawMode()), entity.GetDrawCount(), GL_UNSIGNED_INT, GLM_NULLPTR);
+	glDrawElements(static_cast<GLenum>(entity.GetDrawMode()), entity.GetDrawCount(), GL_UNSIGNED_INT, NULL);
 }
 
-void se::Renderer::DrawNotIndexed(const se::Shader* shader, const se::Drawable& entity, const GLuint& count)
+void se::Renderer::DrawNotIndexed(const se::Drawable& entity, const GLuint& count)
 {
 
 	glBindVertexArray(entity.GetVertexBuffer().GetVAO());
@@ -45,4 +44,10 @@ inline void se::Renderer::BlendFunc(const GLenum& sfactor, const GLenum& dfactor
 inline void se::Renderer::PolygonMode(const GLenum& face, const GLenum& mode)
 {
 	glPolygonMode(face, mode);
+}
+
+void se::Renderer::BindTexture(const GLuint& id)
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, id);
 }

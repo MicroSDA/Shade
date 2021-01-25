@@ -2,6 +2,12 @@
 #include "Timer.h"
 #include "Vendors/SDL2/SDL.h"
 
+int se::Timer::GetFps()
+{
+	
+	return 0;
+}
+
 void se::Timer::Update()
 {
 	m_TimeLast = m_TimeNow;

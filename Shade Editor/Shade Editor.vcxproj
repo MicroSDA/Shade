@@ -205,6 +205,8 @@
     <None Include="project\resources\shaders\Ligthing.glsl" />
     <None Include="project\resources\shaders\SpriteFragment.glsl" />
     <None Include="project\resources\shaders\SpriteVertex.glsl" />
+    <None Include="project\resources\shaders\TextFragment.glsl" />
+    <None Include="project\resources\shaders\TextVertex.glsl" />
     <None Include="project\resources\shaders\VertexUtility.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -68,6 +68,14 @@ ShadeEditor::ShadeEditor()
 		{"./project/resources/shaders/GridFragment.glsl","#fragment"}, }, &_Shader);
 	_ShaderPacket._Dependency.push_back(_Shader);
 
+	_Shader = se::AssetData{}; // Reset
+	_Shader._Name = "Text";
+	_Shader._Path = "./resources/shaders/";
+	Serrializer::SerrializeShader({
+		{"./project/resources/shaders/TextVertex.glsl","#vertex"},
+		{"./project/resources/shaders/TextFragment.glsl","#fragment"}, }, &_Shader);
+	_ShaderPacket._Dependency.push_back(_Shader);
+
 
 	
 	_SpritePacket._Name = "Sprites";
@@ -84,16 +92,15 @@ ShadeEditor::ShadeEditor()
 	_Sprite._Dependency.push_back(_Texture);
 	_SpritePacket._Dependency.push_back(_Sprite);
 
-	_Sprite = se::AssetData{};
-	_Sprite._Name = "PoeImage2";
-	_Sprite._Type = se::AssetDataType::Sprite;
-	_Sprite._Dependency.push_back(_Texture);
-
-	_SpritePacket._Dependency.push_back(_Sprite);
+	_Texture._Name = "Font";
+	_Texture._Type = se::AssetDataType::Texture;
+	_Texture._Path = "./resources/textures/font.bin"; // if serialize like that need to specify full path and name
+	Serrializer::SerrializeTexture("./project/resources/fonts/candara/candara.png", &_Texture);
 
 	_Container._Dependency.push_back(_ShaderPacket);
 	_Container._Dependency.push_back(_ModelsPacket);
 	_Container._Dependency.push_back(_SpritePacket);
+	_Container._Dependency.push_back(_Texture);
 
 	se::AssetManager::WriteRoadMap(_Container);
 	exit(0);*/
@@ -125,18 +132,19 @@ void ShadeEditor::OnInit()
 			return false;
 		});
 
-	se::WindowManager::Create(se::Window{});
+
+	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
+	se::WindowManager::Create(se::Window());
+
 	CreateScene<MainScene>("MainScene");
 
-	//? or more
-	
 	for (auto const& [name, scene] : GetScenes())
 	{
 		InitScene(name);
 	}
 
 	SetCurentScene("MainScene");
-	//DeleteScene("MainScene");
+
 }
 
 void ShadeEditor::OnUpdate(const se::Timer& deltaTime)

@@ -9,6 +9,7 @@
 #include "Shade/Core/Engine/Renderer.h"
 #include "Shade/Core/Engine/Controllers.h"
 #include "Shade/Core/Engine/Timer.h"
+#include "Shade/Core/Engine/FrameBuffer.h"
 
 namespace se
 {
@@ -33,9 +34,9 @@ namespace se
 		void SetUpdate(const bool& isUpdate);
 
 		const bool& IsActive() const;
-		const bool& IsEventsUpdating() const;
-		const bool& IsRendering() const;
-		const bool& IsUpdating() const;
+		const bool& IsEventsUpdate() const;
+		const bool& IsRender() const;
+		const bool& IsUpdate() const;
 
 		se::Scene* GetScene() { return m_pScene; }
 		const std::string& GetName() const { return m_Name; }

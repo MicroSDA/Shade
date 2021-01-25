@@ -9,6 +9,7 @@ namespace se
 		Timer();
 		~Timer();
 
+		int GetFps();
 		void Update();
 		operator double() const { return m_DeltaTime * 0.001; } // milliseconds
 	private:

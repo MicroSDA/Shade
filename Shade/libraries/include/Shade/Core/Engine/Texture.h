@@ -20,7 +20,7 @@ namespace se
 	public:
 		Texture(const std::string& fullClassName, const se::AssetData* data);
 		virtual ~Texture();
-		inline void Bind(const uint32_t& id);
+		inline const void Bind(const uint32_t& id) const;
 		static void UnBind(const uint32_t& id);
 		// Унаследовано через Asset
 		virtual void Load() override;

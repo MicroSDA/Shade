@@ -3,24 +3,9 @@
 
 se::WindowManager::WindowManager() :
 	m_Context(nullptr), m_IsWindowCreated(false),
-	m_ClearR(0),m_ClearG(0),m_ClearB(0),m_ClearA(1)
+	m_ClearR(0), m_ClearG(0), m_ClearB(0), m_ClearA(1)
 {
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
-		throw se::ShadeException((std::string("Video initializing faild!") + SDL_GetError()).c_str(), se::SECode::Error);
-
-	//Set Opengl Version
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
-	////////////////////////////////////////////////////
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	SDL_GetCurrentDisplayMode(0, &m_DisplayMode);
+	
 }
 
 se::WindowManager::~WindowManager()
@@ -35,28 +20,40 @@ se::WindowManager& se::WindowManager::Get()
 
 void se::WindowManager::Create(const Window& window)
 {
-	auto& _Manager = Get();
-	_Manager.m_Window = window;
-	_Manager.m_Window.Handler = SDL_CreateWindow(
-		_Manager.m_Window.Title.c_str(),
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		_Manager.m_Window.Width,
-		_Manager.m_Window.Height,
-		_Manager.m_Window.WindowFlags
-	);
+	if (se::System::IsVideoInit())
+	{
+		auto& _Manager = Get();
+		if (_Manager.m_Window.Handler != nullptr)
+			SDL_DestroyWindow(_Manager.m_Window.Handler);
 
-	_Manager.m_Context = SDL_GL_CreateContext(_Manager.m_Window.Handler);
-	SDL_GL_MakeCurrent(_Manager.m_Window.Handler, _Manager.m_Context);
+		SDL_GetCurrentDisplayMode(0, &_Manager.m_DisplayMode);
+		_Manager.m_Window = window;
+		_Manager.m_Window.Handler = SDL_CreateWindow(
+			_Manager.m_Window.Title.c_str(),
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
+			_Manager.m_Window.Width,
+			_Manager.m_Window.Height,
+			_Manager.m_Window.WindowFlags
+		);
 
-	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-		throw se::ShadeException((std::string("Glad initializing faild!") + SDL_GetError()).c_str(), se::SECode::Error);
+		_Manager.m_Context = SDL_GL_CreateContext(_Manager.m_Window.Handler);
+		SDL_GL_MakeCurrent(_Manager.m_Window.Handler, _Manager.m_Context);
 
-	glViewport(0, 0, window.Width, window.Height);
-	_Manager.m_IsWindowCreated = true;
+		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+			throw se::ShadeException((std::string("Glad initializing faild!") + SDL_GetError()).c_str(), se::SECode::Error);
 
-	SE_DEBUG_PRINT(std::string("Display native resolution is:" + std::to_string(_Manager.m_DisplayMode.w) +
-		"x" + std::to_string(_Manager.m_DisplayMode.h)).c_str(), SLCode::InfoSecondary);
+		SetViewPort(0, 0, window.Width, window.Height);
+		_Manager.m_IsWindowCreated = true;
+
+		SE_DEBUG_PRINT(std::string("Display native resolution is:" + std::to_string(_Manager.m_DisplayMode.w) +
+			"x" + std::to_string(_Manager.m_DisplayMode.h)).c_str(), SLCode::InfoSecondary);
+	}
+	else
+	{
+		throw se::ShadeException("Trying to create window but video has not been initialized yeat!", se::SECode::Error);
+	}
+	
 }
 
 void se::WindowManager::Update()
@@ -131,7 +128,22 @@ void se::WindowManager::Resize()
 	static int _Width;
 	static int _Height;
 	SDL_GetWindowSize(Get().m_Window.Handler, &_Width, &_Height);
-	glViewport(0, 0, _Width, _Height);
+	SetViewPort(GetViewPort().x, GetViewPort().y, _Width, _Height);
 	Get().m_Window.Width = _Width;
 	Get().m_Window.Height = _Height;
+}
+
+void se::WindowManager::SetViewPort(const int& x, const int& y, const int& width, const int& height)
+{
+	Get().m_ViewPort.x = x;
+	Get().m_ViewPort.y = y;
+	Get().m_ViewPort.width = width;
+	Get().m_ViewPort.height = height;
+
+	glViewport(x, y, width, height);
+}
+
+const se::VeiwPort& se::WindowManager::GetViewPort()
+{
+	return Get().m_ViewPort;
 }

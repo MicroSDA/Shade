@@ -33,6 +33,8 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Environment.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Font.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\FrameBuffer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\GeneralLight.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Grid.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Input.h" />
@@ -48,12 +50,15 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Shader.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\SpotLight.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Sprite.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\System.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Text.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Texture.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Timer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Transform2D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Transform3D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\TransformComponents.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Vertex.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Vertex2D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\VertexBuffer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\WindowManager.h" />
     <ClInclude Include="libraries\include\Shade\Core\Main.h" />
@@ -82,6 +87,8 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Environment.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Font.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\FrameBuffer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\GeneralLight.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Grid.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Input.cpp" />
@@ -97,11 +104,14 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Shader.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\SpotLight.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Sprite.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\System.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Text.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Texture.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Timer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Transform2D.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Transform3D.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Vertex.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Vertex2D.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\VertexBuffer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp" />
@@ -202,7 +212,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -224,7 +234,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -246,7 +256,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -268,7 +278,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>

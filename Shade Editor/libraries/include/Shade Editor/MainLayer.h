@@ -12,5 +12,7 @@ public:
 	virtual void OnUpdate(const se::Timer& deltaTime) override;
 	virtual void OnRender() override;
 	virtual void OnDelete() override;
+private:
+	se::FrameBuffer* m_pFrameBuffer;
 };
 

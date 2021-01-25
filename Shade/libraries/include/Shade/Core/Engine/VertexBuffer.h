@@ -207,6 +207,5 @@ namespace se
 	private:
 		se::VertexBufferLayout m_Layout;
 		GLuint m_VAO, m_VBO, m_EBO;
-		
 	};
 }

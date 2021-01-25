@@ -37,17 +37,17 @@ const bool& se::Layer::IsActive() const
 	return m_IsActive;
 }
 
-const bool& se::Layer::IsEventsUpdating() const
+const bool& se::Layer::IsEventsUpdate() const
 {
 	return m_IsEventsUpdate;
 }
 
-const bool& se::Layer::IsRendering() const
+const bool& se::Layer::IsRender() const
 {
 	return m_IsRender;
 }
 
-const bool& se::Layer::IsUpdating() const
+const bool& se::Layer::IsUpdate() const
 {
 	return m_IsUpdate;
 }

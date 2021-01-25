@@ -2,6 +2,7 @@
 #include <Shade/Core/Engine/Scene.h>
 #include "MainLayer.h"
 #include "GuiLayer.h"
+#include "Shade/Core/Engine/Text.h"
 
 class MainScene : public se::Scene
 {
@@ -20,5 +21,7 @@ public:
 
 	virtual void OnDelete() override;
 
+private:
+	se::Text m_Text;
 };
 
