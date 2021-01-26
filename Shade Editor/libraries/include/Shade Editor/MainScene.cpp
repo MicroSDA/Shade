@@ -142,7 +142,7 @@ void MainScene::OnInit()
 	se::Entity _TextEntity = CreateEntity();
 	auto text = _TextEntity.AddComponent<se::DrawableTextComponent>(se::ShadeShared<se::Text>(new se::Text())).Text;
 	se::AssetData s;
-	text->SetFont(se::AssetPointer<se::Font>(new se::Font("FontData", &s)));
+	text->SetFont(se::AssetManager::Hold<se::Font>("FontFile"));
 	text->SetText("Shade Engine");
 
 	CreateLayer<MainLayer>("MainLayer");

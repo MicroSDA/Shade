@@ -95,12 +95,19 @@ ShadeEditor::ShadeEditor()
 	_Texture._Name = "Font";
 	_Texture._Type = se::AssetDataType::Texture;
 	_Texture._Path = "./resources/textures/font.bin"; // if serialize like that need to specify full path and name
-	Serrializer::SerrializeTexture("./project/resources/fonts/candara/candara.png", &_Texture);
+	Serrializer::SerrializeTexture("./project/resources/fonts/candara/candara.png", &_Texture);*/
 
-	_Container._Dependency.push_back(_ShaderPacket);
+	se::AssetData _Font;
+	_Font._Name = "FontFile";
+	_Font._Type = se::AssetDataType::Font;
+	_Font._Path = "./resources/fonts/candara/candara.bin"; // if serialize like that need to specify full path and name
+	Serrializer::SerrializeFont("./project/resources/fonts/candara/candara.fnt", &_Font);
+
+	/*_Container._Dependency.push_back(_ShaderPacket);
 	_Container._Dependency.push_back(_ModelsPacket);
 	_Container._Dependency.push_back(_SpritePacket);
 	_Container._Dependency.push_back(_Texture);
+	_Container._Dependency.push_back(_Font);
 
 	se::AssetManager::WriteRoadMap(_Container);
 	exit(0);*/

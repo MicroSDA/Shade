@@ -32,6 +32,7 @@ public:
 	static void SerrializeTexture(const std::string& filePath, se::AssetData* const& assetData = NULL, const bool& withDeps = false);
 	static void SerrializeMaterial(const std::string& filePath, const std::vector<se::Material>& materials, se::AssetData* const& assetData = NULL);
 	static void SerrializeShader(const std::vector<ShaderMeta>& shaders, se::AssetData* const& assetData = NULL);
+	static void SerrializeFont(const std::string& filePath, se::AssetData* const& assetData = NULL, const bool& withDeps = false);
 private:
 	//static       std::string m_PacketPath;
 	//static void  SirrializeRecursively(se::AssetData& assetData);

@@ -20,7 +20,8 @@ void main()
 	
 	float overallAlpha = alpha + (1.0 - alpha) * outlineAlpha;
 	
-	vec3 overrallColor = mix(vec3(0.2,0.2,0.2), vec3(1.0,0.0,0.0) ,alpha/overallAlpha);
-   
+	vec3 overrallColor = mix(vec3(0.2,0.2,0.2), vec3(0.0, 0.5, 0.0) ,alpha/overallAlpha);
+    if(overallAlpha <=0.1)
+		discard;
     gl_FragColor = vec4(overrallColor, overallAlpha);
 }

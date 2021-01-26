@@ -89,7 +89,7 @@ void MainLayer::OnRender()
 		glm::mat4 projection = glm::ortho(0.0f, (float)se::WindowManager::GetWindow().Width, 0.0f, (float)se::WindowManager::GetWindow().Height);
 		_Shader->SendUniformMatrix4Float("ModelMatrix", false, projection * transform.GetModelMatrix());
 		auto& t = texts.get<se::DrawableTextComponent>(text).Text;
-		t->GetFont()->GetAtlas()->Bind(0);
+		se::Renderer::BindTexture(t->GetFont()->GetAtlas());
 		se::Renderer::DrawIndexed(*t);
 	}
 

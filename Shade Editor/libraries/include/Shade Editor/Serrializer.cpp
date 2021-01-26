@@ -174,7 +174,7 @@ void Serrializer::SerrializeTexture(const std::string& filePath, se::AssetData* 
 		}
 		else
 		{
-			throw se::ShadeException(std::string("Failed to save image '" + filePath + "' !").c_str(), se::SECode::Warning);
+			throw se::ShadeException(std::string("Failed to save image '" + assetData->_Path + "' !").c_str(), se::SECode::Warning);
 		}
 
 		stbi_image_free(_Data);
@@ -281,8 +281,140 @@ void Serrializer::SerrializeShader(const std::vector<ShaderMeta>& shaders, se::A
 	}
 	else
 	{
-		throw se::ShadeException(std::string("Failed to save sahder file './resources/shaders/shaders.bin' !").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Failed to save sahder file '"+ assetData->_Path + assetData->_Name + ".bin" +"'").c_str(), se::SECode::Warning);
 	}
+}
+
+void Serrializer::SerrializeFont(const std::string& filePath, se::AssetData* const& assetData, const bool& withDeps)
+{
+	struct CharData
+	{
+		int AsciiCode = -1;
+		float Xpos = 0, Ypos = 0;
+		float Width = 0.0f, Height = 0.0f;
+		float Xoffset = 0.0f, Yoffset = 0.0f;
+		float Xadvance = 0.0f;
+	};
+	struct FontData
+	{
+		std::unordered_map<char, CharData> CharsData;
+		float TileWidth = 0.0f, TileHeight = 0.0f;
+		int   Count = 0;
+		std::string AtlasPath;
+	};
+
+	std::ifstream _File;
+	_File.open(filePath);
+	if (_File.is_open())
+	{
+		std::string _Node;
+		FontData _FontData;
+		while (!_File.eof())
+		{
+			_File >> _Node;
+
+			if (_Node.find("count") != _Node.npos)
+				_FontData.Count = std::atoi(_Node.erase(0, 6).c_str()) + 1; // 1 is space
+
+			if (_Node.find("file") != _Node.npos)
+			{
+				size_t first = _Node.find_first_of("\"") + 1;
+				size_t last = _Node.find_last_of("\"");
+				_FontData.AtlasPath = _Node.substr(first, last - first);
+			}
+
+			if (_Node.find("scaleW") != _Node.npos)
+				_FontData.TileWidth = std::atoi(_Node.erase(0, 7).c_str());
+
+			if (_Node.find("scaleH") != _Node.npos)
+				_FontData.TileHeight = std::atoi(_Node.erase(0, 7).c_str());
+
+
+			if (_Node == "char")
+			{
+				CharData _CharData;
+				_File >> _Node;
+				_CharData.AsciiCode = std::atoi(_Node.erase(0, 3).c_str()); // id= 
+				_File >> _Node;
+				_CharData.Xpos = std::atof(_Node.erase(0, 2).c_str()); // x=
+				_File >> _Node;
+				_CharData.Ypos = std::atof(_Node.erase(0, 2).c_str()); // y=
+				_File >> _Node;
+				_CharData.Width = std::atof(_Node.erase(0, 6).c_str()); // width=
+				_File >> _Node;
+				_CharData.Height = std::atof(_Node.erase(0, 7).c_str()); // height=
+				_File >> _Node;
+				_CharData.Xoffset = std::atof(_Node.erase(0, 8).c_str()); // xoffset=
+				_File >> _Node;
+				_CharData.Yoffset = std::atof(_Node.erase(0, 8).c_str()); // yoffset=
+				_File >> _Node;
+				_CharData.Xadvance = std::atof(_Node.erase(0, 9).c_str()); // xadvance=
+				_FontData.CharsData[char(_CharData.AsciiCode)] = _CharData;
+			}
+		}
+
+		_File.close();
+
+		if (_FontData.AtlasPath.size())
+		{
+			int _Width, _Height, _Channels;
+			std::string _AtlasPath = GetPath(filePath) + "/" + _FontData.AtlasPath;
+			unsigned char* _Data = stbi_load(_AtlasPath.c_str(), &_Width, &_Height, &_Channels, STBI_rgb_alpha);
+			if (_Data)
+			{
+				std::ofstream _File;
+				_File.open(assetData->_Path, std::ios::binary);
+				if (_File.is_open())
+				{
+					se::Binarizer::WriteNext<std::string>(_File, "#ShadeFont");
+					se::Binarizer::WriteNext<int>(_File, _FontData.TileWidth);
+					se::Binarizer::WriteNext<int>(_File, _FontData.TileHeight);
+					se::Binarizer::WriteNext<int>(_File, _FontData.Count);
+					// Font Data
+					for (auto& _Char : _FontData.CharsData)
+					{
+						se::Binarizer::WriteNext<int>(_File, _Char.second.AsciiCode);
+						se::Binarizer::WriteNext<float>(_File, _Char.second.Xpos);
+						se::Binarizer::WriteNext<float>(_File, _Char.second.Ypos);
+						se::Binarizer::WriteNext<float>(_File, _Char.second.Width);
+						se::Binarizer::WriteNext<float>(_File, _Char.second.Height);
+						se::Binarizer::WriteNext<float>(_File, _Char.second.Xoffset);
+						se::Binarizer::WriteNext<float>(_File, _Char.second.Yoffset);
+						se::Binarizer::WriteNext<float>(_File, _Char.second.Xadvance);
+					}
+					// Atlas Data
+					se::Binarizer::WriteNext<int>(_File, _Width);
+					se::Binarizer::WriteNext<int>(_File, _Height);
+					se::Binarizer::WriteNext<int>(_File, _Channels);
+					unsigned int _Size = (_Channels * _Width * _Height);
+					se::Binarizer::WriteNext<unsigned int>(_File, _Size);
+					_File.write(reinterpret_cast<char*>(_Data), _Size);
+					_File.close();
+				}
+				else
+				{
+					throw se::ShadeException(std::string("Failed to save font atlas '" + filePath + "' !").c_str(), se::SECode::Warning);
+				}
+
+				stbi_image_free(_Data);
+			}
+			else
+			{
+				throw se::ShadeException(std::string("Cannot open source font altas file '" + _AtlasPath + "' !").c_str(), se::SECode::Warning);
+			}
+
+		}
+		else
+		{
+			throw se::ShadeException(std::string("Cannot open source font altas file '" + GetPath(filePath) +"/"+ _FontData.AtlasPath + "' !").c_str(), se::SECode::Warning);
+			
+		}
+	}
+	else
+	{
+		throw se::ShadeException(std::string("Cannot open source font '" + filePath + "' !").c_str(), se::SECode::Warning);
+	}
+
 }
 
 std::vector<AssimpMesh>  Serrializer::ProcessModel3DNode(const std::string& filePath, const aiNode* node, const aiScene* scene, se::AssetData& data)

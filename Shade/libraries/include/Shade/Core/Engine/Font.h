@@ -29,10 +29,11 @@ namespace se
 		virtual void Load() override;
 		virtual void Init() override;
 		const se::FontData& GetFontData() const;
-		const se::Texture* GetAtlas() const;
+		const GLuint& GetAtlas() const;
 	private:
-		se::AssetPointer<se::Texture> m_Atlas;
+		GLuint                        m_Texture;
 		FontData                      m_FontData;
+		se::ImageData                 m_ImageData;
 	};
 }
 
