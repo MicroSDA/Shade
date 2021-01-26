@@ -6,8 +6,6 @@ se::Text::Text() : se::Drawable(),
 	m_BufferedCharCount(0)
 {
 	m_DrawMode = se::DrawMode::TRIANGLES;
-	se::AssetData s;
-
 }
 
 se::Text::~Text()
@@ -49,12 +47,13 @@ void se::Text::SetText(const std::string& text)
 		Indices.reserve(text.size() * 6);
 
 
-		float TileSize = 512.0f; // Temporary here TODO Need to parese in font
+		float TileWidth = m_Font->GetFontData().m_TileWidth; 
+		float TileHeight = m_Font->GetFontData().m_TileHeight;
 		float Offset = 0.0f;
 		size_t IndicesStride = 0;
 		for (size_t i = 0; i < m_Text.size(); i++)
 		{
-			auto& CharData = m_Font->GetCharData(m_Text[i]);
+			auto& CharData = m_Font->GetFontData().CharsData[m_Text[i]];
 			se::Vertex2D Vertex[4];
 			// Position
 			Vertex[0].m_Position = glm::vec2(-Offset, -CharData.Height - CharData.Yoffset);
@@ -62,10 +61,10 @@ void se::Text::SetText(const std::string& text)
 			Vertex[2].m_Position = glm::vec2(-Offset, -CharData.Yoffset);
 			Vertex[3].m_Position = glm::vec2(CharData.Width - Offset, -CharData.Yoffset);
 			// TexCoords
-			Vertex[0].m_TextureCoords = glm::vec2(CharData.Xpos / TileSize, (CharData.Ypos + CharData.Height) / TileSize);
-			Vertex[1].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, (CharData.Ypos + CharData.Height) / TileSize);
-			Vertex[2].m_TextureCoords = glm::vec2(CharData.Xpos / TileSize, CharData.Ypos / TileSize);
-			Vertex[3].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileSize, CharData.Ypos / TileSize);
+			Vertex[0].m_TextureCoords = glm::vec2(CharData.Xpos / TileWidth, (CharData.Ypos + CharData.Height) / TileHeight);
+			Vertex[1].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileWidth, (CharData.Ypos + CharData.Height) / TileHeight);
+			Vertex[2].m_TextureCoords = glm::vec2(CharData.Xpos / TileWidth, CharData.Ypos / TileHeight);
+			Vertex[3].m_TextureCoords = glm::vec2((CharData.Xpos + CharData.Width) / TileWidth, CharData.Ypos / TileHeight);
 
 			Vertices.push_back(Vertex[0]); Vertices.push_back(Vertex[1]); Vertices.push_back(Vertex[2]); Vertices.push_back(Vertex[3]);
 

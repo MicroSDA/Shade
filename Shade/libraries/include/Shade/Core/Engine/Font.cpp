@@ -9,9 +9,23 @@ se::Font::Font(const std::string& fullClassName, const se::AssetData* data) : se
 	while (!_FontFile.eof())
 	{
 		_FontFile >> _Node;
+		if (_Node.find("scaleW") != _Node.npos)
+			m_FontData.m_TileWidth = std::atoi(_Node.erase(0, 7).c_str());
+
+		if (_Node.find("scaleH") != _Node.npos)
+			m_FontData.m_TileHeight = std::atoi(_Node.erase(0, 7).c_str());
+
+		if (_Node.find("file") != _Node.npos)
+		{
+			size_t first = _Node.find_first_of("\"") + 1;
+			size_t last = _Node.find_last_of("\"");
+			std::cout << _Node.substr(first, last - first) << std::endl; // TODO Need to laod it from file, move to sierizliaer whole font code
+		}
+			
+		
 		if (_Node == "char")
 		{
-			se::FontCharData _CharData;
+			se::CharData _CharData;
 			_FontFile >> _Node;
 			_CharData.AsciiCode = std::atoi(_Node.erase(0, 3).c_str()); // id= 
 			_FontFile >> _Node;
@@ -28,7 +42,7 @@ se::Font::Font(const std::string& fullClassName, const se::AssetData* data) : se
 			_CharData.Yoffset = std::atof(_Node.erase(0, 8).c_str()); // yoffset=
 			_FontFile >> _Node;
 			_CharData.Xadvance = std::atof(_Node.erase(0, 9).c_str()); // xadvance=
-			m_FontData[char(_CharData.AsciiCode)] = _CharData;
+			m_FontData.CharsData[char(_CharData.AsciiCode)] = _CharData;
 		}
 	}
 
@@ -49,9 +63,9 @@ void se::Font::Init()
 {
 }
 
-const se::FontCharData& se::Font::GetCharData(const char& character) const
+const se::FontData& se::Font::GetFontData() const
 {
-	return m_FontData[character];
+	return m_FontData;
 }
 
 const se::Texture* se::Font::GetAtlas() const

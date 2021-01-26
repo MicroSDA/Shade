@@ -6,13 +6,18 @@
 
 namespace se
 {
-	struct FontCharData
+	struct CharData
 	{
-		int AsciiCode = -1;
-		float Xpos = 0, Ypos = 0;
-		float Width = 0.0f, Height = 0.0f;
-		float Xoffset = 0.0f, Yoffset = 0.0f;
-		float Xadvance = 0.0f;
+		int AsciiCode   = -1;
+		float Xpos      = 0,    Ypos       = 0;
+		float Width     = 0.0f, Height     = 0.0f;
+		float Xoffset   = 0.0f, Yoffset    = 0.0f;
+		float Xadvance  = 0.0f;	
+	};
+	struct FontData
+	{
+		mutable std::unordered_map<char, se::CharData> CharsData;
+		float m_TileWidth = 0.0f, m_TileHeight = 0.0f;
 	};
 
 	class SE_API Font : public se::Asset
@@ -23,11 +28,11 @@ namespace se
 		// Inherited via Asset
 		virtual void Load() override;
 		virtual void Init() override;
-		const se::FontCharData& GetCharData(const char& character) const;
+		const se::FontData& GetFontData() const;
 		const se::Texture* GetAtlas() const;
 	private:
-		mutable std::unordered_map<char, se::FontCharData> m_FontData;
-		se::AssetPointer<se::Texture>                      m_Atlas;
+		se::AssetPointer<se::Texture> m_Atlas;
+		FontData                      m_FontData;
 	};
 }
 

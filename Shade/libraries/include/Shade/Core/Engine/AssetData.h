@@ -12,7 +12,8 @@ namespace se
 		Texture,
 		Shader,
 		Material,
-		Sprite
+		Sprite,
+		Font
 	};
 	enum class AssetDataSubType
 	{
