@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MainScene.h"
-
+#include "Shade/Core/Engine/ImGuiLayer.h"
 
 MainScene::MainScene(const std::string& name) :se::Scene(name)
 {
@@ -146,8 +146,10 @@ void MainScene::OnInit()
 	text->SetText("Shade Engine");
 
 	CreateLayer<MainLayer>("MainLayer");
+	CreateLayer<se::ImGuiLayer>("ImGuiLayer");
 	//CreateLayer<GuiLayer>("GuiLayer");
 	InitLayer("MainLayer");
+	InitLayer("ImGuiLayer");
 	//InitLayer("GuiLayer");
 	//InitLayers();
 

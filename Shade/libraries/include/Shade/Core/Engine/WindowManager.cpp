@@ -147,3 +147,8 @@ const se::VeiwPort& se::WindowManager::GetViewPort()
 {
 	return Get().m_ViewPort;
 }
+
+const SDL_GLContext& se::WindowManager::GetContext()
+{
+	return Get().m_Context;
+}

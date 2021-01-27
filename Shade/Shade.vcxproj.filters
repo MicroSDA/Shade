@@ -55,6 +55,12 @@
     <Filter Include="Core\Engine\Render\Drawable\Text">
       <UniqueIdentifier>{c8764e93-9db6-4cc4-b740-0f82b98bdffa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Engine\Layers">
+      <UniqueIdentifier>{4135fe63-e414-4f5a-b7f5-da64040ceccd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vendors\ImGui">
+      <UniqueIdentifier>{5408317e-0481-4a65-b6aa-6ef3f0a3879e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -84,9 +90,6 @@
     </ClInclude>
     <ClInclude Include="libraries\include\Vendors\glad\glad.h">
       <Filter>Vendors</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h">
-      <Filter>Core\Engine</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Asset.h">
       <Filter>Core\Engine\Asset</Filter>
@@ -208,6 +211,18 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Font.h">
       <Filter>Core\Engine\Render\Drawable\Text</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h">
+      <Filter>Core\Engine\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\ImGuiLayer.h">
+      <Filter>Core\Engine\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\ImGui\backends\imgui_impl_opengl3.h">
+      <Filter>Vendors\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\ImGui\backends\imgui_impl_sdl.h">
+      <Filter>Vendors\ImGui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -225,9 +240,6 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Vendors\glad\glad.c">
       <Filter>Vendors</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp">
-      <Filter>Core\Engine</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Asset.cpp">
       <Filter>Core\Engine\Asset</Filter>
@@ -330,6 +342,18 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Font.cpp">
       <Filter>Core\Engine\Render\Drawable\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp">
+      <Filter>Core\Engine\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\ImGuiLayer.cpp">
+      <Filter>Core\Engine\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\ImGui\backends\imgui_impl_opengl3.cpp">
+      <Filter>Vendors\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\ImGui\backends\imgui_impl_sdl.cpp">
+      <Filter>Vendors\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -42,6 +42,7 @@ namespace se
 		static void Resize();
 		static void SetViewPort(const int& x, const int& y, const int& width, const int& height);
 		static const se::VeiwPort& GetViewPort();
+		static const SDL_GLContext& GetContext();
 	private:
 		//Singleton implementation
 		WindowManager();

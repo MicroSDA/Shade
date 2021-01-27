@@ -37,6 +37,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\FrameBuffer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\GeneralLight.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Grid.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\ImGuiLayer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Input.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Layer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Light.h" />
@@ -75,6 +76,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="vendors\ImGui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="vendors\ImGui\backends\imgui_impl_sdl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp" />
@@ -91,6 +94,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\FrameBuffer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\GeneralLight.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Grid.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\ImGuiLayer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Input.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Layer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Light.cpp" />
@@ -132,6 +136,23 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="vendors\ImGui\backends\imgui_impl_opengl3.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="vendors\ImGui\backends\imgui_impl_sdl.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="vendors\ImGui\ImGui.vcxproj">
+      <Project>{75d29310-e330-4827-9f26-824cfe827c4c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -212,7 +233,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;C:\Users\bansc\Documents\GitHub\Shade\Shade\vendors\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -234,7 +255,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;C:\Users\bansc\Documents\GitHub\Shade\Shade\vendors\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -256,7 +277,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;C:\Users\bansc\Documents\GitHub\Shade\Shade\vendors\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -278,7 +299,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;C:\Users\bansc\Documents\GitHub\Shade\Shade\vendors\ImGui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
