@@ -12,19 +12,38 @@ MainLayer::~MainLayer()
 
 void MainLayer::OnCreate()
 {
-	/*se::FramebufferSpec fbSpec;
-	fbSpec.Attachments = { se::FrameBufferTextureFormat::RGBA8, se::FrameBufferTextureFormat::Depth };
-	fbSpec.Width = 1000;
-	fbSpec.Height = 800;
-	fbSpec.SwapChainTarget = false;
+	se::EventManager::RegLayerEventCallback(se::EventType::SDL_WINDOWEVENT, GetScene(), this,
+		[&](se::Event const& event) {
+		
+			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+			{
+				auto _ViewPortSize = GetScene()->GetEntities().view<glm::fvec2, se::TagComponent>();
+				
+				for (auto& _ViewPort : _ViewPortSize)
+				{
+					if (_ViewPortSize.get<se::TagComponent>(_ViewPort).Tag == "MainSceneDocViewPort")
+					{
+						auto _FrameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
 
-	m_pFrameBuffer = se::FrameBuffer::Create(fbSpec);*/
+						if (_FrameBuffer)
+							_FrameBuffer->Resize(_ViewPortSize.get<glm::vec2>(_ViewPort).x, _ViewPortSize.get<glm::vec2>(_ViewPort).y);
+					}
+				}
+			}
+			
+			return false;
+		});
+
+	
 }
 
 void MainLayer::OnInit()
 {
 	se::Renderer::Enable(GL_CULL_FACE);
 	se::Renderer::Enable(GL_DEPTH_TEST);
+
+	se::FramebufferSpec fbSpec( 100,100, { se::FrameBufferTextureFormat::RGBA8, se::FrameBufferTextureFormat::Depth });
+	GetScene()->CreateFrameBuffer("MainLayerFB", fbSpec);
 }
 
 void MainLayer::OnUpdate(const se::Timer& deltaTime)
@@ -98,5 +117,21 @@ void MainLayer::OnRender()
 
 void MainLayer::OnDelete()
 {
+}
 
+void MainLayer::OnRenderBegin()
+{
+	auto _FrameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
+	if (_FrameBuffer)
+	{
+		_FrameBuffer->Bind();
+		_FrameBuffer->Clear();
+	}
+}
+
+void MainLayer::OnRenderEnd()
+{
+	auto _FrameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
+	if (_FrameBuffer)
+		_FrameBuffer->UnBind();
 }

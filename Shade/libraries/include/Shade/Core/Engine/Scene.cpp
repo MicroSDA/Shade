@@ -120,3 +120,25 @@ inline se::Layer* se::Scene::GetLayer(const std::string& name)
 	throw se::ShadeException(std::string("Layer '" + name + "' doesn't exist in '" + m_Name + "' scene!").c_str(), se::SECode::Error);
 }
 
+se::ShadeShared<se::FrameBuffer> se::Scene::GetFrameBuffer(const std::string& name)
+{
+	if (m_FrameBuffers.find(name) != m_FrameBuffers.end())
+	{
+		return m_FrameBuffers[name];
+	}
+	else
+	{
+		SE_DEBUG_PRINT(std::string("Frame buffer '"+ name +"' doesn't exist!").c_str(), se::SLCode::Warning);
+		return se::ShadeShared<se::FrameBuffer>(nullptr); // nullptr or need to thorw 
+	}
+}
+
+void se::Scene::CreateFrameBuffer(const std::string& name, const se::FramebufferSpec& spec)
+{
+	if (m_FrameBuffers.find(name) == m_FrameBuffers.end())
+	{
+		m_FrameBuffers.emplace(name, se::FrameBuffer::Create(spec));
+	}
+}
+
+

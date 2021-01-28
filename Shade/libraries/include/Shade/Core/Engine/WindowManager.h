@@ -19,10 +19,10 @@ namespace se
 	struct Window
 	{
 		std::string    Title = "Shade";
-		unsigned int   Width = 1000;
-		unsigned int   Height = 800;
+		unsigned int   Width = 1920;
+		unsigned int   Height = 1080;
 		WindowHandler* Handler = nullptr;
-		WindowFlags    WindowFlags = static_cast<se::WindowFlags>(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+		WindowFlags    WindowFlags = static_cast<se::WindowFlags>(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN);
 		bool           IsClosed = false;
 	};
 

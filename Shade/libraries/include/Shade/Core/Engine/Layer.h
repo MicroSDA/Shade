@@ -26,7 +26,9 @@ namespace se
 		virtual void OnInit() = 0;
 		//TODO Move to private and friend class
 		virtual void OnUpdate(const se::Timer& deltaTime) = 0; //TODO:Delta as args
+		virtual void OnRenderBegin() = 0;
 		virtual void OnRender() = 0;
+		virtual void OnRenderEnd() = 0;
 		virtual void OnDelete() = 0;
 		void SetActive(const bool& isActive);
 		void SetEventsUpdate(const bool& isEventUpdate);

@@ -60,3 +60,11 @@ void GuiLayer::OnRender()
 void GuiLayer::OnDelete()
 {
 }
+
+void GuiLayer::OnRenderBegin()
+{
+}
+
+void GuiLayer::OnRenderEnd()
+{
+}

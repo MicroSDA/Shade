@@ -4,6 +4,8 @@
 // Implemented features:
 //  [X] Renderer: User texture binding. Use 'MTLTexture' as ImTextureID. Read the FAQ about ImTextureID!
 //  [X] Renderer: Support for large meshes (64k+ vertices) with 16-bit indices.
+// Missing features:
+//  [ ] Renderer: Multi-viewport / platform windows.
 
 // You can copy and use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this.
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
@@ -11,7 +13,6 @@
 
 // CHANGELOG
 // (minor and older changes stripped away, please see git history for details)
-//  2021-01-25: Metal: Fixed texture storage mode when building on Mac Catalyst.
 //  2019-05-29: Metal: Added support for large mesh (64K+ vertices), enable ImGuiBackendFlags_RendererHasVtxOffset flag.
 //  2019-04-30: Metal: Added support for special ImDrawCallback_ResetRenderState callback to reset render state.
 //  2019-02-11: Metal: Projecting clipping rectangles correctly using draw_data->FramebufferScale to allow multi-viewports for retina display.
@@ -239,7 +240,7 @@ void ImGui_ImplMetal_DestroyDeviceObjects()
                                                                                                 height:(NSUInteger)height
                                                                                              mipmapped:NO];
     textureDescriptor.usage = MTLTextureUsageShaderRead;
-#if TARGET_OS_OSX || TARGET_OS_MACCATALYST
+#if TARGET_OS_OSX
     textureDescriptor.storageMode = MTLStorageModeManaged;
 #else
     textureDescriptor.storageMode = MTLStorageModeShared;

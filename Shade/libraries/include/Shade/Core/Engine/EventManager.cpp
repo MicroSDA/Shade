@@ -44,6 +44,11 @@ int se::EventManager::RegLayerEventCallback(const EventType& type, const Scene* 
     return (int)_Manager.m_LayerCallbacks[type][scene][layer].size() - 1;
 }
 
+void se::EventManager::PusEvent(Event& event)
+{
+	SDL_PushEvent(&event);
+}
+
 void se::EventManager::DeleteEventCallback(const EventType& type, int index)
 {
 }
@@ -86,18 +91,18 @@ void se::EventManager::Update()
 
 				SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
 			}
+		}
 
-			for (auto& _Layer : m_LayerCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene])
+		for (auto& _Layer : m_LayerCallbacks[static_cast<EventType>(m_Event.type)][_CurrentScene])
+		{
+			if (_Layer.first->IsActive() && _Layer.first->IsEventsUpdate())
 			{
-				if (_Layer.first->IsActive() && _Layer.first->IsEventsUpdate())
+				for (auto j = 0; j < _Layer.second.size(); j++)
 				{
-					for (auto j = 0; j < _Layer.second.size(); j++)
+					if (_Layer.second[j](m_Event))
 					{
-						if (_Layer.second[j](m_Event))
-						{
-							_Layer.second.erase(_Layer.second.begin() + i); // TODO Issue here, wrong removing, should be removed by while and iterator
-							SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
-						}
+						_Layer.second.erase(_Layer.second.begin() + j); // TODO Issue here, wrong removing, should be removed by while and iterator
+						SE_DEBUG_PRINT((std::string("Event callback type: ") + std::to_string(m_Event.type) + " done.").c_str(), se::SLCode::InfoSecondary);
 					}
 				}
 			}

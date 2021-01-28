@@ -25,8 +25,6 @@ se::Application::Application()
 		
 			return false;
 		});
-
-
 }
 
 se::Application::~Application()
@@ -71,7 +69,12 @@ void se::Application::Start()
 							_Layer->OnUpdate(_DeltaTime);
 						
 						if (_Layer->IsRender())
+						{
+							_Layer->OnRenderBegin();
 							_Layer->OnRender();
+							_Layer->OnRenderEnd();
+						}
+							
 					}
 				}
 			}

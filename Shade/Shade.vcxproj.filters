@@ -217,6 +217,9 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\ImGuiLayer.h">
       <Filter>Core\Engine\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Types.h">
+      <Filter>Core\Engine</Filter>
+    </ClInclude>
     <ClInclude Include="vendors\ImGui\backends\imgui_impl_opengl3.h">
       <Filter>Vendors\ImGui</Filter>
     </ClInclude>

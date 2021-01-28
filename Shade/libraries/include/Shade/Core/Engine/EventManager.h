@@ -28,6 +28,7 @@ namespace se
 		static int  RegAppEventCallback(const EventType& type, const EventCallback& callback);
 		static int  RegSceneEventCallback(const EventType& type, const Scene* scene, const EventCallback& callback);
 		static int  RegLayerEventCallback(const EventType& type, const Scene* scene, const Layer* layer, const EventCallback& callback);
+		static void PusEvent(Event& event);
 		static void DeleteEventCallback(const EventType& type, int index);
 		static void DeleteEventCallback(const EventType& type);
 	private:

@@ -12,6 +12,7 @@
 #include "Shade/Core/Engine/Material.h"
 #include "Shade/Core/Engine/Font.h"
 #include "Shade/Core/Engine/Text.h"
+#include "Shade/Core/Engine/FrameBuffer.h"
 
 namespace se
 {
@@ -195,5 +196,15 @@ namespace se
 		DrawableTextComponent(const se::ShadeShared<se::Text>& other) //  TODO Nedd to create copy constructor for vertex buffer
 			: Text(other) {};
 		DrawableTextComponent(const DrawableTextComponent&) = default;
+	};
+
+	struct FrameBufferComponent : ComponentBase
+	{
+		se::ShadeShared<se::FrameBuffer> FrameBuffer;
+		FrameBufferComponent() = default;
+		~FrameBufferComponent() = default;
+		FrameBufferComponent(const se::ShadeShared<se::FrameBuffer>& other) //  TODO Nedd to create copy constructor for vertex buffer
+			: FrameBuffer(other) {};
+		FrameBufferComponent(const FrameBufferComponent&) = default;
 	};
 }

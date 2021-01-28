@@ -115,7 +115,7 @@ void se::FrameBuffer::Bind()
 	glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 }
 
-void se::FrameBuffer::UnBibnd()
+void se::FrameBuffer::UnBind()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -200,7 +200,7 @@ void se::FrameBuffer::Resize(const unsigned int& width, const unsigned int& heig
 {
 	if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
 	{
-		std::cout << "Wrong frame buffer size\n";
+		std::cout << "Wrong frame buffer size. \n";
 		return;
 	}
 

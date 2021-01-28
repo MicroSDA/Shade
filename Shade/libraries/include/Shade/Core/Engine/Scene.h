@@ -8,14 +8,20 @@
 #include "Shade/Core/Engine/Camera.h"
 #include "Shade/Core/Engine/Timer.h"
 #include "Shade/Core/Engine/EntitiesDocker.h"
+#include "Shade/Core/Engine/FrameBuffer.h"
+#include "Shade/Core/Types.h"
 
 namespace se
 {
+	template<typename T>
+	using ShadeShared = std::shared_ptr<T>;
+
 	class Layer;
 
 	class SE_API Scene : public EntitiesDocker
 	{
 	public:
+	
 		friend class Application;
 
 		Scene(const std::string& name);
@@ -26,6 +32,8 @@ namespace se
 		void SetMainCamera(se::Camera* camera);
 		inline       std::vector<se::Layer*>& GetLayers() { return m_Layers; };
 		inline       se::Layer* GetLayer(const std::string& name);
+		se::ShadeShared<se::FrameBuffer> GetFrameBuffer(const std::string& name);
+		void CreateFrameBuffer(const std::string& name, const se::FramebufferSpec& spec);
 	protected:
 		virtual void OnCreate() = 0;
 		virtual void OnInit() = 0;
@@ -53,6 +61,8 @@ namespace se
 		virtual void OnDelete() = 0;
 		se::Camera* m_pMainCamera;
 		bool		m_IsInitalized;
+
+        std::unordered_map<std::string, se::ShadeShared<se::FrameBuffer>> m_FrameBuffers;
 	};
 
 }

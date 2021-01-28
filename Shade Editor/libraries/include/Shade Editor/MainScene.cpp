@@ -145,11 +145,15 @@ void MainScene::OnInit()
 	text->SetFont(se::AssetManager::Hold<se::Font>("FontFile"));
 	text->SetText("Shade Engine");
 
-	CreateLayer<MainLayer>("MainLayer");
+
 	CreateLayer<se::ImGuiLayer>("ImGuiLayer");
-	//CreateLayer<GuiLayer>("GuiLayer");
-	InitLayer("MainLayer");
 	InitLayer("ImGuiLayer");
+	CreateLayer<MainLayer>("MainLayer");
+	InitLayer("MainLayer");
+	
+	//CreateLayer<GuiLayer>("GuiLayer");
+	
+	
 	//InitLayer("GuiLayer");
 	//InitLayers();
 

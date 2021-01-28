@@ -34,10 +34,11 @@ namespace se
 
 	struct FramebufferSpec
 	{
+		FramebufferSpec(const uint32_t& width, const uint32_t& height, const se::FramebufferAttachmentSpec& attachments, const bool& swapChainTarget = false)
+			: Width(width), Height(height), Attachments(attachments), SwapChainTarget(swapChainTarget) {}
 		uint32_t Width = 0, Height = 0;
 		se::FramebufferAttachmentSpec Attachments;
 		uint32_t Samples = 1;
-
 		bool SwapChainTarget = false;
 	};
 
@@ -50,7 +51,7 @@ namespace se
 		void Clear();
 
 		void Bind();
-		void UnBibnd();
+		void UnBind();
 		void Invalidate();
 
 		virtual void Resize(const unsigned int& width, const unsigned int& height);
