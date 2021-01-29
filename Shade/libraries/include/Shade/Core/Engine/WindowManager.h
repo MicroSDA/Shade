@@ -20,9 +20,9 @@ namespace se
 	{
 		std::string    Title = "Shade";
 		unsigned int   Width = 1920;
-		unsigned int   Height = 1080;
+		unsigned int   Height = 1000;
 		WindowHandler* Handler = nullptr;
-		WindowFlags    WindowFlags = static_cast<se::WindowFlags>(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_BORDERLESS | SDL_WINDOW_FULLSCREEN);
+		WindowFlags    WindowFlags = static_cast<se::WindowFlags>(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI );
 		bool           IsClosed = false;
 	};
 

@@ -161,6 +161,64 @@ bool ImGui_ImplSDL2_ProcessEvent(const SDL_Event* event)
     return false;
 }
 
+bool ImGui_ImplSDL2_ProcessKeyDownUpEvent(const SDL_Event* event)
+{
+    ImGuiIO& io = ImGui::GetIO();
+    int key = event->key.keysym.scancode;
+    IM_ASSERT(key >= 0 && key < IM_ARRAYSIZE(io.KeysDown));
+    io.KeysDown[key] = (event->type == SDL_KEYDOWN);
+    io.KeyShift = ((SDL_GetModState() & KMOD_SHIFT) != 0);
+    io.KeyCtrl = ((SDL_GetModState() & KMOD_CTRL) != 0);
+    io.KeyAlt = ((SDL_GetModState() & KMOD_ALT) != 0);
+#ifdef _WIN32
+    io.KeySuper = false;
+#else
+    io.KeySuper = ((SDL_GetModState() & KMOD_GUI) != 0);
+#endif
+    return true;
+}
+
+bool ImGui_ImplSDL2_ProcessTexInputEvent(const SDL_Event* event)
+{
+    ImGuiIO& io = ImGui::GetIO();
+    io.AddInputCharactersUTF8(event->text.text);
+    return true;
+}
+
+bool ImGui_ImplSDL2_ProcessWindowEvent(const SDL_Event* event)
+{
+    Uint8 window_event = event->window.event;
+    if (window_event == SDL_WINDOWEVENT_CLOSE || window_event == SDL_WINDOWEVENT_MOVED || window_event == SDL_WINDOWEVENT_RESIZED)
+        if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle((void*)SDL_GetWindowFromID(event->window.windowID)))
+        {
+            if (window_event == SDL_WINDOWEVENT_CLOSE)
+                viewport->PlatformRequestClose = true;
+            if (window_event == SDL_WINDOWEVENT_MOVED)
+                viewport->PlatformRequestMove = true;
+            if (window_event == SDL_WINDOWEVENT_RESIZED)
+                viewport->PlatformRequestResize = true;
+            return true;
+        }
+}
+
+bool ImGui_ImplSDL2_ProcessMouseButtonEvent(const SDL_Event* event)
+{
+    if (event->button.button == SDL_BUTTON_LEFT) g_MousePressed[0] = true;
+    if (event->button.button == SDL_BUTTON_RIGHT) g_MousePressed[1] = true;
+    if (event->button.button == SDL_BUTTON_MIDDLE) g_MousePressed[2] = true;
+    return true;
+}
+
+bool ImGui_ImplSDL2_ProcessMouseWheelEvent(const SDL_Event* event)
+{
+    ImGuiIO& io = ImGui::GetIO();
+    if (event->wheel.x > 0) io.MouseWheelH += 1;
+    if (event->wheel.x < 0) io.MouseWheelH -= 1;
+    if (event->wheel.y > 0) io.MouseWheel += 1;
+    if (event->wheel.y < 0) io.MouseWheel -= 1;
+    return true;
+}
+
 static bool ImGui_ImplSDL2_Init(SDL_Window* window, void* sdl_gl_context)
 {
     g_Window = window;

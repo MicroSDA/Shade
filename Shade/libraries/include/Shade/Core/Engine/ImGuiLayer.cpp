@@ -21,7 +21,38 @@ namespace se
 
 	void ImGuiLayer::OnCreate()
 	{
-		// For resizing scene dock space in editor
+		SDL_EventType;
+		se::EventManager::RegLayerEventCallback(se::EventType::SDL_WINDOWEVENT, GetScene(), this,
+			[&](se::Event const& event)  {
+				ImGui_ImplSDL2_ProcessWindowEvent(&event);
+
+				return false;
+			});
+		se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYDOWN, GetScene(), this,
+			[&](se::Event const& event) {
+				ImGui_ImplSDL2_ProcessKeyDownUpEvent(&event);
+
+				return false;
+			});
+		se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYUP, GetScene(), this,
+			[&](se::Event const& event) {
+				ImGui_ImplSDL2_ProcessKeyDownUpEvent(&event);
+
+				return false;
+			});
+		se::EventManager::RegLayerEventCallback(se::EventType::SDL_MOUSEMOTION, GetScene(), this,
+			[&](se::Event const& event) {
+				ImGui_ImplSDL2_ProcessMouseButtonEvent(&event);
+
+				return false;
+			});
+		se::EventManager::RegLayerEventCallback(se::EventType::SDL_TEXTINPUT, GetScene(), this,
+			[&](se::Event const& event) {
+				ImGui_ImplSDL2_ProcessTexInputEvent(&event);
+
+				return false;
+			});
+
 		se::Entity _VeiwPort = GetScene()->CreateEntity("MainSceneDocViewPort");
 		_VeiwPort.AddComponent<glm::fvec2>();
 	}
@@ -189,7 +220,15 @@ namespace se
 			ImGui::End();
 		}
 
-	
+		ImGui::Begin("Log");
+		ImGui::Text("Log");
+		ImGui::End();
+
+		ImGui::Begin("Scene");
+		ImGui::Text("Scene");
+		ImGui::End();
+		
+		//ImGui::ShowDemoWindow(&show);
 	}
 
 	void ImGuiLayer::OnRenderEnd()

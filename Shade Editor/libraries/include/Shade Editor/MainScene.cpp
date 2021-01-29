@@ -76,7 +76,8 @@ void MainScene::OnInit()
 	{// Assets
 		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Models.Floor", false);
 		auto _Cube	     = se::AssetManager::Hold<se::Model3D>("Models.Cube" , false);
-		auto _Skull	     = se::AssetManager::Hold<se::Model3D>("Models.SamuraiHelmet", false);
+		auto _Samurai	 = se::AssetManager::Hold<se::Model3D>("Models.SamuraiHelmet", false);
+		auto _Skull	     = se::AssetManager::Hold<se::Model3D>("Models.Skull", false);
 
 		se::Entity _FloorEntity = CreateEntity("Floor");
 		_FloorEntity.AddComponent<se::Transform3DComponent>();
@@ -86,6 +87,36 @@ void MainScene::OnInit()
 		_CubeEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(glm::vec3(5, 1, 2));
 		_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
 
+		se::Entity _SamuraiEntity = CreateEntity("Samurai");
+		_SamuraiEntity.AddComponent<se::Transform3DComponent>();
+		_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
+
+		se::Entity _SamuraiEntity2 = CreateEntity("Samurai2");
+		_SamuraiEntity2.AddComponent<se::Transform3DComponent>().Transform.SetPostition(5,0,0);
+		_SamuraiEntity2.AddComponent<se::Model3DComponent>(_Samurai);
+
+		se::Entity _SkullEntity2 = CreateEntity("Skull1");
+		_SkullEntity2.AddComponent<se::Transform3DComponent>().Transform.SetPostition(5, 10, 0);
+		_SkullEntity2.AddComponent<se::Model3DComponent>(_Skull);
+
+		{
+			se::Entity _SkullEntity = CreateEntity("Skull");
+			se::Transform3D _Transform;
+			_Transform.SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
+			_Transform.SetPostition(glm::vec3(0.0f, 2, 2));
+			_SkullEntity.AddComponent<se::Transform3DComponent>(_Transform);
+			_SkullEntity.AddComponent<se::Model3DComponent>(_Skull);
+			_SkullEntity.AddComponent<se::NativeScriptComponent>().Bind<se::Mode3DController>();
+
+			auto meshes = _SkullEntity.GetComponent<se::Model3DComponent>().Model3D->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
+			for (auto& mesh : meshes)
+			{
+				meshes.get<se::MaterialComponent>(mesh).Material.SetShinines(3);
+				meshes.get<se::MaterialComponent>(mesh).Material.SetShininesStrength(1);	
+				meshes.get<se::MaterialComponent>(mesh).Material.SetDiffuseColor(1.5, 1.5, 1.5);
+			}
+
+		}
 		{
 			se::Entity _SamuraiEntity = CreateEntity("Samurai");
 			se::Transform3D _Transform;
@@ -99,7 +130,7 @@ void MainScene::OnInit()
 			for (auto& mesh : meshes)
 			{
 				meshes.get<se::MaterialComponent>(mesh).Material.SetShinines(3);
-				meshes.get<se::MaterialComponent>(mesh).Material.SetShininesStrength(1);	
+				meshes.get<se::MaterialComponent>(mesh).Material.SetShininesStrength(1);
 				meshes.get<se::MaterialComponent>(mesh).Material.SetDiffuseColor(1.5, 1.5, 1.5);
 			}
 
@@ -146,10 +177,12 @@ void MainScene::OnInit()
 	text->SetText("Shade Engine");
 
 
-	CreateLayer<se::ImGuiLayer>("ImGuiLayer");
-	InitLayer("ImGuiLayer");
 	CreateLayer<MainLayer>("MainLayer");
+	CreateLayer<se::ImGuiLayer>("ImGuiLayer");
+
 	InitLayer("MainLayer");
+	InitLayer("ImGuiLayer");
+	
 	
 	//CreateLayer<GuiLayer>("GuiLayer");
 	
