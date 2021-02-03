@@ -42,55 +42,85 @@ se::SpotLight::~SpotLight()
 {
 }
 
-inline void se::SpotLight::SetPosition(const float& x, const float& y, const float& z)
+ void se::SpotLight::SetPosition(const float& x, const float& y, const float& z)
 {
-	m_Position = glm::vec3(z, y, z);
+	m_Position = glm::vec3(x, y, z);
 }
 
-inline void se::SpotLight::SetPosition(const glm::vec3& position)
+ void se::SpotLight::SetPosition(const glm::vec3& position)
 {
 	m_Position = position;
 }
 
-inline const glm::vec3& se::SpotLight::GetPosition() const
+ const glm::vec3& se::SpotLight::GetPosition() const
 {
 	return m_Position;
 }
 
-inline void se::SpotLight::SetDirection(const float& x, const float& y, const float& z)
+ void se::SpotLight::SetDirection(const float& x, const float& y, const float& z)
 {
 	m_Direction = glm::vec3(x, y, z);
 }
 
-inline void se::SpotLight::SetDirection(const glm::vec3& direction)
+ void se::SpotLight::SetDirection(const glm::vec3& direction)
 {
 	m_Direction = direction;
 }
 
-inline void se::SpotLight::SetMinAngle(const float& angle)
+ void se::SpotLight::SetMinAngle(const float& angle)
 {
 	m_MinAngle = angle;
 }
 
-inline void se::SpotLight::SetMaxAngle(const float& angle)
+ void se::SpotLight::SetMaxAngle(const float& angle)
 {
 	m_MaxAngle = angle;
 }
 
-inline const float& se::SpotLight::GetMinAngle() const
+ const float& se::SpotLight::GetMinAngle() const
 {
 	return m_MinAngle;
 }
 
-inline const float& se::SpotLight::GetMaxAngle() const
+ const float& se::SpotLight::GetMaxAngle() const
 {
 	return m_MaxAngle;
 }
 
-inline const glm::fvec3& se::SpotLight::GetDirection() const
+ const glm::fvec3& se::SpotLight::GetDirection() const
 {
 	return m_Direction;
 }
+
+ void se::SpotLight::SetConstant(const float& constant)
+ {
+	 m_Constant = constant;
+ }
+
+ void se::SpotLight::SetLinear(const float& linear)
+ {
+	 m_Linear = linear;
+ }
+
+ void se::SpotLight::SetQaudratic(const float& qaudratic)
+ {
+	 m_Qaudratic = qaudratic;
+ }
+
+ const float& se::SpotLight::GetConstant() const
+ {
+	 return m_Constant;
+ }
+
+ const float& se::SpotLight::GetLinear() const
+ {
+	 return m_Linear;
+ }
+
+ const float& se::SpotLight::GetQaudratic() const
+ {
+	 return m_Qaudratic;
+ }
 
 void se::SpotLight::OnUpdate(const se::Timer& deltaTime)
 {

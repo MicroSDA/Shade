@@ -23,6 +23,10 @@ namespace se
 		int m_WindowFlags;
 		int m_DockSpaceFlags;
 		ImGuiViewport* m_Viewport;
+
+		void ShowEntities();
+		void ShowVewPort();
+		void ShowAssetList();
 	};
 }
 

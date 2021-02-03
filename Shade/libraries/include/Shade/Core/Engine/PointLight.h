@@ -16,9 +16,9 @@ namespace se
 		inline void SetLinear(const float& linear);
 		inline void SetQaudratic(const float& qaudratic);
 
-		inline const float& GetConstant(const float& constant) const;
-		inline const float& GetLinear(const float& linear) const;
-		inline const float& GetQaudratic(const float& qaudratic) const;
+		inline const float& GetConstant() const;
+		inline const float& GetLinear() const;
+		inline const float& GetQaudratic() const;
 
 		virtual void OnUpdate(const se::Timer& deltaTime) override;
 		virtual void Process(const se::Shader* shader) override;

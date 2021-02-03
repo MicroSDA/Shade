@@ -26,6 +26,11 @@ void se::Texture::UnBind(const uint32_t& id)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+const GLuint& se::Texture::GetTextureRenderId() const
+{
+	return m_Texture;
+}
+
 void se::Texture::Load()
 {
 	

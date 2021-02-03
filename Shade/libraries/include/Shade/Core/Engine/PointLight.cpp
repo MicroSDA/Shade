@@ -69,17 +69,17 @@ inline void se::PointLight::SetQaudratic(const float& qaudratic)
 	m_Qaudratic = qaudratic;
 }
 
-inline const float& se::PointLight::GetConstant(const float& constant) const
+inline const float& se::PointLight::GetConstant() const
 {
 	return m_Constant;
 }
 
-inline const float& se::PointLight::GetLinear(const float& linear) const
+inline const float& se::PointLight::GetLinear() const
 {
 	return  m_Linear;
 }
 
-inline const float& se::PointLight::GetQaudratic(const float& qaudratic) const
+inline const float& se::PointLight::GetQaudratic() const
 {
 	return m_Qaudratic;
 }

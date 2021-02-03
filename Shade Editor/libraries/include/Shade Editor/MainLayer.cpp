@@ -33,8 +33,6 @@ void MainLayer::OnCreate()
 			
 			return false;
 		});
-
-	
 }
 
 void MainLayer::OnInit()
@@ -98,7 +96,7 @@ void MainLayer::OnRender()
 	auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text", true);
 	auto texts = GetScene()->GetEntities().view<se::DrawableTextComponent>();
 	se::Transform2D transform;
-	transform.SetPostition(300.0, (float)se::WindowManager::GetWindow().Height);
+	transform.SetPostition(0.0f, (float)se::WindowManager::GetWindow().Height);
 	transform.SetScale(0.8, 0.8);
 	_Shader->Bind();
 	se::Renderer::Enable(GL_BLEND);

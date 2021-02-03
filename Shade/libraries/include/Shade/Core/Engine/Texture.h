@@ -22,6 +22,7 @@ namespace se
 		virtual ~Texture();
 		inline const void Bind(const uint32_t& id) const;
 		static void UnBind(const uint32_t& id);
+		const GLuint& GetTextureRenderId() const;
 		// Унаследовано через Asset
 		virtual void Load() override;
 		virtual void Init() override;

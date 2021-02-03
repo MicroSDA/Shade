@@ -72,6 +72,11 @@ void se::AssetManager::ReadRoadMap()
 {
 	GetInstance()._ReadRoadMap();
 }
+const se::AssetData& se::AssetManager::GetAssetDataList()
+{
+	return GetInstance().m_AssetsData;
+}
+
 void se::AssetManager::_ReadRoadMap()
 {
 

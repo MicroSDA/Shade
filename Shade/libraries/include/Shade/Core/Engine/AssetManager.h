@@ -128,6 +128,7 @@ namespace se
 		static void Free(const std::string& className);
 		static void WriteRoadMap(const se::AssetData& asset);
 		static void ReadRoadMap();
+		static const AssetData& GetAssetDataList();
 	private:
 		//Singleton implementation
 		AssetManager();
