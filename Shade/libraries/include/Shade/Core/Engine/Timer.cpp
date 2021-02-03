@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Timer.h"
-#include "Vendors/SDL2/SDL.h"
 
 int se::Timer::GetFps()
 {

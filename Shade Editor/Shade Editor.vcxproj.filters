@@ -14,7 +14,7 @@
       <Filter>Vendors</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade Editor\Serrializer.h" />
-    <ClInclude Include="libraries\include\Shade Editor\GuiLayer.h">
+    <ClInclude Include="libraries\include\Shade Editor\EditorLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,7 +32,7 @@
       <Filter>Vendors</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade Editor\Serrializer.cpp" />
-    <ClCompile Include="libraries\include\Shade Editor\GuiLayer.cpp">
+    <ClCompile Include="libraries\include\Shade Editor\EditorLayer.cpp">
       <Filter>Layers</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
 #include "Shade/Core/CoreAPI.h"
-#include "Vendors/SDL2/SDL.h"
+#include <SDL2/SDL.h>
 #include "Shade/Core/Util/Log.h"
 #include "Shade/Core/Engine/Input.h"
 

@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Texture.h"
 #include "Shade/Core/Util/Binarizer.h"
-#include "Vendors/SDL2/SDL.h"
-
 
 se::Texture::Texture(const std::string& fullClassName, const se::AssetData* data) : se::Asset(fullClassName, data),
 	m_Texture(NULL)

@@ -1,6 +1,6 @@
 #pragma once
 #include "Shade/Core/CoreAPI.h"
-
+#include <SDL2/SDL.h>
 namespace se
 {
 	class SE_API Timer

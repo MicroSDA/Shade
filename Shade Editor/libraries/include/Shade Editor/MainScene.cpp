@@ -136,19 +136,12 @@ void MainScene::OnInit()
 	text->SetText("Shade Engine");
 
 
-	CreateLayer<MainLayer>("MainLayer");
-	CreateLayer<se::ImGuiLayer>("ImGuiLayer");
+	CreateLayer<MainLayer>("Main");
+	CreateLayer<EditorLayer>("Editor");
 
-	InitLayer("MainLayer");
-	InitLayer("ImGuiLayer");
+	InitLayer("Main");
+	InitLayer("Editor");
 	
-	
-	CreateLayer<GuiLayer>("GuiLayer");
-	
-	
-	InitLayer("GuiLayer");
-	//InitLayers();
-
 }
 	
 void MainScene::OnUpdate(const se::Timer& deltaTime)

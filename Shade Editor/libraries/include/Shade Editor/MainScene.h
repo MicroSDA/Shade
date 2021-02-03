@@ -1,7 +1,7 @@
 #pragma once
 #include <Shade/Core/Engine/Scene.h>
 #include "MainLayer.h"
-#include "GuiLayer.h"
+#include "EditorLayer.h"
 #include "Shade/Core/Engine/Text.h"
 
 class MainScene : public se::Scene

@@ -21,6 +21,10 @@ namespace se {
 		inline const glm::fvec3& GetRotation() const { return m_Rotation; };
 		inline const glm::fvec3& GetScale()    const { return m_Scale; };
 
+		inline glm::fvec3& GetPositionRef() { return m_Possition; };
+		inline glm::fvec3& GetRotationRef() { return m_Rotation; };
+		inline glm::fvec3& GetScaleRef()    { return m_Scale; };
+
 		glm::mat4 GetModelMatrix() const;
 	private:
 		glm::fvec3 m_Possition;

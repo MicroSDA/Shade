@@ -9,14 +9,33 @@ namespace se
 {
 	ImGuiLayer::ImGuiLayer(const std::string& name, se::Scene* scene) : se::Layer(name, scene)
 	{
-	}
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.DisplaySize = ImVec2((float)se::WindowManager::GetWindow().Width, (float)se::WindowManager::GetWindow().Height);
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
-	ImGuiLayer::~ImGuiLayer()
-	{
-	}
+		ImGui::StyleColorsDark();
 
-	void ImGuiLayer::OnCreate()
-	{
+		ImGuiStyle& style = ImGui::GetStyle();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		}
+
+		ImGui_ImplSDL2_InitForOpenGL(se::WindowManager::GetWindow().Handler, se::WindowManager::GetContext());
+		ImGui_ImplOpenGL3_Init("#version 440");
+
+
+		m_WindowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		m_WindowFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		m_WindowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+		m_DockSpaceFlags = ImGuiDockNodeFlags_None;
+
+		m_Viewport = ImGui::GetMainViewport();
+
 		SDL_EventType;
 		se::EventManager::RegLayerEventCallback(se::EventType::SDL_WINDOWEVENT, GetScene(), this,
 			[&](se::Event const& event) {
@@ -58,68 +77,18 @@ namespace se
 		se::Entity _VeiwPort = GetScene()->CreateEntity("MainSceneDocViewPort");
 		_VeiwPort.AddComponent<glm::fvec2>();
 	}
+
+	ImGuiLayer::~ImGuiLayer()
+	{
+		ImGui::DestroyContext();
+	}
+
+	void ImGuiLayer::OnCreate()
+	{
+		
+	}
 	void ImGuiLayer::OnInit()
 	{
-
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.DisplaySize = ImVec2((float)se::WindowManager::GetWindow().Width, (float)se::WindowManager::GetWindow().Height);
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-
-		ImGui::StyleColorsDark();
-
-		ImGuiStyle& style = ImGui::GetStyle();
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			style.WindowRounding = 0.0f;
-			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-		}
-
-		/*auto& colors = ImGui::GetStyle().Colors;
-		colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
-
-		// Headers
-		colors[ImGuiCol_Header] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
-		colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
-		colors[ImGuiCol_HeaderActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-
-		// Buttons
-		colors[ImGuiCol_Button] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
-		colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
-		colors[ImGuiCol_ButtonActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-
-		// Frame BG
-		colors[ImGuiCol_FrameBg] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
-		colors[ImGuiCol_FrameBgHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
-		colors[ImGuiCol_FrameBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-
-		// Tabs
-		colors[ImGuiCol_Tab] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-		colors[ImGuiCol_TabHovered] = ImVec4{ 0.38f, 0.3805f, 0.381f, 1.0f };
-		colors[ImGuiCol_TabActive] = ImVec4{ 0.28f, 0.2805f, 0.281f, 1.0f };
-		colors[ImGuiCol_TabUnfocused] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-		colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
-
-		// Title
-		colors[ImGuiCol_TitleBg] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-		colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
-		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };*/
-
-		// Setup Platform/Renderer backends
-		ImGui_ImplSDL2_InitForOpenGL(se::WindowManager::GetWindow().Handler, se::WindowManager::GetContext());
-		ImGui_ImplOpenGL3_Init("#version 440");
-
-
-		m_WindowFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-		m_WindowFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-		m_WindowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-		m_DockSpaceFlags = ImGuiDockNodeFlags_None;
-
-		m_Viewport = ImGui::GetMainViewport();
-
-
 
 	}
 	void ImGuiLayer::OnUpdate(const se::Timer& deltaTime)
@@ -144,10 +113,6 @@ namespace se
 	void ImGuiLayer::OnRender()
 	{
 		static bool show = true;
-
-
-
-
 
 		ImGui::Begin("DockSpace Demo", &show, m_WindowFlags);
 
@@ -325,7 +290,7 @@ namespace se
 	}
 	void ImGuiLayer::OnDelete()
 	{
-		ImGui::DestroyContext();
+		
 	}
 	void ImGuiLayer::ShowEntities()
 	{
@@ -381,7 +346,6 @@ namespace se
 						}
 
 						auto& _Model3DEntities = GetScene()->GetEntities().get<se::Model3DComponent>((entt::entity)selected).Model3D;
-
 						auto _Meshes = _Model3DEntities.get()->GetEntities().view<se::MeshComponent>();
 
 						if (_Meshes.size())

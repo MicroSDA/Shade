@@ -15,9 +15,14 @@ namespace se
 		inline void SetAmbientColor(const   glm::vec3& color) { m_AmbientColor = color; }
 		inline void SetDiffuseColor(const   glm::vec3& color) { m_DiffuseColor = color; }
 		inline void SetSpecularColor(const  glm::vec3& color) { m_SpecularColor = color; }
-		inline glm::vec3 GetAmbientColor() { return m_AmbientColor; }
-		inline glm::vec3 GetDiffuseColor() { return m_DiffuseColor; }
-		inline glm::vec3 GetSpecularColor() { return m_SpecularColor; }
+		inline const glm::vec3& GetAmbientColor() const { return m_AmbientColor; }
+		inline const glm::vec3& GetDiffuseColor() const { return m_DiffuseColor; }
+		inline const glm::vec3& GetSpecularColor() const { return m_SpecularColor; }
+
+		inline glm::vec3& GetAmbientColorRef() { return m_AmbientColor; }
+		inline glm::vec3& GetDiffuseColorRef() { return m_DiffuseColor; }
+		inline glm::vec3& GetSpecularColorRef() { return m_SpecularColor; }
+
 		virtual void OnUpdate(const se::Timer& deltaTime) = 0;
 		virtual void Process(const se::Shader* shader) = 0;
 	protected:

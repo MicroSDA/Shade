@@ -11,8 +11,8 @@ namespace se
 		inline void SetDirection(const float& x, const float& y, const float& z);
 		inline void SetDirection(const glm::fvec3& direction);
 		inline const glm::fvec3& GetDirection() const;
+		inline glm::fvec3& GetDirectionRef() { return m_Direction; };
 		
-
 		virtual void OnUpdate(const se::Timer& deltaTime) override;
 		virtual void Process(const se::Shader* shader) override;
 	protected:

@@ -1,7 +1,7 @@
 #pragma once
 #include "Shade/Core/CoreAPI.h"
 #include "Shade/Core/Util/ShadeException.h"
-#include "Vendors/SDL2/SDL.h"
+#include <SDL2/SDL.h>
 #include "Vendors/glad/glad.h"
 #undef main // For SDL
 

@@ -19,7 +19,7 @@ namespace se
 		virtual void OnRender() override;
 		virtual void OnRenderEnd() override;
 		virtual void OnDelete() override;	
-	private:
+	protected:
 		int m_WindowFlags;
 		int m_DockSpaceFlags;
 		ImGuiViewport* m_Viewport;
