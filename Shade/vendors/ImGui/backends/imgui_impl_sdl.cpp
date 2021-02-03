@@ -47,13 +47,13 @@
 //  2017-08-25: Inputs: MousePos set to -FLT_MAX,-FLT_MAX when mouse is unavailable/missing (instead of -1,-1).
 //  2016-10-15: Misc: Added a void* user_data parameter to Clipboard function handlers.
 
-#include "imgui.h"
-#include "imgui_impl_sdl.h"
+#include "ImGui/imgui.h"
+//#include "ImGui/backends/imgui_impl_sdl.h"
 
 // SDL
 // (the multi-viewports feature requires SDL features supported from SDL 2.0.4+. SDL 2.0.5+ is highly recommended)
-#include <Vendors/SDL2/SDL.h>
-#include <Vendors/SDL2/SDL_syswm.h>
+#include "Vendors/SDL2/SDL.h"
+#include "Vendors/SDL2/SDL_syswm.h"
 #if defined(__APPLE__)
 #include "TargetConditionals.h"
 #endif

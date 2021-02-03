@@ -220,12 +220,6 @@
     <ClInclude Include="libraries\include\Shade\Core\Types.h">
       <Filter>Core\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="vendors\ImGui\backends\imgui_impl_opengl3.h">
-      <Filter>Vendors\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="vendors\ImGui\backends\imgui_impl_sdl.h">
-      <Filter>Vendors\ImGui</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -352,10 +346,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\ImGuiLayer.cpp">
       <Filter>Core\Engine\Layers</Filter>
     </ClCompile>
-    <ClCompile Include="vendors\ImGui\backends\imgui_impl_opengl3.cpp">
-      <Filter>Vendors\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="vendors\ImGui\backends\imgui_impl_sdl.cpp">
+    <ClCompile Include="libraries\include\Shade\Core\Engine\ImGui.cpp">
       <Filter>Vendors\ImGui</Filter>
     </ClCompile>
   </ItemGroup>

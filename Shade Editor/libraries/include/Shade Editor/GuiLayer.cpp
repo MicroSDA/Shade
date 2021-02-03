@@ -1,8 +1,15 @@
 #include "stdafx.h"
 #include "GuiLayer.h"
 
+#include <ImGui/imgui.h>
+#include <ImGui/backends/imgui_impl_opengl3.h>
+#include <ImGui/backends/imgui_impl_sdl.h>
+//#include <Shade/Core/Engine/ImGui.cpp>
+
 GuiLayer::GuiLayer(const std::string& name, se::Scene* scene) : se::Layer(name, scene)
 {
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
 }
 
 GuiLayer::~GuiLayer()

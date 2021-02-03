@@ -47,7 +47,7 @@ namespace se
 		// Z
 		inline void SetRoll(float angle) { /* TODO:*/ }
 
-		void Resize();
+		void Resize(const float& aspect = 0);
 	private:
 		const glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f); // Y is up
 		glm::mat4 m_Perpective;

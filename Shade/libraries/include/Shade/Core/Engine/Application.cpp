@@ -18,9 +18,6 @@ se::Application::Application()
 			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
 			{
 				se::WindowManager::Resize();
-				auto* _MainCamera = se::Application::GetApplication().GetCurrentScene()->GetMainCamera();
-				if (_MainCamera != nullptr)
-					_MainCamera->Resize();
 			}
 		
 			return false;

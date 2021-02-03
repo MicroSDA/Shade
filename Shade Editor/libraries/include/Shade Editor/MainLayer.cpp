@@ -17,12 +17,17 @@ void MainLayer::OnCreate()
 		
 			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
 			{
+				
 				auto _ViewPortSize = GetScene()->GetEntities().view<glm::fvec2, se::TagComponent>();
 				
 				for (auto& _ViewPort : _ViewPortSize)
 				{
 					if (_ViewPortSize.get<se::TagComponent>(_ViewPort).Tag == "MainSceneDocViewPort")
 					{
+						auto* _MainCamera = se::Application::GetApplication().GetCurrentScene()->GetMainCamera();
+						if (_MainCamera != nullptr)
+							_MainCamera->Resize(_ViewPortSize.get<glm::vec2>(_ViewPort).x / _ViewPortSize.get<glm::vec2>(_ViewPort).y);
+
 						auto _FrameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
 
 						if (_FrameBuffer)

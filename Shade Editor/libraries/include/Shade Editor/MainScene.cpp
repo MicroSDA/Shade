@@ -143,10 +143,10 @@ void MainScene::OnInit()
 	InitLayer("ImGuiLayer");
 	
 	
-	//CreateLayer<GuiLayer>("GuiLayer");
+	CreateLayer<GuiLayer>("GuiLayer");
 	
 	
-	//InitLayer("GuiLayer");
+	InitLayer("GuiLayer");
 	//InitLayers();
 
 }
