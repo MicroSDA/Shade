@@ -122,24 +122,13 @@ ShadeEditor::~ShadeEditor()
 void ShadeEditor::OnInit()
 {
 	se::AssetManager::ReadRoadMap();
-
 	//Events call back an other stuff 
 	se::EventManager::RegAppEventCallback(se::EventType::SDL_QUIT,
 		[&](se::Event const& event) {
 			this->Quit();
 			return true;
 		});
-	se::EventManager::RegAppEventCallback(se::EventType::SDL_KEYDOWN,
-		[&](se::Event const& event) {
-			if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-			{
-				this->Quit();
-				return true;
-			}
-			return false;
-		});
-
-
+	
 	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
 	se::WindowManager::Create(se::Window());
 

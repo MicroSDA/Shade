@@ -14,24 +14,6 @@ MainScene::~MainScene()
 
 void MainScene::OnCreate()
 {
-	
-	se::EventManager::RegSceneEventCallback(se::EventType::SDL_KEYDOWN, this, 
-		[&](se::Event const& event) {
-		
-			if (event.key.keysym.scancode == SDL_SCANCODE_RETURN)
-			{
-				auto models = this->GetEntities().view<se::Model3DComponent>();
-				for (auto& model : models)
-				{
-					//this->GetEntities().destroy(model);
-					
-				}	
-			}
-
-			return false;
-		});
-
-	
 	se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
 	//se::Renderer::SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }

@@ -157,6 +157,10 @@ vec3 CalculateTBNNormal(vec3 NormalMap, mat3 TBNMatrix)
 	layout (location = 2) in vec3 CameraPosition;
 	layout (location = 3) in vec3 ModelPosition;
 
+
+	layout (location = 0) out vec4 ColorAttachment1;
+	layout (location = 1) out int ColorAttachment2;
+	
 	in mat3 out_TBN;
 
 	void main()
@@ -169,7 +173,8 @@ vec3 CalculateTBNNormal(vec3 NormalMap, mat3 TBNMatrix)
 		vec4 m_TotalColor = ProcessPointLight(TBNNormal, pointL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
 		//vec4 m_TotalColor = ProcessSpotLight(TBNNormal, spotL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
 		
-		gl_FragColor = vec4(pow(m_TotalColor.rgb, vec3(0.70/1)), m_TotalColor.a);
+		ColorAttachment1 = vec4(pow(m_TotalColor.rgb, vec3(0.70/1)), m_TotalColor.a);
+		ColorAttachment2 = 10;
 	}
 #end
 #---

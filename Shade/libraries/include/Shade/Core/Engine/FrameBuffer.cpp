@@ -22,16 +22,16 @@ namespace se {
 		glBindTexture(TextureTarget(multisampled), id);
 	}
 
-	static void AttachColorTexture(uint32_t id, int samples, GLenum format, uint32_t width, uint32_t height, int index)
+	static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index)
 	{
 		bool multisampled = samples > 1;
 		if (multisampled)
 		{
-			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
+			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
 		}
 		else
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -73,6 +73,16 @@ namespace se {
 
 		return false;
 	}
+	static GLenum HazelFBTextureFormatToGL(se::FrameBufferTextureFormat format)
+	{
+		switch (format)
+		{
+		case se::FrameBufferTextureFormat::RGBA8:       return GL_RGBA8;
+		case se::FrameBufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+		}
+
+		return 0;
+	}
 
 	}
 }
@@ -108,14 +118,14 @@ void se::FrameBuffer::Clear()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void se::FrameBuffer::Bind()
+void se::FrameBuffer::Bind() const
 {
 	//glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 	glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 }
 
-void se::FrameBuffer::UnBind()
+void se::FrameBuffer::UnBind() const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -149,7 +159,10 @@ void se::FrameBuffer::Invalidate()
 			switch (m_ColorAttachmentSpecifications[i].TextureFormat)
 			{
 			case se::FrameBufferTextureFormat::RGBA8:
-				Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, m_Specification.Width, m_Specification.Height, i);
+				Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_RGBA8, GL_RGBA, m_Specification.Width, m_Specification.Height, i);
+				break;
+			case FrameBufferTextureFormat::RED_INTEGER:
+				Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.Samples, GL_R32I, GL_RED_INTEGER, m_Specification.Width, m_Specification.Height, i);
 				break;
 			}
 		}
@@ -189,7 +202,7 @@ void se::FrameBuffer::Invalidate()
 	
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
-		std::cout << "Frame isnt complete !\n";
+		std::cout << "Frame buffer isnt completed !\n";
 	}
 	
 
@@ -215,7 +228,28 @@ GLuint se::FrameBuffer::GetTextureAttachment(const GLuint& index) const
 	return m_ColorAttachments[index];
 }
 
+void se::FrameBuffer::ClearTextureAttachment(const GLuint& index, int value)
+{
+	auto& spec = m_ColorAttachmentSpecifications[index];
+	glClearTexImage(m_ColorAttachments[index], 0,
+		Utils::HazelFBTextureFormatToGL(spec.TextureFormat), GL_INT, &value);
+}
+
 const se::FramebufferSpec& se::FrameBuffer::GetSpecification() const
 {
 	return m_Specification;
+}
+
+int se::FrameBuffer::GetPixelData(const GLuint& index, const int& x, const int& y) const
+{
+	if (index < m_ColorAttachments.size())
+	{
+		int pixelData;
+		this->Bind();
+			glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
+			glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+		this->UnBind();
+		return pixelData;
+	}	
+	return -1;
 }

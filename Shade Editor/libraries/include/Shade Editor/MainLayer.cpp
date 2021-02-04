@@ -45,7 +45,7 @@ void MainLayer::OnInit()
 	se::Renderer::Enable(GL_CULL_FACE);
 	se::Renderer::Enable(GL_DEPTH_TEST);
 
-	se::FramebufferSpec fbSpec( 100,100, { se::FrameBufferTextureFormat::RGBA8, se::FrameBufferTextureFormat::Depth });
+	se::FramebufferSpec fbSpec( 100,100, { se::FrameBufferTextureFormat::RGBA8, se::FrameBufferTextureFormat::RED_INTEGER, se::FrameBufferTextureFormat::Depth });
 	GetScene()->CreateFrameBuffer("MainLayerFB", fbSpec);
 }
 

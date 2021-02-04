@@ -9,6 +9,7 @@ namespace se
 		None = 0,
 		// Color
 		RGBA8,
+		RED_INTEGER,
 		// Depth/stencil
 		DEPTH24STENCIL8,
 		// Defaults
@@ -50,13 +51,16 @@ namespace se
 
 		void Clear();
 
-		void Bind();
-		void UnBind();
+		void Bind() const;
+		void UnBind() const;
 		void Invalidate();
 
 		virtual void Resize(const unsigned int& width, const unsigned int& height);
 		GLuint GetTextureAttachment(const GLuint& index = 0) const;
+		void   ClearTextureAttachment(const GLuint& index, int value);
+		int    GetPixelData(const GLuint& index, const int& x, const int& y) const;
 		const se::FramebufferSpec& GetSpecification() const;
+	
 
 	private:
 		FrameBuffer(const se::FramebufferSpec& spec);

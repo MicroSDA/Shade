@@ -11,13 +11,7 @@ namespace se
 
 		void OnCreate()
 		{
-			/*auto _Models = se::Application::GetApp().GetActiveScene()->GetEntities().view<se::Model3DComponent>();
-			auto& Model  = _Models.get<se::Model3DComponent>(_Models[1]); // Suppose to be cube
-			auto _Meshes =  Model.Model3D->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
-
-			auto entt = this->m_Entity.GetComponent<se::Model3DComponent>().Model3D->CreateEntity();
-			entt.AddComponent<se::MeshComponent>(_Meshes.get<se::MeshComponent>(entt::entity(0)));
-			entt.AddComponent<se::MaterialComponent>(_Meshes.get<se::MaterialComponent>(entt::entity(0)));*/
+		
 		}
 		void OnDestroy()
 		{
