@@ -26,6 +26,6 @@ namespace se
 		virtual void OnUpdate(const se::Timer& deltaTime) {}
 		se::Entity   m_Entity;
 	private:
-		bool m_IsUpdate = false;
+		bool m_IsUpdate = true;
 	};
 }

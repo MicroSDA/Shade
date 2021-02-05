@@ -27,7 +27,7 @@ void MainScene::OnInit()
 	se::Entity   _CameraEntity = CreateEntity();
 	_CameraEntity.AddComponent<se::CameraComponent>(_MainCamera);
 	_CameraEntity.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
-	//_CameraEntity.GetComponent<se::NativeScriptComponent>().Instance
+	
 	
 	//se::Entity _GridEntity = this->CreateEntity("Grid");
 	//_GridEntity.AddComponent<se::Transform3DComponent>();

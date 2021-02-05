@@ -38,7 +38,7 @@ void se::Scene::UpdateNativeScripts(const se::Timer& deltaTime)
 			if (!nsc.Instance)
 			{
 				nsc.Instance = nsc.InstantiateScript();
-				nsc.Instance->m_Entity = se::Entity{ entity, this };
+				nsc.Instance->m_Entity = Entity{ entity, this };
 				nsc.Instance->OnCreate();
 			}
 

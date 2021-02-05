@@ -18,6 +18,7 @@ private:
 	void ShowAssetDataList();
 	void ShowMenu();
 	void ShowLightningSource();
+	void ShowFpsOverlay(ImGuiViewport* viewport, const float& x, const float& y);
 
 	uint32_t m_SelectedEntityID = 1;
 };

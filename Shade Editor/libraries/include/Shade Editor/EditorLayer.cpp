@@ -82,9 +82,10 @@ void EditorLayer::ShowMainScene()
 						se::EventManager::PusEvent(_Event);
 					}
 				}
-
+				
 				ImTextureID tid = reinterpret_cast<void*>(frameBuffer->GetTextureAttachment());
 				ImGui::Image(tid, ImVec2{ ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				ShowFpsOverlay(ImGui::GetWindowViewport(), ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 			}
 		}
 
@@ -291,4 +292,26 @@ void EditorLayer::ShowLightningSource()
 			}
 		}
 	} ImGui::End();
+}
+
+void EditorLayer::ShowFpsOverlay(ImGuiViewport* viewport, const float& x, const float& y)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuiWindowFlags window_flags =
+		ImGuiWindowFlags_NoDecoration | 
+		ImGuiWindowFlags_NoDocking | 
+		ImGuiWindowFlags_AlwaysAutoResize | 
+		ImGuiWindowFlags_NoSavedSettings | 
+		ImGuiWindowFlags_NoFocusOnAppearing | 
+		ImGuiWindowFlags_NoNav;
+
+	ImGui::SetNextWindowViewport(viewport->ID);
+	ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+	ImGui::SetNextWindowPos(ImVec2{ ImGui::GetWindowPos().x + 12, ImGui::GetWindowPos().y + 32 }, ImGuiCond_Always);
+	if (ImGui::Begin("Example: Simple overlay", nullptr, window_flags))
+	{
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+		ImGui::Separator();
+	}
+	ImGui::End();
 }
