@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "EditorLayer.h"
 
-#include <ImGui/imgui.h>
-
-
 EditorLayer::EditorLayer(const std::string& name, se::Scene* scene) : se::ImGuiLayer(name, scene)
 {
 
@@ -62,22 +59,21 @@ void EditorLayer::ShowMainScene()
 {
 	if (ImGui::Begin("Scene"))
 	{
-		auto _FrameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
-		if (_FrameBuffer)
+		auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
+		if ( frameBuffer != nullptr)
 		{
-			auto _ViewPortSize = GetScene()->GetEntities().view<glm::fvec2, se::TagComponent>();
+			auto viewPortEntitis = GetScene()->GetEntities().view<glm::fvec2, se::TagComponent>();
 
-			for (auto& _VeiwPort : _ViewPortSize)
+			for (auto& viewPort : viewPortEntitis)
 			{
-				ImVec2 _ViewportPanelSize = ImGui::GetContentRegionAvail();
-
-				if (_ViewPortSize.get<se::TagComponent>(_VeiwPort).Tag == "MainSceneDocViewPort")
+				if (viewPortEntitis.get<se::TagComponent>(viewPort).Tag == "MainSceneDocViewPort")
 				{
-					if (_ViewPortSize.get<glm::fvec2>(_VeiwPort).x != _ViewportPanelSize.x
-						|| _ViewPortSize.get<glm::fvec2>(_VeiwPort).y != _ViewportPanelSize.y)
+					auto& viewPortSize = viewPortEntitis.get<glm::fvec2>(viewPort);
+					if (viewPortSize.x != ImGui::GetContentRegionAvail().x
+						|| viewPortSize.y != ImGui::GetContentRegionAvail().y)
 					{
-						_ViewPortSize.get<glm::fvec2>(_VeiwPort).x = _ViewportPanelSize.x;
-						_ViewPortSize.get<glm::fvec2>(_VeiwPort).y = _ViewportPanelSize.y;
+						viewPortSize.x = ImGui::GetContentRegionAvail().x;
+						viewPortSize.y = ImGui::GetContentRegionAvail().y;
 
 						//Create window resize event and grab it in MainLayer
 						se::Event _Event;
@@ -87,8 +83,8 @@ void EditorLayer::ShowMainScene()
 					}
 				}
 
-				ImTextureID tid = reinterpret_cast<void*>(_FrameBuffer->GetTextureAttachment());
-				ImGui::Image(tid, ImVec2{ _ViewportPanelSize.x, _ViewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				ImTextureID tid = reinterpret_cast<void*>(frameBuffer->GetTextureAttachment());
+				ImGui::Image(tid, ImVec2{ ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 			}
 		}
 
@@ -98,7 +94,7 @@ void EditorLayer::ShowMainScene()
 
 void EditorLayer::ShowSceneEntities()
 {
-	ImGui::ShowDemoWindow();
+	ShowDemoWindow();
 
 	if (ImGui::Begin("Entities"))
 	{

@@ -115,12 +115,11 @@ se::FrameBuffer* se::FrameBuffer::Create(const se::FramebufferSpec& spec)
 
 void se::FrameBuffer::Clear()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void se::FrameBuffer::Bind() const
 {
-	//glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 	glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 }

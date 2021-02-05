@@ -44,9 +44,9 @@ namespace se
 
 			if (m_GeneralLight)
 			{
-				se::Camera* _Camera = se::Application::GetApplication().GetCurrentScene()->GetMainCamera();
+				auto camera = se::Application::GetApplication().GetCurrentScene()->GetActiveCamera();
 				if(se::Input::IsKeyboardBPressed(SDL_SCANCODE_LALT))
-					m_GeneralLight->SetDirection(_Camera->GetForwardDirrection());
+					m_GeneralLight->SetDirection(camera->GetForwardDirrection());
 			}
 			else if (m_PointLight)
 			{
@@ -74,9 +74,9 @@ namespace se
 			}
 			else if(m_SpotLight)
 			{
-				se::Camera* _Camera = se::Application::GetApplication().GetCurrentScene()->GetMainCamera();
-				m_SpotLight->SetPosition(_Camera->GetPosition());
-				m_SpotLight->SetDirection(_Camera->GetForwardDirrection());
+				auto camera = se::Application::GetApplication().GetCurrentScene()->GetActiveCamera();
+				m_SpotLight->SetPosition(camera->GetPosition());
+				m_SpotLight->SetDirection(camera->GetForwardDirrection());
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace se
 		}
 		void OnUpdate(const se::Timer& deltaTime)
 		{
-			auto* _Camera = GetComponent<se::CameraComponent>().Camera;
+			auto _Camera = GetComponent<se::CameraComponent>().Camera;
 			{ // Movment
 				if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_W))
 					_Camera->MoveForward(m_MovementSpeed * deltaTime);

@@ -44,15 +44,13 @@ namespace se
 	struct CameraComponent : ComponentBase
 	{
 		// Set shared i guess TODO
-		se::Camera* Camera = nullptr;
+		se::ShadeShared<se::Camera> Camera;
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
-		CameraComponent(se::Camera* other)
+		CameraComponent(const se::ShadeShared<se::Camera>& other)
 			:Camera(other)
 		{
 		}
-		operator se::Camera* () { return Camera; }
-		operator const se::Camera* () const { return Camera; }
 	};
 	
 	struct Model3DComponent : ComponentBase

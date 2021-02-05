@@ -83,6 +83,7 @@ void se::Application::Start()
 			
 			se::WindowManager::Get().Update();
 			se::WindowManager::Get().Clear();
+			
 		}
 		catch (se::ShadeException& exception)
 		{

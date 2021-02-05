@@ -109,7 +109,7 @@ void se::WindowManager::Clear()
 	if (m_IsWindowCreated)
 	{
 		glClearColor(Get().m_ClearR, Get().m_ClearG, Get().m_ClearB, Get().m_ClearA);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}	
 	else
 		throw se::ShadeException("Window has not been created!", se::SECode::Error);

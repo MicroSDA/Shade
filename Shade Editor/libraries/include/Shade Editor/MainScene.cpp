@@ -21,9 +21,9 @@ void MainScene::OnCreate()
 void MainScene::OnInit()
 {
 	
-	se::Camera* _MainCamera = new se::Camera();
+	se::ShadeShared<se::Camera> _MainCamera(new se::Camera());
 	_MainCamera->SetPosition(0, 3, -5);
-	SetMainCamera(_MainCamera);
+	SetActiveCamera(_MainCamera);
 
 	se::Entity   _CameraEntity = CreateEntity();
 	_CameraEntity.AddComponent<se::CameraComponent>(_MainCamera);
@@ -117,12 +117,11 @@ void MainScene::OnInit()
 	text->SetFont(se::AssetManager::Hold<se::Font>("FontFile"));
 	text->SetText("Shade Engine");
 
-
 	CreateLayer<MainLayer>("Main");
-	CreateLayer<EditorLayer>("Editor");
-
 	InitLayer("Main");
+	CreateLayer<EditorLayer>("Editor");
 	InitLayer("Editor");
+
 	
 }
 	

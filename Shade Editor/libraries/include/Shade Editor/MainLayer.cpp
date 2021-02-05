@@ -17,14 +17,13 @@ void MainLayer::OnCreate()
 		
 			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
 			{
-				
 				auto _ViewPortSize = GetScene()->GetEntities().view<glm::fvec2, se::TagComponent>();
 				
 				for (auto& _ViewPort : _ViewPortSize)
 				{
 					if (_ViewPortSize.get<se::TagComponent>(_ViewPort).Tag == "MainSceneDocViewPort")
 					{
-						auto* _MainCamera = se::Application::GetApplication().GetCurrentScene()->GetMainCamera();
+						auto _MainCamera = se::Application::GetApplication().GetCurrentScene()->GetActiveCamera();
 						if (_MainCamera != nullptr)
 							_MainCamera->Resize(_ViewPortSize.get<glm::vec2>(_ViewPort).x / _ViewPortSize.get<glm::vec2>(_ViewPort).y);
 
@@ -32,6 +31,7 @@ void MainLayer::OnCreate()
 
 						if (_FrameBuffer)
 							_FrameBuffer->Resize(_ViewPortSize.get<glm::vec2>(_ViewPort).x, _ViewPortSize.get<glm::vec2>(_ViewPort).y);
+							
 					}
 				}
 			}
@@ -56,15 +56,17 @@ void MainLayer::OnUpdate(const se::Timer& deltaTime)
 
 void MainLayer::OnRender()
 {
-	auto* _MainCamera = GetScene()->GetMainCamera();
+	se::Renderer::Disable(GL_BLEND);
+
+	auto activeCamera = GetScene()->GetActiveCamera();
 	{
 		// Modles 
 		auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.BasicModel", true);
 
 		_Shader->Bind();
-		_Shader->SendUniformMatrix4Float("ViewMatrix", GL_FALSE, _MainCamera->GetView());
-		_Shader->SendUniformMatrix4Float("ProjectionMatrix", GL_FALSE, _MainCamera->GetProjection());
-		_Shader->SendUniform3Float("CameraPosition", _MainCamera->GetPosition());
+		_Shader->SendUniformMatrix4Float("ViewMatrix", GL_FALSE, activeCamera->GetView());
+		_Shader->SendUniformMatrix4Float("ProjectionMatrix", GL_FALSE, activeCamera->GetProjection());
+		_Shader->SendUniform3Float("CameraPosition", activeCamera->GetPosition());
 		{
 			auto _Enviroments = GetScene()->GetEntities().view<se::EnvironmentComponent>();
 			for (auto& _Enviroment : _Enviroments)
@@ -98,7 +100,7 @@ void MainLayer::OnRender()
 		}
 	}
 
-	auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text", true);
+	/*auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text", true);
 	auto texts = GetScene()->GetEntities().view<se::DrawableTextComponent>();
 	se::Transform2D transform;
 	transform.SetPostition(0.0f, (float)se::WindowManager::GetWindow().Height);
@@ -115,7 +117,7 @@ void MainLayer::OnRender()
 		se::Renderer::DrawIndexed(*t);
 	}
 
-	se::Renderer::Disable(GL_BLEND);
+	se::Renderer::Disable(GL_BLEND);*/
 }
 
 void MainLayer::OnDelete()
@@ -129,6 +131,7 @@ void MainLayer::OnRenderBegin()
 	{
 		_FrameBuffer->Bind();
 		_FrameBuffer->Clear();
+		_FrameBuffer->ClearTextureAttachment(1, -1);
 	}
 }
 

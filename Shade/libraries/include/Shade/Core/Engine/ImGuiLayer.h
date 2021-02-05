@@ -1,5 +1,7 @@
 #pragma once
 #include "Shade/Core/Engine/Layer.h"
+#include <ImGui/imgui.h>
+
 
 struct ImGuiViewport;
 
@@ -16,17 +18,14 @@ namespace se
 		virtual void OnInit() override;
 		virtual void OnUpdate(const se::Timer& deltaTime) override;
 		virtual void OnRenderBegin() override;
-		virtual void OnRender() override;
+		virtual void OnRender() = 0;
 		virtual void OnRenderEnd() override;
-		virtual void OnDelete() override;	
+		virtual void OnDelete() = 0;	
 	protected:
 		int m_WindowFlags;
 		int m_DockSpaceFlags;
 		ImGuiViewport* m_Viewport;
-
-		void ShowEntities();
-		void ShowVewPort();
-		void ShowAssetList();
+		void ShowDemoWindow();
 	};
 }
 

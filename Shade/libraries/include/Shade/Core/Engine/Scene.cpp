@@ -98,12 +98,12 @@ void se::Scene::InitLayer(const std::string& name)
 	throw se::ShadeException(std::string("Layer intializing failed, layer '" + name + "' isn't found !").c_str(), se::SECode::Warning);
 }
 
-se::Camera* se::Scene::GetMainCamera()
+se::ShadeShared<se::Camera> se::Scene::GetActiveCamera()
 {
 	return m_pMainCamera;
 }
 
-void se::Scene::SetMainCamera(se::Camera* camera)
+void se::Scene::SetActiveCamera(const se::ShadeShared<se::Camera>& camera)
 {
 	m_pMainCamera = camera;
 }

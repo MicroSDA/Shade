@@ -28,8 +28,8 @@ namespace se
 		virtual ~Scene();
 		const std::string& const GetName() { return m_Name; }
 
-		se::Camera* GetMainCamera();
-		void SetMainCamera(se::Camera* camera);
+		se::ShadeShared<se::Camera> GetActiveCamera();
+		void SetActiveCamera(const se::ShadeShared<se::Camera>& camera);
 		inline       std::vector<se::Layer*>& GetLayers() { return m_Layers; };
 		inline       se::Layer* GetLayer(const std::string& name);
 		se::ShadeShared<se::FrameBuffer> GetFrameBuffer(const std::string& name);
@@ -59,7 +59,7 @@ namespace se
 		virtual void OnUpdate(const se::Timer& deltaTime) = 0;
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
-		se::Camera* m_pMainCamera;
+		se::ShadeShared<se::Camera> m_pMainCamera;
 		bool		m_IsInitalized;
 
         std::unordered_map<std::string, se::ShadeShared<se::FrameBuffer>> m_FrameBuffers;
