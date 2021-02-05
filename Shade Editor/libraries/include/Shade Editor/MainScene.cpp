@@ -15,7 +15,6 @@ MainScene::~MainScene()
 void MainScene::OnCreate()
 {
 	se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
-	//se::Renderer::SetClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void MainScene::OnInit()
@@ -28,7 +27,8 @@ void MainScene::OnInit()
 	se::Entity   _CameraEntity = CreateEntity();
 	_CameraEntity.AddComponent<se::CameraComponent>(_MainCamera);
 	_CameraEntity.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
-
+	//_CameraEntity.GetComponent<se::NativeScriptComponent>().Instance
+	
 	//se::Entity _GridEntity = this->CreateEntity("Grid");
 	//_GridEntity.AddComponent<se::Transform3DComponent>();
 

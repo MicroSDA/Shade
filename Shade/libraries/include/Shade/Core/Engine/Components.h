@@ -23,8 +23,8 @@ namespace se
 	{
 		ComponentBase() = default;
 		~ComponentBase() = default;
-		virtual void OnCreate() {};
-		virtual void OnDestroy() {};
+		//virtual void OnCreate() {};
+		//virtual void OnDestroy() {};
 	};
 	// Use when you want to name a specific entity
 	// Will be added automatically when an entity is being created
@@ -92,6 +92,8 @@ namespace se
 	// Do not call delete * directly neither for component nor controller.
 	struct NativeScriptComponent : ComponentBase
 	{
+		friend class se::Scene;
+
 		se::ScriptableEntity* Instance = nullptr;
 		// Copy constructor and assigment were deleted 
 		NativeScriptComponent() = default;
@@ -138,15 +140,16 @@ namespace se
 			}
 				
 		}
-		ScriptableEntity* (*InstantiateScript)()	  = nullptr;
-		void (*DestroyScript)(NativeScriptComponent*) = nullptr;
-
 		template<typename T>
 		void Bind()
 		{
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
 			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
 		}
+	private:
+		ScriptableEntity* (*InstantiateScript)()	  = nullptr;
+		void (*DestroyScript)(NativeScriptComponent*) = nullptr;
+
 	};
 	// Use for Environment pointer, shouldn't be deleted manually, based on the se::ShadeShared which use std::shared_ptr
 	struct EnvironmentComponent : ComponentBase
