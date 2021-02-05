@@ -94,7 +94,7 @@ namespace se
 		void OnCreate()
 		{
 			se::Input::SetMousePosition(se::WindowManager::GetWindow().Width / 2, se::WindowManager::GetWindow().Height / 2);
-			this->SetUpdate(false);
+			this->SetUpdate(true);
 		}
 		void OnDestroy()
 		{

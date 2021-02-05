@@ -12,17 +12,38 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnCreate()
 {
+	se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYDOWN, GetScene(),this,
+		[&](se::Event const& event) {
+		
+			if (event.key.keysym.scancode == SDL_SCANCODE_F)
+			{
+				switch (m_GuizmoOperation)
+				{
+				case ImGuizmo::OPERATION::TRANSLATE:
+					m_GuizmoOperation = ImGuizmo::OPERATION::ROTATE;
+					break;
+				case ImGuizmo::OPERATION::ROTATE:
+					m_GuizmoOperation = ImGuizmo::OPERATION::SCALE;
+					break;
+				case ImGuizmo::OPERATION::SCALE:
+					m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+					break;
+				}
+				
+			}
 
+			return false;
+		});
 }
 
 void EditorLayer::OnInit()
 {
-
+	
 }
 
 void EditorLayer::OnUpdate(const se::Timer& deltaTime)
 {
-
+	
 }
 
 void EditorLayer::OnRender()
@@ -83,9 +104,45 @@ void EditorLayer::ShowMainScene()
 					}
 				}
 				
+
 				ImTextureID tid = reinterpret_cast<void*>(frameBuffer->GetTextureAttachment());
 				ImGui::Image(tid, ImVec2{ ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-				ShowFpsOverlay(ImGui::GetWindowViewport(), ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+
+				// ImGuizmo
+				{
+					ImGuizmo::SetOrthographic(false);
+					ImGuizmo::SetDrawlist();
+					ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+
+					auto& transformComponent = GetScene()->GetEntities().get<se::Transform3DComponent>((entt::entity)m_SelectedEntityID).Transform;
+					auto modelMatrix = transformComponent.GetModelMatrix();
+					auto cameraView = GetScene()->GetActiveCamera()->GetView();
+					auto cameraProjection = GetScene()->GetActiveCamera()->GetProjection();
+
+				
+					ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), m_GuizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(modelMatrix));
+
+					{
+						
+						//static glm::mat4 gridMatrix(1.0f);
+						//ImGuizmo::DrawGrid(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), glm::value_ptr(gridMatrix), 100.f);
+					
+					}
+					
+
+					glm::vec3 position, rotation, scale;
+					ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(modelMatrix), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
+
+					ShowFpsOverlay(ImGui::GetWindowViewport(), ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+
+					if (ImGuizmo::IsUsing())
+					{
+						transformComponent.SetPostition(position);
+						transformComponent.SetRotation(glm::radians(rotation));
+						transformComponent.SetScale(scale);
+					}
+
+				}
 			}
 		}
 
@@ -139,20 +196,20 @@ void EditorLayer::ShowSceneEntities()
 					{
 						ImGui::Text("Position");
 						ImGui::PushItemWidth(100);
-						ImGui::DragFloat("X##P", &tansform.GetPositionRef().x, 0.1f, -FLT_MAX, FLT_MAX, "%.1f"); ImGui::SameLine();
+						ImGui::DragFloat("X##P", &tansform.GetPositionRef().x, 0.01f, -FLT_MAX, FLT_MAX, "%.2f"); ImGui::SameLine();
 						ImGui::PushItemWidth(100);
-						ImGui::DragFloat("Y##P", &tansform.GetPositionRef().y, 0.1f, -FLT_MAX, FLT_MAX, "%.1f"); ImGui::SameLine();
+						ImGui::DragFloat("Y##P", &tansform.GetPositionRef().y, 0.01f, -FLT_MAX, FLT_MAX, "%.2f"); ImGui::SameLine();
 						ImGui::PushItemWidth(100);
-						ImGui::DragFloat("Z##P", &tansform.GetPositionRef().z, 0.1f, -FLT_MAX, FLT_MAX, "%.1f");
+						ImGui::DragFloat("Z##P", &tansform.GetPositionRef().z, 0.01f, -FLT_MAX, FLT_MAX, "%.2f");
 					}
 					{
 						ImGui::Text("Rotation");
 						ImGui::PushItemWidth(100);
-						ImGui::DragFloat("X##R", &tansform.GetRotationRef().x, 0.1f, -FLT_MAX, FLT_MAX, "%.1f"); ImGui::SameLine();
+						ImGui::DragFloat("X##R", &tansform.GetRotationRef().x, 0.01f, -FLT_MAX, FLT_MAX, "%.2f"); ImGui::SameLine();
 						ImGui::PushItemWidth(100);
-						ImGui::DragFloat("Y##R", &tansform.GetRotationRef().y, 0.1f, -FLT_MAX, FLT_MAX, "%.1f"); ImGui::SameLine();
+						ImGui::DragFloat("Y##R", &tansform.GetRotationRef().y, 0.01f, -FLT_MAX, FLT_MAX, "%.2f"); ImGui::SameLine();
 						ImGui::PushItemWidth(100);
-						ImGui::DragFloat("Z##R", &tansform.GetRotationRef().z, 0.1f, -FLT_MAX, FLT_MAX, "%.1f");
+						ImGui::DragFloat("Z##R", &tansform.GetRotationRef().z, 0.01f, -FLT_MAX, FLT_MAX, "%.2f");
 					}
 					{
 						ImGui::Text("Scale");
@@ -259,6 +316,7 @@ void EditorLayer::ShowLightningSource()
 	{
 		for (auto& light : lights)
 		{
+			
 			auto pGeneralLight = dynamic_cast<se::GeneralLight*>(lights.get<se::EnvironmentComponent>(light).Environment.get());
 			auto pPointLight = dynamic_cast<se::PointLight*>(lights.get<se::EnvironmentComponent>(light).Environment.get());
 			auto pSpotLight = dynamic_cast<se::SpotLight*>(lights.get<se::EnvironmentComponent>(light).Environment.get());

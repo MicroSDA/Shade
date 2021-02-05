@@ -1,7 +1,7 @@
 #pragma once
 #include "Shade/Core/Engine/Layer.h"
 #include <ImGui/imgui.h>
-
+#include <ImGizmo/ImGuizmo.h>
 
 struct ImGuiViewport;
 
@@ -25,7 +25,10 @@ namespace se
 		int m_WindowFlags;
 		int m_DockSpaceFlags;
 		ImGuiViewport* m_Viewport;
+		ImGuizmo::OPERATION m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 		void ShowDemoWindow();
+	private:
+		void SetupImGuiStyle(bool bStyleDark_, float alpha_);
 	};
 }
 

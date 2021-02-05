@@ -61,6 +61,15 @@
     <Filter Include="Vendors\ImGui">
       <UniqueIdentifier>{5408317e-0481-4a65-b6aa-6ef3f0a3879e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vendors\ImGizmo">
+      <UniqueIdentifier>{1ec120b3-e058-4c40-b5db-9460740b235f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vendors\Glad">
+      <UniqueIdentifier>{530bd97a-083a-490b-91ad-b668e4d6145e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vendors\Entt">
+      <UniqueIdentifier>{73f7d33d-c6f2-405c-837a-ff80e49bff3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -76,9 +85,6 @@
       <Filter>Core\Engine</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\stdafx.h" />
-    <ClInclude Include="libraries\include\Vendors\entt\entt.hpp">
-      <Filter>Vendors</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Util\ShadeException.h">
       <Filter>Core\Util</Filter>
     </ClInclude>
@@ -87,9 +93,6 @@
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Util\Macros.h">
       <Filter>Core\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Vendors\glad\glad.h">
-      <Filter>Vendors</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\Asset.h">
       <Filter>Core\Engine\Asset</Filter>
@@ -220,6 +223,15 @@
     <ClInclude Include="libraries\include\Shade\Core\Types.h">
       <Filter>Core\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Vendors\glad\glad.h">
+      <Filter>Vendors\Glad</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Vendors\entt\entt.hpp">
+      <Filter>Vendors\Entt</Filter>
+    </ClInclude>
+    <ClInclude Include="vendors\ImGizmo\ImGuizmo.h">
+      <Filter>Vendors\ImGizmo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -234,9 +246,6 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp">
       <Filter>Core\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Vendors\glad\glad.c">
-      <Filter>Vendors</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Asset.cpp">
       <Filter>Core\Engine\Asset</Filter>
@@ -348,6 +357,12 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\ImGui.cpp">
       <Filter>Vendors\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Vendors\glad\glad.c">
+      <Filter>Vendors\Glad</Filter>
+    </ClCompile>
+    <ClCompile Include="vendors\ImGizmo\ImGuizmo.cpp">
+      <Filter>Vendors\ImGizmo</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
