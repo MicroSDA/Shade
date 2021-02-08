@@ -29,10 +29,9 @@ void MainScene::OnInit()
 	_CameraEntity.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
 	
 	
-	//se::Entity _GridEntity = this->CreateEntity("Grid");
-	//_GridEntity.AddComponent<se::Transform3DComponent>();
-
-	//_GridEntity.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(1000, 1000, 100)));
+	se::Entity _GridEntity = this->CreateEntity("Grid");
+	_GridEntity.AddComponent<se::Transform3DComponent>();
+	_GridEntity.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 500)));
 
 	{// Assets
 		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Models.Floor", false);
@@ -64,8 +63,8 @@ void MainScene::OnInit()
 			auto meshes = _SkullEntity.GetComponent<se::Model3DComponent>().Model3D->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
 			for (auto& mesh : meshes)
 			{
-				meshes.get<se::MaterialComponent>(mesh).Material.SetShinines(3);
-				meshes.get<se::MaterialComponent>(mesh).Material.SetShininesStrength(1);	
+				meshes.get<se::MaterialComponent>(mesh).Material.SetShininess(3);
+				meshes.get<se::MaterialComponent>(mesh).Material.SetShininessStrength(1);	
 				meshes.get<se::MaterialComponent>(mesh).Material.SetDiffuseColor(1.5, 1.5, 1.5);
 			}
 
@@ -111,11 +110,11 @@ void MainScene::OnInit()
 	}
 
 
-	se::Entity _TextEntity = CreateEntity();
+	/*se::Entity _TextEntity = CreateEntity();
 	auto text = _TextEntity.AddComponent<se::DrawableTextComponent>(se::ShadeShared<se::Text>(new se::Text())).Text;
 	se::AssetData s;
 	text->SetFont(se::AssetManager::Hold<se::Font>("FontFile"));
-	text->SetText("Shade Engine");
+	text->SetText("Shade Engine");*/
 
 	CreateLayer<MainLayer>("Main");
 	InitLayer("Main");

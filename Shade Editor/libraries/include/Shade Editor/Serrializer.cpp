@@ -215,8 +215,8 @@ void Serrializer::SerrializeMaterial(const std::string& filePath, const std::vec
 			se::Binarizer::WriteNext<float>(_File, _Color.g);
 			se::Binarizer::WriteNext<float>(_File, _Color.b);
 
-			se::Binarizer::WriteNext<float>(_File, (_Material.GetShinines() <= 0) ? 10 : _Material.GetShinines());
-			se::Binarizer::WriteNext<float>(_File, (_Material.GetShininesStrength() <= 0) ? 10 : _Material.GetShininesStrength());
+			se::Binarizer::WriteNext<float>(_File, (_Material.GetShininess() <= 0) ? 10 : _Material.GetShininess());
+			se::Binarizer::WriteNext<float>(_File, (_Material.GetShininessStrength() <= 0) ? 10 : _Material.GetShininessStrength());
 		}
 
 		_File.close();
@@ -534,7 +534,7 @@ AssimpMesh Serrializer::ProcessModel3DMesh(const std::string& filePath, aiMesh* 
 		_Mesh._Material.SetTransparentMask(_AssimpColor.r, _AssimpColor.g, _AssimpColor.b);
 		float value;
 		_Assimpmaterial->Get(AI_MATKEY_SHININESS, value); // Ns
-		_Mesh._Material.SetShinines(value);
+		_Mesh._Material.SetShininess(value);
 
 		_Mesh._HasMaterial = true;
 		

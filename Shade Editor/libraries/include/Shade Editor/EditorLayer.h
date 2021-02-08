@@ -14,11 +14,16 @@ public:
 	virtual void OnDelete() override;
 private:
 	void ShowMainScene();
-	void ShowSceneEntities();
+	void ShowEntities();
+	void ShowEntitiesInspector();
+	void ShowGuizmo();
 	void ShowAssetDataList();
 	void ShowMenu();
 	void ShowLightningSource();
 	void ShowFpsOverlay(ImGuiViewport* viewport, const float& x, const float& y);
 
-	uint32_t m_SelectedEntityID = 1;
+	void DrawEntity(const se::Entity& entity);
+	
+	se::Entity m_SelectedEntity;
+	uint32_t m_SelectedEntityID = 0;
 };

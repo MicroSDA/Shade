@@ -65,9 +65,9 @@ void se::Model3D::Load()
 					_Color.b = se::Binarizer::ReadNext<float>(_File);
 					_Material.SetTransparentMask(_Color);
 					float _Value = se::Binarizer::ReadNext<float>(_File);
-					_Material.SetShinines(_Value);
+					_Material.SetShininess(_Value);
 					_Value = se::Binarizer::ReadNext<float>(_File);
-					_Material.SetShininesStrength(_Value);
+					_Material.SetShininessStrength(_Value);
 
 					_MaterialsMap[_Name] = _Material;
 				}

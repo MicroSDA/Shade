@@ -27,6 +27,9 @@ namespace se
 		ImGuiViewport* m_Viewport;
 		ImGuizmo::OPERATION m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 		void ShowDemoWindow();
+		void DrawVec3(const std::string& label, glm::vec3& values, const float& reset = 0.0f, const float& columnWidth = 100.0f);
+		void DrawDragFloat(const std::string& label, float& values, const float& reset = 0.0f, const float& columnWidth = 100.0f);
+		void DrawColor3(const std::string& label, glm::vec3& values, const float& columnWidth = 100.0f);
 	private:
 		void SetupImGuiStyle(bool bStyleDark_, float alpha_);
 	};

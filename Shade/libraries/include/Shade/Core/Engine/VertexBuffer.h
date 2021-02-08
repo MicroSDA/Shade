@@ -137,6 +137,7 @@ namespace se
 				this->m_EBO_Size = other.m_EBO_Size;
 				this->m_VBO_Size = other.m_VBO_Size;
 				this->m_Type     = other.m_Type;
+				this->m_Layout	 = other.m_Layout;
 
 				other.m_VAO = NULL;
 				other.m_VBO = NULL;
@@ -155,7 +156,8 @@ namespace se
 
 				this->m_EBO_Size = other.m_EBO_Size;
 				this->m_VBO_Size = other.m_VBO_Size;
-				this->m_Type = other.m_Type;
+				this->m_Type	 = other.m_Type;
+				this->m_Layout   = other.m_Layout;
 
 				other.m_VAO = NULL;
 				other.m_VBO = NULL;

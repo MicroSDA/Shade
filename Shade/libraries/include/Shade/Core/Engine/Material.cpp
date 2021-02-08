@@ -6,8 +6,8 @@ se::Material::Material() :
     m_DiffuseColor(1.0f, 1.0f, 1.0f),
     m_SpecularColor(1.0f, 1.0f, 1.0f),
     m_TransparentMask(0.0f, 0.0f, 0.0f),
-    m_Shinines(1),
-    m_ShininesStrength(10)
+    m_Shininess(1),
+    m_ShininessStrength(10)
 {
 }
 
@@ -60,14 +60,14 @@ void se::Material::SetTransparentMask(const glm::vec3& color)
     m_TransparentMask = color;
 }
 
-void se::Material::SetShinines(const float& value)
+void se::Material::SetShininess(const float& value)
 {
-    m_Shinines = value;
+    m_Shininess = value;
 }
 
-void se::Material::SetShininesStrength(const float& value)
+void se::Material::SetShininessStrength(const float& value)
 {
-    m_ShininesStrength = value;
+    m_ShininessStrength = value;
 }
 
 const std::string& se::Material::GetName() const
@@ -80,9 +80,19 @@ const glm::vec3& se::Material::GetAmbientColor() const
     return m_AmbientColor;
 }
 
+glm::vec3& se::Material::GetAmbientColor()
+{
+    return const_cast<glm::vec3&>(const_cast<const se::Material*>(this)->GetAmbientColor());
+}
+
 const glm::vec3& se::Material::GetDiffuseColor() const
 {
     return m_DiffuseColor;
+}
+
+glm::vec3& se::Material::GetDiffuseColor()
+{
+    return const_cast<glm::vec3&>(const_cast<const se::Material*>(this)->GetDiffuseColor());
 }
 
 const glm::vec3& se::Material::GetSpecularColor() const
@@ -90,19 +100,39 @@ const glm::vec3& se::Material::GetSpecularColor() const
     return m_SpecularColor;
 }
 
+glm::vec3& se::Material::GetSpecularColor()
+{
+    return const_cast<glm::vec3&>(const_cast<const se::Material*>(this)->GetSpecularColor());
+}
+
 const glm::vec3& se::Material::GetTransparentMask() const
 {
     return m_TransparentMask;
 }
 
-const float& se::Material::GetShinines() const
+glm::vec3& se::Material::GetTransparentMask()
 {
-    return m_Shinines;
+    return const_cast<glm::vec3&>(const_cast<const se::Material*>(this)->GetTransparentMask());
 }
 
-const float& se::Material::GetShininesStrength() const
+const float& se::Material::GetShininess() const
 {
-    return m_ShininesStrength;
+    return m_Shininess;
+}
+
+float& se::Material::GetShininess()
+{
+    return const_cast<float&>(const_cast<const se::Material*>(this)->GetShininess());
+}
+
+const float& se::Material::GetShininessStrength() const
+{
+    return m_ShininessStrength;
+}
+
+float& se::Material::GetShininessStrength()
+{
+    return const_cast<float&>(const_cast<const se::Material*>(this)->GetShininessStrength());
 }
 
 void se::Material::Process(const se::Shader* shader) const
@@ -111,6 +141,6 @@ void se::Material::Process(const se::Shader* shader) const
     shader->SendUniform3Float("material.colorDiffuse",     m_DiffuseColor);
     shader->SendUniform3Float("material.colorSpecular",    m_SpecularColor);
     shader->SendUniform3Float("material.transparentMask",  m_TransparentMask);
-    shader->SendUniform1Float("material.shinines",         m_Shinines);
-    shader->SendUniform1Float("material.shininesStrength", m_ShininesStrength);
+    shader->SendUniform1Float("material.shinines",         m_Shininess);
+    shader->SendUniform1Float("material.shininesStrength", m_ShininessStrength);
 }

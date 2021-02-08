@@ -55,13 +55,18 @@ namespace se
 		{
 			return m_EntityHandle == other.m_EntityHandle && m_pDocker == other.m_pDocker;
 		}
-
 		bool operator!=(const Entity& other) const
 		{
 			return !(*this == other);
 		}
+		friend std::string operator+(const std::string& string, const Entity& other)
+		{
+			return std::string(string + std::to_string(static_cast<uint32_t>(other.m_EntityHandle)));
+		}
+		operator std::string () { return std::to_string(static_cast<uint32_t>(m_EntityHandle)); }
+		operator const std::string () const { return std::to_string(static_cast<uint32_t>(m_EntityHandle)); }
 	private:
-		entt::entity m_EntityHandle{ entt::null };
+		entt::entity m_EntityHandle { entt::null };
 		se::EntitiesDocker* m_pDocker = nullptr;
 	};
 

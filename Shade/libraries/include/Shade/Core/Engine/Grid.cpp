@@ -4,8 +4,8 @@
 
 se::Grid::Grid(const float& width, const float& height, const int& density)
 {
-	/*m_DrawMode = se::DrawMode::LINES;
-	
+	m_DrawMode = se::DrawMode::LINES;
+
 	for (int j = 0; j <= density; ++ j ) {
 		for (int i = 0; i <= density; ++i) {
 			float x = (float)i / (float)density;
@@ -27,13 +27,18 @@ se::Grid::Grid(const float& width, const float& height, const int& density)
 		}
 	}
 
+	m_VertexBuffer = se::VertexBuffer::Create(
+		{ {se::VertexBufferElementType::Float3, "Position"} },
+		se::VertexBufferType::Static,
+		sizeof(glm::fvec3)* m_Vertices.size(),
+		sizeof(glm::uvec4)* m_Indices.size());
+
+	m_VertexBuffer.SetVBO_Data(0, sizeof(glm::fvec3) * m_Vertices.size(), m_Vertices.data());
+	m_VertexBuffer.SetEBO_Data(0, sizeof(glm::uvec4) * m_Indices.size(), m_Indices.data());
+
 	m_DrawCount = static_cast<GLuint>(m_Indices.size() * 4);
 
-	m_VertexBuffer = se::VertexBuffer::Create<glm::fvec3, glm::uvec4>(
-		{ {se::VertexBufferElementType::Float3, "Position"} },
-		m_Vertices.data(), m_Vertices.size(),
-		m_Indices.data(), m_Indices.size());
-	glLineWidth(2.0f);*/
+	glLineWidth(1.0f);
 }
 
 se::Grid::~Grid()

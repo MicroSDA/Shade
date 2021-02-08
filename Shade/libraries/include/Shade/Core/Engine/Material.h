@@ -24,16 +24,28 @@ namespace se
 		void SetTransparentMask(const float& r, const float& g, const float& b);
 		void SetTransparentMask(const glm::vec3& color);
 
-		void SetShinines(const float& value);
-		void SetShininesStrength(const float& value);
+		void SetShininess(const float& value);
+		void SetShininessStrength(const float& value);
 
 		const std::string& GetName() const;
+
 		const glm::vec3& GetAmbientColor() const;
+		glm::vec3& GetAmbientColor();
+
 		const glm::vec3& GetDiffuseColor() const;
+		glm::vec3& GetDiffuseColor();
+
 		const glm::vec3& GetSpecularColor() const;
+		glm::vec3& GetSpecularColor();
+
 		const glm::vec3& GetTransparentMask() const;
-		const float& GetShinines() const;
-		const float& GetShininesStrength() const;
+		glm::vec3& GetTransparentMask();
+
+		const float& GetShininess() const;
+		float& GetShininess();
+
+		const float& GetShininessStrength() const;
+		float& GetShininessStrength();
 
 		void Process(const se::Shader* shader) const;
 	private:
@@ -42,8 +54,8 @@ namespace se
 		glm::vec3   m_DiffuseColor;
 		glm::vec3   m_SpecularColor;
 		glm::vec3   m_TransparentMask;
-		float       m_ShininesStrength;
-		float       m_Shinines;
+		float       m_ShininessStrength;
+		float       m_Shininess;
 	};
 }
 

@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "ImGuiLayer.h"
-
+#include "ImGui/imgui_internal.h"
 #include <ImGui/backends/imgui_impl_opengl3.h>
 #include <ImGui/backends/imgui_impl_sdl.h>
 
@@ -207,5 +207,74 @@ namespace se
 		style.Colors[ImGuiCol_Border] = ImVec4(0.539f, 0.479f, 0.255f, 0.162f);
 		style.FrameBorderSize = 0.0f;
 		style.WindowBorderSize = 1.0f;
+	}
+	
+	void ImGuiLayer::DrawVec3(const std::string& label, glm::vec3& values, const float& reset, const float& columnWidth)
+	{
+	
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 5, 0 });
+
+		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+		if (ImGui::Button("X", buttonSize)) { values.x = reset; }
+		
+	
+		ImGui::SameLine();
+		ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+		if (ImGui::Button("Y", buttonSize)){ values.y = reset; }
+			
+	
+		ImGui::SameLine();
+		ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGui::PopItemWidth();
+		ImGui::SameLine();
+		if (ImGui::Button("Z", buttonSize)) { values.z = reset; }
+		
+		ImGui::SameLine();
+		ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGui::PopItemWidth();
+
+		ImGui::PopStyleVar();
+
+		ImGui::Columns(1);
+		ImGui::PopID();
+	}
+	void ImGuiLayer::DrawDragFloat(const std::string& label, float& values, const float& reset, const float& columnWidth)
+	{
+		ImGui::PushID(label.c_str());
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
+		ImGui::DragFloat("##value", &values);
+		ImGui::PopItemWidth();
+		ImGui::Columns(1);
+		ImGui::PopID();
+	}
+	void ImGuiLayer::DrawColor3(const std::string& label, glm::vec3& values, const float& columnWidth)
+	{
+
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
+		ImGui::ColorEdit3("##color", &values[0]);
+		ImGui::PopItemWidth();
+		ImGui::Columns(1);
+		ImGui::PopID();
 	}
 }
