@@ -264,7 +264,7 @@ namespace se
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 		ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
-		ImGui::DragFloat("##value", &values);
+		ImGui::DragFloat("##value", &values, 0.01f,-FLT_MAX, FLT_MAX, "%.4f");
 		ImGui::PopItemWidth();
 		ImGui::Columns(1);
 		ImGui::PopID();

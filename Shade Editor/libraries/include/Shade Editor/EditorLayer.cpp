@@ -324,10 +324,10 @@ void EditorLayer::DrawEnvironmentEntity(const se::Entity& entity)
 				m_SelectedEntity = se::Entity();
 
 				auto pLight = static_cast<se::PointLight*>(environment.get());
-				DrawVec3("Position", pLight->GetPositionRef());
-				DrawColor3("Ambient", pLight->GetAmbientColorRef());
-				DrawColor3("Diffuse", pLight->GetDiffuseColorRef());
-				DrawColor3("Specular", pLight->GetSpecularColorRef());
+				DrawVec3("Position", pLight->GetPosition());
+				DrawColor3("Ambient", pLight->GetAmbientColor());
+				DrawColor3("Diffuse", pLight->GetDiffuseColor());
+				DrawColor3("Specular", pLight->GetSpecularColor());
 
 				glm::mat4 position = glm::translate(pLight->GetPosition());
 

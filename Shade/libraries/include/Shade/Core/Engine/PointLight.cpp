@@ -39,49 +39,69 @@ se::PointLight::~PointLight()
 {
 }
 
-inline void se::PointLight::SetPosition(const float& x, const float& y, const float& z)
+ void se::PointLight::SetPosition(const float& x, const float& y, const float& z)
 {
 	m_Position = glm::vec3(x, y, z);
 }
 
-inline void se::PointLight::SetPosition(const glm::vec3& position)
+ void se::PointLight::SetPosition(const glm::vec3& position)
 {
 	m_Position = position;
 }
 
-inline const glm::vec3& se::PointLight::GetPosition() const
+ const glm::vec3& se::PointLight::GetPosition() const
 {
 	return m_Position;
 }
 
-inline void se::PointLight::SetConstant(const float& constant)
+glm::vec3& se::PointLight::GetPosition()
+{
+	return const_cast<glm::vec3&>(const_cast<const se::PointLight*>(this)->GetPosition());
+}
+
+ void se::PointLight::SetConstant(const float& constant)
 {
 	m_Constant = constant;
 }
 
-inline void se::PointLight::SetLinear(const float& linear)
+ void se::PointLight::SetLinear(const float& linear)
 {
 	m_Linear = linear;
 }
 
-inline void se::PointLight::SetQaudratic(const float& qaudratic)
+ void se::PointLight::SetQaudratic(const float& qaudratic)
 {
 	m_Qaudratic = qaudratic;
 }
 
-inline const float& se::PointLight::GetConstant() const
+ const float& se::PointLight::GetConstant() const
 {
 	return m_Constant;
 }
 
-inline const float& se::PointLight::GetLinear() const
+float& se::PointLight::GetConstant()
+{
+	return const_cast<float&>(const_cast<const se::PointLight*>(this)->GetConstant());
+}
+
+ const float& se::PointLight::GetLinear() const
 {
 	return  m_Linear;
 }
 
-inline const float& se::PointLight::GetQaudratic() const
+float& se::PointLight::GetLinear()
+{
+	return const_cast<float&>(const_cast<const se::PointLight*>(this)->GetLinear());
+}
+
+ const float& se::PointLight::GetQaudratic() const
 {
 	return m_Qaudratic;
+}
+
+float& se::PointLight::GetQaudratic()
+{
+	return const_cast<float&>(const_cast<const se::PointLight*>(this)->GetQaudratic());
 }
 
 void se::PointLight::OnUpdate(const se::Timer& deltaTime)

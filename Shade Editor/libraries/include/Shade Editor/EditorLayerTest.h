@@ -23,7 +23,8 @@ private:
 	void ShowTransform3DComponent(se::Entity& entity, const bool& show);
 	void ShowModel3DComponent(se::Entity& entity, const bool& show);
 	void ShowMeshComponent(se::Entity& entity, const bool& show);
-	void ShowMaterialComponent(se::Entity& entity, const bool& show);
+	void ShowMaterialComponent(se::Entity& entity, se::MeshComponent& mesh, const bool& show);
+	void ShowTextureComponent(se::Entity& entity, const bool& show);
 	void ShowEnvironmentComponent(se::Entity& entity, const bool& show);
 
 	bool ShowImGuizmo(glm::mat4& transform, const bool& show, const float& x, const float& y, const float& w, const float& h);
@@ -36,6 +37,7 @@ private:
 	bool isTransform3DComponentShow = true;
 	bool isModel3DComponentShow = true;
 	bool isMaterialComponentShow = true;
+	bool isTextureComponentShow = true;
 	bool isEnvironmentComponentShow = true;
 	bool isSceneShow = true;
 	bool isFpsShow = true;

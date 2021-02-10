@@ -107,6 +107,7 @@ void MainScene::OnInit()
 		//CreateEntity().AddComponent<se::EnvironmentComponent>(_GeneraLight);
 	    CreateEntity("General light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(_GeneraLight));
 	    CreateEntity("Point light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(_PointLight));
+	    CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(_SpotLight));
 		
 		//CreateEntity().AddComponent<se::EnvironmentComponent>(_SpotLight);
 	}

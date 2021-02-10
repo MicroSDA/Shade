@@ -41,6 +41,8 @@ void EditorLayerTest::OnCreate()
 
 void EditorLayerTest::OnInit()
 {
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.Fonts->AddFontFromFileTTF("./resources/fonts/imgui/Ruda-Black.ttf", 17.0f);
 }
 
 void EditorLayerTest::OnUpdate(const se::Timer& deltaTime)
@@ -141,7 +143,6 @@ void EditorLayerTest::ShowInspector(const bool& show)
 					{
 						ShowTagComponent(m_SelectedEntity, isTagComponentShow);
 						ShowTransform3DComponent(m_SelectedEntity, isTransform3DComponentShow);
-						ShowMaterialComponent(m_SelectedEntity, isMaterialComponentShow);
 						ShowModel3DComponent(m_SelectedEntity, isModel3DComponentShow);
 						ShowEnvironmentComponent(m_SelectedEntity, isEnvironmentComponentShow);
 						ImGui::EndTabItem();
@@ -239,7 +240,18 @@ void EditorLayerTest::ShowScene(const bool& show)
 								break;
 							}
 							case se::Environment::EnvironmentType::SpotLight:
+								auto pLight = static_cast<se::SpotLight*>(environment);
 
+								glm::mat4 translate = glm::translate(pLight->GetPosition());
+								glm::mat4 rotate    = glm::toMat4(glm::quat(pLight->GetDirection()));
+								glm::mat4 transform = translate * rotate;
+								if (this->ShowImGuizmo(transform, true, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+								{
+									glm::vec3 position, rotation, scale;
+									ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
+									pLight->SetPosition(position);
+									pLight->SetDirection(glm::radians(rotation));
+								}
 								break;
 							}
 						}
@@ -289,9 +301,9 @@ void EditorLayerTest::ShowTransform3DComponent(se::Entity& entity, const bool& s
 			{
 				auto& transform = m_SelectedEntity.GetComponent<se::Transform3DComponent>().Transform;
 				{
-					DrawVec3("Position", transform.GetPositionRef(), 0.0f);
-					DrawVec3("Rotation", transform.GetRotationRef(), 0.0f);
-					DrawVec3("Scale", transform.GetScaleRef(), 0.0f, FLT_MAX, 1.0f);
+					DrawVec3("Position", transform.GetPositionRef(), -FLT_MAX, FLT_MAX, 0.0, 100.0f, 400.0f);
+					DrawVec3("Rotation", transform.GetRotationRef(), -FLT_MAX, FLT_MAX, 0.0, 100.0f, 400.0f);
+					DrawVec3("Scale", transform.GetScaleRef(), 0.0f, FLT_MAX, 1.0f, 100.0f, 400.0f);
 				}
 
 				ImGui::TreePop();
@@ -328,11 +340,11 @@ void EditorLayerTest::ShowMeshComponent(se::Entity& entity, const bool& show)
 	{
 		if (entity.HasComponent<se::MeshComponent>())
 		{
-			std::string name = entity.GetComponent<se::MeshComponent>().Mesh->GetAssetData()->_Name;
+			std::string name = "Mesh: " + entity.GetComponent<se::MeshComponent>().Mesh->GetAssetData()->_Name;
 
 			if (ImGui::TreeNode(name.c_str()))
 			{
-				this->ShowMaterialComponent(entity, isMaterialComponentShow);
+				this->ShowMaterialComponent(entity, entity.GetComponent<se::MeshComponent>(), isMaterialComponentShow);
 				ImGui::TreePop();
 			}
 		}
@@ -340,7 +352,7 @@ void EditorLayerTest::ShowMeshComponent(se::Entity& entity, const bool& show)
 	
 }
 
-void EditorLayerTest::ShowMaterialComponent(se::Entity& entity, const bool& show)
+void EditorLayerTest::ShowMaterialComponent(se::Entity& entity, se::MeshComponent& mesh, const bool& show)
 {
 	if (show)
 	{
@@ -350,11 +362,48 @@ void EditorLayerTest::ShowMaterialComponent(se::Entity& entity, const bool& show
 			if (ImGui::TreeNode(std::string("##material" + std::to_string(id)).c_str(), "Material"))
 			{
 				auto& material = entity.GetComponent<se::MaterialComponent>().Material;
-				DrawColor3("Ambient", material.GetAmbientColor(), 150.0f);
-				DrawColor3("Diffuse", material.GetDiffuseColor(), 150.0f);
-				DrawColor3("Specular", material.GetSpecularColor(), 150.0f);
-				DrawDragFloat("Shinness", material.GetShininess(), 0.0, 150.0f);
-				DrawDragFloat("Shinness strength", material.GetShininessStrength(), 0.0, 150.0f);
+				DrawColor3("Ambient", material.GetAmbientColor(), 150.0f, 400.0f);
+				DrawColor3("Diffuse", material.GetDiffuseColor(), 150.0f, 400.0f);
+				DrawColor3("Specular", material.GetSpecularColor(), 150.0f, 400.0f);
+				DrawDragFloat("Shinness", material.GetShininess(), 0.0, 150.0f, 400.0f);
+				DrawDragFloat("Shinness strength", material.GetShininessStrength(), 0.0, 150.0f, 400.0f);
+				mesh.Mesh->GetEntities().each([&](auto entityID)
+					{
+						se::Entity entity{ entityID , mesh.Mesh.get() };
+						ShowTextureComponent(entity, isTextureComponentShow);
+					});
+				ImGui::TreePop();
+			}
+		}
+	}
+}
+
+void EditorLayerTest::ShowTextureComponent(se::Entity& entity, const bool& show)
+{
+	if (show)
+	{
+		if (entity.HasComponent<se::TextureComponent>())
+		{
+			const float width = 100.0f, height = 100.0f;
+			auto texture = entity.GetComponent<se::TextureComponent>().Texture;
+			ImTextureID tid = reinterpret_cast<void*>(texture->GetTextureRenderId());
+			uint32_t id = entity;
+			if (ImGui::TreeNode(std::string("##" + std::to_string(id)).c_str(), "Texture: %s", texture->GetAssetData()->_Name.c_str()))
+			{
+				switch (texture->GetAssetData()->_SubType)
+				{
+				case se::AssetDataSubType::Diffuse:
+					ImGui::Text("Type: Diffuse");
+					break;
+				case se::AssetDataSubType::Specular:
+					ImGui::Text("Type: Specular");
+					break;
+				case se::AssetDataSubType::NormalMap:
+					ImGui::Text("Type: NormalMap");
+					break;
+				}
+				
+				ImGui::Image(tid, ImVec2{ width, height }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 				ImGui::TreePop();
 			}
 		}
@@ -376,25 +425,37 @@ void EditorLayerTest::ShowEnvironmentComponent(se::Entity& entity, const bool& s
 			{
 				m_GuizmoOperation = ImGuizmo::OPERATION::ROTATE;
 				auto pLight = static_cast<se::GeneralLight*>(environment);
-				this->DrawVec3("Direction", pLight->GetDirectionRef(), -1.0f, 1.0f, 0.0f, 100.0f, 450.0f);
-				this->DrawColor3("Ambient", pLight->GetAmbientColorRef(), 100, 400.0f);
-				this->DrawColor3("Diffuse", pLight->GetDiffuseColorRef(), 100, 400.0f);
-				this->DrawColor3("Specular", pLight->GetDiffuseColorRef(), 100, 400.0f);
-
+				this->DrawVec3("Direction", pLight->GetDirection(), -1.0f, 1.0f, 0.0f, 100.0f, 450.0f);
+				this->DrawColor3("Ambient", pLight->GetAmbientColor(), 100, 400.0f);
+				this->DrawColor3("Diffuse", pLight->GetDiffuseColor(), 100, 400.0f);
+				this->DrawColor3("Specular", pLight->GetSpecularColor(), 100, 400.0f);
 				break;
 			}
 			case se::Environment::EnvironmentType::PointLight:
 			{
 				m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 				auto pLight = static_cast<se::PointLight*>(environment);
-				this->DrawVec3("Position", pLight->GetPositionRef(), -1.0f, 1.0f, 0.0f, 100.0f, 450.0f);
-				this->DrawColor3("Ambient", pLight->GetAmbientColorRef(), 100, 400.0f);
-				this->DrawColor3("Diffuse", pLight->GetDiffuseColorRef(), 100, 400.0f);
-				this->DrawColor3("Specular", pLight->GetDiffuseColorRef(), 100, 400.0f);
-				break;
+				this->DrawVec3("Position", pLight->GetPosition(), -FLT_MAX, FLT_MAX, 0.0f, 100.0f, 450.0f);
+				this->DrawColor3("Ambient", pLight->GetAmbientColor(), 100.0f, 400.0f);
+				this->DrawColor3("Diffuse", pLight->GetDiffuseColor(), 100.0f, 400.0f);
+				this->DrawColor3("Specular", pLight->GetSpecularColor(), 100.0f, 400.0f);
+				this->DrawDragFloat("Constant", pLight->GetConstant(), 1.0f, 100.0f, 400.0f);
+				this->DrawDragFloat("Linear", pLight->GetLinear(), 0.7f, 100.0f, 400.0f);
+				this->DrawDragFloat("Qaudratic", pLight->GetQaudratic(), 1.8f, 100.0f, 400.0f);
+				break; 
 			}
 			case se::Environment::EnvironmentType::SpotLight:
 				auto pLight = static_cast<se::SpotLight*>(environment);
+				this->DrawVec3("Position", pLight->GetPosition(), -FLT_MAX, FLT_MAX, 0.0f, 100.0f, 450.0f);
+				this->DrawVec3("Dirrection", pLight->GetDirection(), -1.0, 1.0, 0.0f, 100.0f, 450.0f);
+				this->DrawColor3("Ambient", pLight->GetAmbientColor(), 100.0f, 400.0f);
+				this->DrawColor3("Diffuse", pLight->GetDiffuseColor(), 100.0f, 400.0f);
+				this->DrawColor3("Specular", pLight->GetSpecularColor(), 100.0f, 400.0f);
+				this->DrawDragFloat("Min angle", pLight->GetMinAngle(), 0.5f, 100.0f, 400.0f);
+				this->DrawDragFloat("Max angle", pLight->GetMaxAngle(), 0.7f, 100.0f, 400.0f);
+				this->DrawDragFloat("Constant", pLight->GetConstant(), 1.0f, 100.0f, 400.0f);
+				this->DrawDragFloat("Linear", pLight->GetLinear(), 0.7f, 100.0f, 400.0f);
+				this->DrawDragFloat("Qaudratic", pLight->GetQaudratic(), 1.8f, 100.0f, 400.0f);
 				break;
 			}
 		}

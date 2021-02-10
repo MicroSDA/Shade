@@ -57,6 +57,11 @@ se::SpotLight::~SpotLight()
 	return m_Position;
 }
 
+ glm::vec3& se::SpotLight::GetPosition()
+ {
+	 return const_cast<glm::vec3&>(const_cast<const se::SpotLight*>(this)->GetPosition());
+ }
+
  void se::SpotLight::SetDirection(const float& x, const float& y, const float& z)
 {
 	m_Direction = glm::vec3(x, y, z);
@@ -82,15 +87,30 @@ se::SpotLight::~SpotLight()
 	return m_MinAngle;
 }
 
+ float& se::SpotLight::GetMinAngle()
+ {
+	 return const_cast<float&>(const_cast<const se::SpotLight*>(this)->GetMinAngle());
+ }
+
  const float& se::SpotLight::GetMaxAngle() const
-{
-	return m_MaxAngle;
-}
+ {
+	 return m_MaxAngle;
+ }
+
+ float& se::SpotLight::GetMaxAngle()
+ {
+	 return const_cast<float&>(const_cast<const se::SpotLight*>(this)->GetMaxAngle());
+ }
 
  const glm::fvec3& se::SpotLight::GetDirection() const
 {
 	return m_Direction;
 }
+
+ glm::fvec3& se::SpotLight::GetDirection()
+ {
+	 return const_cast<glm::fvec3&>(const_cast<const se::SpotLight*>(this)->GetDirection());
+ }
 
  void se::SpotLight::SetConstant(const float& constant)
  {
@@ -112,14 +132,29 @@ se::SpotLight::~SpotLight()
 	 return m_Constant;
  }
 
+ float& se::SpotLight::GetConstant()
+ {
+	 return const_cast<float&>(const_cast<const se::SpotLight*>(this)->GetConstant());
+ }
+
  const float& se::SpotLight::GetLinear() const
  {
 	 return m_Linear;
  }
 
+ float& se::SpotLight::GetLinear()
+ {
+	 return const_cast<float&>(const_cast<const se::SpotLight*>(this)->GetLinear());
+ }
+
  const float& se::SpotLight::GetQaudratic() const
  {
 	 return m_Qaudratic;
+ }
+
+ float& se::SpotLight::GetQaudratic()
+ {
+	 return const_cast<float&>(const_cast<const se::SpotLight*>(this)->GetQaudratic());
  }
 
 void se::SpotLight::OnUpdate(const se::Timer& deltaTime)

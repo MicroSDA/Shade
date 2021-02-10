@@ -10,19 +10,24 @@ se::GeneralLight::~GeneralLight()
 {
 }
 
-inline void se::GeneralLight::SetDirection(const float& x, const float& y, const float& z)
+void se::GeneralLight::SetDirection(const float& x, const float& y, const float& z)
 {
 	m_Direction = glm::vec3(x, y, z);
 }
 
-inline void se::GeneralLight::SetDirection(const glm::fvec3& direction)
+void se::GeneralLight::SetDirection(const glm::fvec3& direction)
 {
 	m_Direction = direction;
 }
 
-inline const glm::fvec3& se::GeneralLight::GetDirection() const
+const glm::fvec3& se::GeneralLight::GetDirection() const
 {
 	return m_Direction;
+}
+
+glm::fvec3& se::GeneralLight::GetDirection()
+{
+	return const_cast<glm::fvec3&>(const_cast<const se::GeneralLight*>(this)->GetDirection());
 }
 
 void se::GeneralLight::OnUpdate(const se::Timer& deltaTime)
