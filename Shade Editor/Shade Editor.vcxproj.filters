@@ -20,6 +20,9 @@
     <ClInclude Include="libraries\include\Shade Editor\EditorLayerTest.h">
       <Filter>Layers</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade Editor\Editor.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade Editor\MainLayer.cpp">
@@ -40,6 +43,9 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade Editor\EditorLayerTest.cpp">
       <Filter>Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade Editor\Editor.cpp">
+      <Filter>Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +75,9 @@
     </Filter>
     <Filter Include="Shaders\Text">
       <UniqueIdentifier>{2cd2bba2-04d3-4bba-ae89-b93de36fda64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{a86b98c1-0516-47b5-8f01-d5a64e084e02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

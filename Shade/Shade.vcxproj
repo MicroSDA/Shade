@@ -65,6 +65,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Main.h" />
     <ClInclude Include="libraries\include\Shade\Core\Types.h" />
     <ClInclude Include="libraries\include\Shade\Core\Util\Binarizer.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Util\FileDialog.h" />
     <ClInclude Include="libraries\include\Shade\Core\Util\Log.h" />
     <ClInclude Include="libraries\include\Shade\Core\Util\Macros.h" />
     <ClInclude Include="libraries\include\Shade\Core\Util\ShadeException.h" />
@@ -119,6 +120,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Vertex2D.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\VertexBuffer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Util\FileDialog.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Util\ShadeException.cpp" />
     <ClCompile Include="libraries\include\stdafx.cpp">

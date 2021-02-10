@@ -4,6 +4,8 @@
 
 #include "stdafx.h"
 #include "EditorLayerTest.h"
+#include "Shade/Core/Util/FileDialog.h"
+#include "Editor.h"
 
 EditorLayerTest::EditorLayerTest(const std::string& name, se::Scene* scene) : se::ImGuiLayer(name, scene)
 {
@@ -85,9 +87,19 @@ void EditorLayerTest::ShowMainMenu(const bool& show)
 			{
 				if (ImGui::MenuItem("New")) {}
 
-				if (ImGui::MenuItem("Open")) {}
+				if (ImGui::MenuItem("Open")) 
+				{ 
+					std::cout << se::FileDialog::OpenFile("") << std::endl;
+				}
 
 				if (ImGui::MenuItem("Save")) {}
+
+				if (ImGui::MenuItem("Import"))
+				{
+					std::string path = se::FileDialog::OpenFile("Model3D\0");
+					if(!path.empty())
+						Editor::Import(Editor::ImportType::Model3D, path);
+				}
 
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit"))  se::Application::GetApplication().Quit();
@@ -260,7 +272,6 @@ void EditorLayerTest::ShowScene(const bool& show)
 
 				}
 			}
-
 
 			ShowFpsOverlay(ImGui::GetWindowViewport(), isFpsShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 			ImGui::End(); // ImGui::Begin("Scene")

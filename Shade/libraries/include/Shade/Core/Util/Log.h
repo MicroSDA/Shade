@@ -29,7 +29,7 @@ namespace se
 		void _Print(const char* message, const se::SLCode& code);
 		const char* CurrentDateTime();
 
-		HANDLE m_hConsole;
+		void* m_hConsole;
 	};
 }
 
