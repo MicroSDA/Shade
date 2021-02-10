@@ -26,7 +26,7 @@
 
 	7,    1.0,     0.7,    1.8
 */
-se::PointLight::PointLight() : se::Light(),
+se::PointLight::PointLight() : se::Light(se::Environment::EnvironmentType::PointLight),
 	m_Position(0.0f, 0.0f, 0.0f),
 	m_Constant(1.0f),
 	m_Linear(0.7f),

@@ -209,13 +209,17 @@ namespace se
 		style.WindowBorderSize = 1.0f;
 	}
 	
-	void ImGuiLayer::DrawVec3(const std::string& label, glm::vec3& values, const float& reset, const float& columnWidth)
+	void ImGuiLayer::DrawVec3(const std::string& label, glm::vec3& values, const float& min, const float& max, const float& reset, const float& cw1, const float& cw2)
 	{
 	
 		ImGui::PushID(label.c_str());
 
 		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::SetColumnWidth(0, cw1);
+	
+		if(cw2 > 0.0f)
+			ImGui::SetColumnWidth(1, cw2);
+
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 
@@ -228,20 +232,20 @@ namespace se
 		
 	
 		ImGui::SameLine();
-		ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGui::DragFloat("##X", &values.x, 0.01f, min, max, "%.2f");
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 		if (ImGui::Button("Y", buttonSize)){ values.y = reset; }
 			
 	
 		ImGui::SameLine();
-		ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGui::DragFloat("##Y", &values.y, 0.01f, min, max, "%.2f");
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 		if (ImGui::Button("Z", buttonSize)) { values.z = reset; }
 		
 		ImGui::SameLine();
-		ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
+		ImGui::DragFloat("##Z", &values.z, 0.01f, min, max, "%.2f");
 		ImGui::PopItemWidth();
 
 		ImGui::PopStyleVar();
@@ -249,11 +253,14 @@ namespace se
 		ImGui::Columns(1);
 		ImGui::PopID();
 	}
-	void ImGuiLayer::DrawDragFloat(const std::string& label, float& values, const float& reset, const float& columnWidth)
+	void ImGuiLayer::DrawDragFloat(const std::string& label, float& values, const float& reset, const float& cw1, const float& cw2 )
 	{
 		ImGui::PushID(label.c_str());
 		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::SetColumnWidth(0, cw1);
+		if(cw2 > 0.0f)
+			ImGui::SetColumnWidth(1, cw2);
+
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 		ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
@@ -262,13 +269,15 @@ namespace se
 		ImGui::Columns(1);
 		ImGui::PopID();
 	}
-	void ImGuiLayer::DrawColor3(const std::string& label, glm::vec3& values, const float& columnWidth)
+	void ImGuiLayer::DrawColor3(const std::string& label, glm::vec3& values, const float& cw1, const float& cw2)
 	{
 
 		ImGui::PushID(label.c_str());
-
 		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
+		ImGui::SetColumnWidth(0, cw1);
+		if (cw2 > 0.0f)
+			ImGui::SetColumnWidth(1, cw2);
+
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 		ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());

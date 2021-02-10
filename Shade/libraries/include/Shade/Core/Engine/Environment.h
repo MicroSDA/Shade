@@ -8,7 +8,15 @@ namespace se
 	class SE_API Environment
 	{
 	public:
-		Environment();
+		const enum class EnvironmentType
+		{
+			Environment,
+			GeneralLight,
+			PointLight,
+			SpotLight
+
+		} Type;
+		Environment(const EnvironmentType& type);
 		virtual ~Environment();
 		virtual void OnUpdate(const se::Timer& deltaTime) = 0;
 		virtual void Process(const se::Shader* shader) = 0;

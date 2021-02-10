@@ -2,7 +2,7 @@
 #include "Environment.h"
 #include "Shade/Core/Util/Log.h"
 
-se::Environment::Environment()
+se::Environment::Environment(const EnvironmentType& type) : Type(type)
 {
 }
 

@@ -7,7 +7,7 @@ namespace se
 	class SE_API Light : public se::Environment
 	{
 	public:
-		Light();
+		Light(const se::Environment::EnvironmentType& type);
 		virtual ~Light();
 		inline void SetAmbientColor(const  float& r, const float& g, const float& b) { m_AmbientColor = glm::vec3(r, g, b); }
 		inline void SetDiffuseColor(const  float& r, const float& g, const float& b) { m_DiffuseColor = glm::vec3(r, g, b); }

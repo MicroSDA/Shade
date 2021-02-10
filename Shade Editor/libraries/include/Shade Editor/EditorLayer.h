@@ -16,13 +16,14 @@ private:
 	void ShowMainScene();
 	void ShowEntities();
 	void ShowEntitiesInspector();
-	void ShowGuizmo();
+	bool ShowGuizmo(glm::mat4& transform, const float& x, const float& y, const float& width, const float& height);
 	void ShowAssetDataList();
 	void ShowMenu();
 	void ShowLightningSource();
 	void ShowFpsOverlay(ImGuiViewport* viewport, const float& x, const float& y);
 
 	void DrawEntity(const se::Entity& entity);
+	void DrawEnvironmentEntity(const se::Entity& entity);
 	
 	se::Entity m_SelectedEntity;
 	uint32_t m_SelectedEntityID = 0;

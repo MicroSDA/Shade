@@ -159,11 +159,45 @@ namespace se
 		// Default copy
 		EnvironmentComponent(const EnvironmentComponent&) = default;
 		EnvironmentComponent& operator=(const EnvironmentComponent&) = default;
-		EnvironmentComponent(se::Environment* other)
-			:Environment(other) {}
 		EnvironmentComponent(const se::ShadeShared<se::Environment>& other)
 			:Environment(other)	{}
 
+	};
+	struct GeneralLightComponent : ComponentBase
+	{
+		se::ShadeShared<se::GeneralLight> Light;
+		GeneralLightComponent() = default; 
+		// Default copy
+		GeneralLightComponent(const GeneralLightComponent&) = default;
+		GeneralLightComponent& operator=(const GeneralLightComponent&) = default;
+		GeneralLightComponent(se::GeneralLight* other)
+			:Light(other) {}
+		GeneralLightComponent(const se::ShadeShared<se::GeneralLight>&other)
+			:Light(other) {}
+	};
+	struct PointLightComponent : ComponentBase
+	{
+		se::ShadeShared<se::PointLight> Light;
+		PointLightComponent() = default;
+		// Default copy
+		PointLightComponent(const PointLightComponent&) = default;
+		PointLightComponent& operator=(const PointLightComponent&) = default;
+		PointLightComponent(se::PointLight* other)
+			:Light(other) {}
+		PointLightComponent(const se::ShadeShared<se::PointLight>& other)
+			:Light(other) {}
+	};
+	struct SpotLightComponent : ComponentBase
+	{
+		se::ShadeShared<se::SpotLight> Light;
+		SpotLightComponent() = default;
+		// Default copy
+		SpotLightComponent(const SpotLightComponent&) = default;
+		SpotLightComponent& operator=(const SpotLightComponent&) = default;
+		SpotLightComponent(se::SpotLight* other)
+			:Light(other) {}
+		SpotLightComponent(const se::ShadeShared<se::SpotLight>& other)
+			:Light(other) {}
 	};
 	// Base lighting material, usually being used by se::Mesh as entity
 	struct MaterialComponent : ComponentBase

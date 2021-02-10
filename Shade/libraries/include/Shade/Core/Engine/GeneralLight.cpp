@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GeneralLight.h"
 
-se::GeneralLight::GeneralLight() : se::Light(),
+se::GeneralLight::GeneralLight() : se::Light(se::Environment::EnvironmentType::GeneralLight),
 	m_Direction(0.0f, 0.0f, 1.0f)
 {
 }
@@ -31,7 +31,7 @@ void se::GeneralLight::OnUpdate(const se::Timer& deltaTime)
 
 void se::GeneralLight::Process(const se::Shader* shader)
 {
-	shader->SendUniform3Float("generalL.Direction",        m_Direction);
+	shader->SendUniform3Float("generalL.Direction",        glm::normalize(m_Direction));
 	shader->SendUniform3Float("generalL.ColorAmbient",     m_AmbientColor);
 	shader->SendUniform3Float("generalL.ColorDiffuse",     m_DiffuseColor);
 	shader->SendUniform3Float("generalL.ColorSpecular",    m_SpecularColor);

@@ -105,7 +105,9 @@ void MainScene::OnInit()
 	
 		
 		//CreateEntity().AddComponent<se::EnvironmentComponent>(_GeneraLight);
-		CreateEntity().AddComponent<se::EnvironmentComponent>(_PointLight);
+	    CreateEntity("General light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(_GeneraLight));
+	    CreateEntity("Point light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(_PointLight));
+		
 		//CreateEntity().AddComponent<se::EnvironmentComponent>(_SpotLight);
 	}
 
@@ -118,7 +120,7 @@ void MainScene::OnInit()
 
 	CreateLayer<MainLayer>("Main");
 	InitLayer("Main");
-	CreateLayer<EditorLayer>("Editor");
+	CreateLayer<EditorLayerTest>("Editor");
 	InitLayer("Editor");
 
 	
