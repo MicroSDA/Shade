@@ -17,6 +17,12 @@ namespace se
 		{ }
 		~Entity();
 
+		bool IsValid()
+		{
+			if (m_pDocker != nullptr)
+				return m_pDocker->GetEntities().valid(m_EntityHandle);
+			else return false;
+		}
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args)
 		{

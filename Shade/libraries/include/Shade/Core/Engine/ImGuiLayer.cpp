@@ -78,9 +78,6 @@ namespace se
 				return false;
 			});
 
-		se::Entity _VeiwPort = GetScene()->CreateEntity("MainSceneDocViewPort");
-		_VeiwPort.AddComponent<glm::fvec2>();
-
 		SetupImGuiStyle(true, true);
 	}
 

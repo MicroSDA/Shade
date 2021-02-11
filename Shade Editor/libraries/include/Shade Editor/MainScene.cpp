@@ -14,125 +14,51 @@ MainScene::~MainScene()
 
 void MainScene::OnCreate()
 {
+
+	CreateLayer<MainLayer>("Main");	    InitLayer("Main");
+	CreateLayer<EditorLayer>("Editor"); InitLayer("Editor");
+	
+
 	se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
+	//Camera
+	se::Entity   mainCamera = this->CreateEntity("Camera");
+	mainCamera.AddComponent<se::CameraComponent>(new se::Camera()).Camera->SetPosition(0, 5, -5);
+	mainCamera.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
+	SetActiveCamera(mainCamera.GetComponent<se::CameraComponent>().Camera);
+	//Lights
+
+	CreateEntity("General light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::GeneralLight()));
+	//CreateEntity("Point light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::PointLight()));
+	//CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::SpotLight()));
 }
 
 void MainScene::OnInit()
 {
-	
-	se::ShadeShared<se::Camera> _MainCamera(new se::Camera());
-	_MainCamera->SetPosition(0, 3, -5);
-	SetActiveCamera(_MainCamera);
-
-	se::Entity   _CameraEntity = CreateEntity("Camera");
-	_CameraEntity.AddComponent<se::CameraComponent>(_MainCamera);
-	_CameraEntity.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
-	
-	
-	se::Entity _GridEntity = this->CreateEntity("Grid");
-	_GridEntity.AddComponent<se::Transform3DComponent>();
-	_GridEntity.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 500)));
+	se::Entity grid = this->CreateEntity("Grid"); // TODO move to Aplication entt
+	grid.AddComponent<se::Transform3DComponent>();
+	grid.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 500)));
 
 
-	
-
-	/*{// Assets
-		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Models.Floor", false);
-		auto _Cube	     = se::AssetManager::Hold<se::Model3D>("Models.Cube" , false);
-		auto _Samurai	 = se::AssetManager::Hold<se::Model3D>("Models.SamuraiHelmet", false);
-		auto _Skull	     = se::AssetManager::Hold<se::Model3D>("Models.Skull", false);
-
-		se::Entity _FloorEntity = CreateEntity("Floor");
-		_FloorEntity.AddComponent<se::Transform3DComponent>();
-		_FloorEntity.AddComponent<se::Model3DComponent>(_Floor);
-
-		se::Entity _CubeEntity = CreateEntity("Cube");
-		_CubeEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(glm::vec3(5, 1, 2));
-		_CubeEntity.AddComponent<se::Model3DComponent>(_Cube);
-
-		se::Entity _SamuraiEntity = CreateEntity("Samurai");
-		_SamuraiEntity.AddComponent<se::Transform3DComponent>();
-		_SamuraiEntity.AddComponent<se::Model3DComponent>(_Samurai);
-
-		{
-			se::Entity _SkullEntity = CreateEntity("Skull");
-			se::Transform3D _Transform;
-			_Transform.SetRotation(glm::vec3(0.0f, 180.0f, 0.0f));
-			_Transform.SetPostition(glm::vec3(0.0f, 2, 2));
-			_SkullEntity.AddComponent<se::Transform3DComponent>(_Transform);
-			_SkullEntity.AddComponent<se::Model3DComponent>(_Skull);
-			_SkullEntity.AddComponent<se::NativeScriptComponent>().Bind<se::Mode3DController>();
-
-			auto meshes = _SkullEntity.GetComponent<se::Model3DComponent>().Model3D->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
-			for (auto& mesh : meshes)
-			{
-				meshes.get<se::MaterialComponent>(mesh).Material.SetShininess(3);
-				meshes.get<se::MaterialComponent>(mesh).Material.SetShininessStrength(1);	
-				meshes.get<se::MaterialComponent>(mesh).Material.SetDiffuseColor(1.5, 1.5, 1.5);
-			}
-
-		}
-
-		/*{   // Just for Fun )
-			auto _POEInterfaceSprite = se::AssetManager::Hold<se::Sprite>("Sprites.PoeImage");
-			se::Entity _SpriteEntity = CreateEntity();
-
-			se::Transform2D _Transform;
-			_Transform.SetScale(1.0f, 0.20f);
-			_Transform.SetPostition(0.0f, - 0.8f);
-			_SpriteEntity.AddComponent<se::Transform2DComponent>(_Transform);
-			_SpriteEntity.AddComponent<se::SpriteComponent>(_POEInterfaceSprite);
-		}
-	}*/
-	{// Light
-		se::GeneralLight* _GeneraLight = new se::GeneralLight();
-		_GeneraLight->SetDirection(0.0198322f, -0.675238f, 0.737333f);
-		_GeneraLight->SetAmbientColor(0.1f, 0.1f, 0.1f);
-		_GeneraLight->SetDiffuseColor(0.8f, 0.8f, 0.7f);
-		_GeneraLight->SetSpecularColor(0.8f, 0.8f, 0.7f);
-
-		se::PointLight* _PointLight = new se::PointLight();
-		_PointLight->SetPosition(0.0f, 3.0f, 0.0f);
-		_PointLight->SetDiffuseColor(1.0f, 1.0f, 0.917f);
-		_PointLight->SetSpecularColor(1.0f, 1.0f, 0.917f);
-		_PointLight->SetLinear(0.07f);
-		_PointLight->SetQaudratic(0.017f);
-
-		se::SpotLight* _SpotLight = new se::SpotLight();
-		_SpotLight->SetPosition(0.0f, 3.0f, 0.0f);
-		_SpotLight->SetDiffuseColor(1.0f, 1.0f, 0.917f);
-		_SpotLight->SetSpecularColor(1.0f, 1.0f, 0.917f);
-		_SpotLight->SetLinear(0.07f);
-		_SpotLight->SetQaudratic(0.017f);
-
-	
-		
-		//CreateEntity().AddComponent<se::EnvironmentComponent>(_GeneraLight);
-	    CreateEntity("General light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(_GeneraLight));
-	    CreateEntity("Point light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(_PointLight));
-	    CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(_SpotLight));
-		
-		//CreateEntity().AddComponent<se::EnvironmentComponent>(_SpotLight);
-	}
-
-	//se::Serializer::SerializeScene("./scene.shade", *this);
-	
-	/*se::Entity _TextEntity = CreateEntity();
-	auto text = _TextEntity.AddComponent<se::DrawableTextComponent>(se::ShadeShared<se::Text>(new se::Text())).Text;
-	se::AssetData s;
-	text->SetFont(se::AssetManager::Hold<se::Font>("FontFile"));
-	text->SetText("Shade Engine");*/
-
-	CreateLayer<MainLayer>("Main");
-	InitLayer("Main");
-	CreateLayer<EditorLayer>("Editor");
-	InitLayer("Editor");
+	// Assets
+	/*auto floor = se::AssetManager::Hold<se::Model3D>("Models.Floor", false);
+	auto cube = se::AssetManager::Hold<se::Model3D>("Models.Cube", false);
+	auto skull = se::AssetManager::Hold<se::Model3D>("Models.Skull", false);
+	// Entities
+	se::Entity floorEntity = CreateEntity("Floor");
+	floorEntity.AddComponent<se::Model3DComponent>(floor);
+	floorEntity.AddComponent<se::Transform3DComponent>();
+	se::Entity cubeEntity = CreateEntity("Cube");
+	cubeEntity.AddComponent<se::Model3DComponent>(cube);
+	cubeEntity.AddComponent<se::Transform3DComponent>();
+	se::Entity skullEntity = CreateEntity("Skull");
+	skullEntity.AddComponent<se::Model3DComponent>(skull);
+	skullEntity.AddComponent<se::Transform3DComponent>();*/
 }
-	
+
 void MainScene::OnUpdate(const se::Timer& deltaTime)
 {
 	// TODO Change calculatin model matrix, get new matrix every set pos, scale or rotate; and add z rotation to 2dmatrix
-	
+
 	if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_Q))
 	{
 		se::Renderer::PolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -142,7 +68,7 @@ void MainScene::OnUpdate(const se::Timer& deltaTime)
 		se::Renderer::PolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	
+
 }
 
 void MainScene::OnRender()
@@ -152,5 +78,5 @@ void MainScene::OnRender()
 
 void MainScene::OnDelete()
 {
-	
+
 }

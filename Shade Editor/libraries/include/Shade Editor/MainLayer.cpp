@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "MainLayer.h"
+#include "MainScene.h"
 
 
 MainLayer::MainLayer(const std::string& name, se::Scene* scene) : se::Layer(name, scene)
@@ -8,6 +9,7 @@ MainLayer::MainLayer(const std::string& name, se::Scene* scene) : se::Layer(name
 
 MainLayer::~MainLayer()
 {
+
 }
 
 void MainLayer::OnCreate()
@@ -17,21 +19,23 @@ void MainLayer::OnCreate()
 		
 			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
 			{
-				auto _ViewPortSize = GetScene()->GetEntities().view<glm::fvec2, se::TagComponent>();
 				
-				for (auto& _ViewPort : _ViewPortSize)
+				auto entites = se::Application::GetApplication().GetEntities().view<glm::vec2, se::TagComponent>();
+				
+				for (auto& viewPort : entites)
 				{
-					if (_ViewPortSize.get<se::TagComponent>(_ViewPort).Tag == "MainSceneDocViewPort")
+					if (entites.get<se::TagComponent>(viewPort).Tag == "SceneViewPort")
 					{
-						auto _MainCamera = se::Application::GetApplication().GetCurrentScene()->GetActiveCamera();
-						if (_MainCamera != nullptr)
-							_MainCamera->Resize(_ViewPortSize.get<glm::vec2>(_ViewPort).x / _ViewPortSize.get<glm::vec2>(_ViewPort).y);
+						auto size = entites.get<glm::vec2>(viewPort);
 
-						auto _FrameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
+						auto activeCamera = se::Application::GetApplication().GetCurrentScene()->GetActiveCamera();
+						if (activeCamera != nullptr)
+							activeCamera->Resize(size.x / size.y);
 
-						if (_FrameBuffer)
-							_FrameBuffer->Resize(_ViewPortSize.get<glm::vec2>(_ViewPort).x, _ViewPortSize.get<glm::vec2>(_ViewPort).y);
-							
+						auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
+
+						if (frameBuffer)
+							frameBuffer->Resize(size.x, size.y);
 					}
 				}
 			}

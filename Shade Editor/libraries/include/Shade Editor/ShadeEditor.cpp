@@ -132,6 +132,8 @@ void ShadeEditor::OnInit()
 	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
 	se::WindowManager::Create(se::Window());
 
+	this->CreateEntity("SceneViewPort").AddComponent<glm::vec2>();
+
 	CreateScene<MainScene>("MainScene");
 
 	for (auto const& [name, scene] : GetScenes())

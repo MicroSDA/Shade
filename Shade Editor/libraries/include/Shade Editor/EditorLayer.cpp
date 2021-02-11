@@ -54,6 +54,7 @@ void EditorLayer::OnUpdate(const se::Timer& deltaTime)
 void EditorLayer::OnRender()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+
 	if (ImGui::Begin("DockSpace", (bool*)(nullptr), m_WindowFlags))
 	{
 		ImGui::PopStyleVar();
@@ -87,7 +88,11 @@ void EditorLayer::ShowMainMenu(const bool& show)
 			{
 				if (ImGui::MenuItem("New")) {}
 
-				if (ImGui::MenuItem("Open")) { se::Serializer::DeserializeScene("./scene.shade", *this->GetScene()); }
+				if (ImGui::MenuItem("Open")) 
+				{
+					this->GetScene()->DestroyEntities();
+					se::Serializer::DeserializeScene("./scene.shade", *this->GetScene());
+				}
 				
 				if (ImGui::MenuItem("Save")) { se::Serializer::SerializeScene("./scene.shade", *this->GetScene()); }
 
@@ -142,7 +147,7 @@ void EditorLayer::ShowInspector(const bool& show)
 	{
 		ImGui::Begin("Inspector");
 		{
-			if (m_SelectedEntity)
+			if (m_SelectedEntity.IsValid())
 			{
 				if (ImGui::BeginTabBar("InspectorTabs", ImGuiTabBarFlags_None))
 				{
@@ -173,13 +178,15 @@ void EditorLayer::ShowScene(const bool& show)
 			auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
 			if (frameBuffer != nullptr)
 			{
-				auto viewPortEntitis = GetScene()->GetEntities().view<glm::fvec2, se::TagComponent>();
+				
+				auto viewPortEntitis = se::Application::GetApplication().GetEntities().view<glm::vec2, se::TagComponent>();
 
 				for (auto& viewPort : viewPortEntitis)
 				{
-					if (viewPortEntitis.get<se::TagComponent>(viewPort).Tag == "MainSceneDocViewPort")
+					if (viewPortEntitis.get<se::TagComponent>(viewPort).Tag == "SceneViewPort")
 					{
-						auto& viewPortSize = viewPortEntitis.get<glm::fvec2>(viewPort);
+						auto& viewPortSize = viewPortEntitis.get<glm::vec2>(viewPort);
+
 						if (viewPortSize.x != ImGui::GetContentRegionAvail().x
 							|| viewPortSize.y != ImGui::GetContentRegionAvail().y)
 						{
@@ -198,7 +205,8 @@ void EditorLayer::ShowScene(const bool& show)
 					ImTextureID tid = reinterpret_cast<void*>(frameBuffer->GetTextureAttachment());
 					ImGui::Image(tid, ImVec2{ ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
-					if (m_SelectedEntity)
+				
+					if (m_SelectedEntity.IsValid())
 					{
 						if (m_SelectedEntity.HasComponent<se::Transform3DComponent>())
 						{

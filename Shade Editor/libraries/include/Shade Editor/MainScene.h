@@ -22,7 +22,6 @@ public:
 
 	virtual void OnDelete() override;
 
-	
 private:
 	
 };

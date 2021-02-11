@@ -51,6 +51,11 @@ namespace se
 			:Camera(other)
 		{
 		}
+		CameraComponent(se::Camera* camera)
+			:Camera(se::ShadeShared<se::Camera>(camera))
+		{
+		}
+
 	};
 	
 	struct Model3DComponent : ComponentBase
@@ -60,6 +65,8 @@ namespace se
 		~Model3DComponent() = default;
 		Model3DComponent(const se::AssetPointer<se::Model3D>& other)
 			: Model3D(other) {};
+		Model3DComponent(se::Model3D* other)
+			: Model3D(se::AssetPointer<se::Model3D>(other)) {};
 		Model3DComponent(const Model3DComponent&) = default;
 	};
 

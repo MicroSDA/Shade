@@ -21,6 +21,11 @@ void se::EntitiesDocker::DestroyEntity(const Entity& entity)
    m_Registry.destroy(entity);
 }
 
+void se::EntitiesDocker::DestroyEntities()
+{
+    m_Registry.clear();
+}
+
 entt::registry& se::EntitiesDocker::GetEntities()
 {
     return m_Registry;

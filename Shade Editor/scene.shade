@@ -1,38 +1,29 @@
 Scene: MainScene
 Entities:
-  - Entity: 9
-    TagComponent:
-      Tag: Floor
-    Model3DComponent:
-      Asset: Models.Floor
-    Transform3DComponent:
-      Position: [1, 1, 1]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-  - Entity: 8
-    TagComponent:
-      Tag: Cube
-    Model3DComponent:
-      Asset: Models.Cube
-    Transform3DComponent:
-      Position: [9.05305004, 2.02934241, 8.29626751]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
   - Entity: 7
-    TagComponent:
-      Tag: Samurai
-    Model3DComponent:
-      Asset: Models.SamuraiHelmet
-    Transform3DComponent:
-      Position: [-7.12048578, 2.99042916, 1]
-      Rotation: [-3.14159083, -0.12053211, -3.14159083]
-      Scale: [1.00000119, 1, 1.00000119]
-  - Entity: 6
     TagComponent:
       Tag: Skull
     Model3DComponent:
       Asset: Models.Skull
     Transform3DComponent:
-      Position: [1, 2.24798894, 1]
-      Rotation: [-3.14159083, 0.0162156243, -3.14159083]
-      Scale: [1.00000536, 1, 1.00000536]
+      Position: [-7.74596548, 2.26496243, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 6
+    TagComponent:
+      Tag: Cube
+    Model3DComponent:
+      Asset: Models.Cube
+    Transform3DComponent:
+      Position: [5.72057295, 0.973017216, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 5
+    TagComponent:
+      Tag: Floor
+    Model3DComponent:
+      Asset: Models.Floor
+    Transform3DComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
