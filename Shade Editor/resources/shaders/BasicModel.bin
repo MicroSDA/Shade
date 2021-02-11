@@ -34,9 +34,9 @@ mat3 CalculateTBNMatrix(mat4 ModelMatrix, vec3 Normals, vec3 Tangents)
 	void main()
 	{
 		gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix *  vec4(Position, 1.0f);
-	    out_TBN =  CalculateTBNMatrix(ModelMatrix, Normals, Tangents);
 		out_TextureCoords = TextureCoords;
 		out_Normals  = (ModelMatrix * vec4(Normals, 0.0)).xyz;
+		out_TBN =  CalculateTBNMatrix(ModelMatrix, Normals, Tangents);
 		out_ModelPosition = (ModelMatrix * vec4(Position, 1.0f)).xyz;
         out_CameraPosition  = CameraPosition;
 	}

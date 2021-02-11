@@ -116,7 +116,7 @@ void EditorLayerTest::ShowEntitiesList(const bool& show)
 {
 	if (show)
 	{
-		if (ImGui::Begin("Entities"))
+		ImGui::Begin("Entities");
 		{
 			GetScene()->GetEntities().each([&](auto entityID)
 				{
@@ -124,9 +124,8 @@ void EditorLayerTest::ShowEntitiesList(const bool& show)
 					ProcessEntities(entity);
 
 				});
-
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 }
 
@@ -145,7 +144,7 @@ void EditorLayerTest::ShowInspector(const bool& show)
 {
 	if (show)
 	{
-		if (ImGui::Begin("Inspector"))
+		ImGui::Begin("Inspector");
 		{
 			if (m_SelectedEntity)
 			{
@@ -157,13 +156,15 @@ void EditorLayerTest::ShowInspector(const bool& show)
 						ShowTransform3DComponent(m_SelectedEntity, isTransform3DComponentShow);
 						ShowModel3DComponent(m_SelectedEntity, isModel3DComponentShow);
 						ShowEnvironmentComponent(m_SelectedEntity, isEnvironmentComponentShow);
+
 						ImGui::EndTabItem();
 					}
 
 				} ImGui::EndTabBar();
 			}
 
-		} ImGui::End();
+		}
+		ImGui::End();
 	}
 }
 
@@ -171,7 +172,7 @@ void EditorLayerTest::ShowScene(const bool& show)
 {
 	if (show)
 	{
-		if (ImGui::Begin("Scene"))
+		ImGui::Begin("Scene");
 		{
 			auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
 			if (frameBuffer != nullptr)
@@ -274,9 +275,10 @@ void EditorLayerTest::ShowScene(const bool& show)
 			}
 
 			ShowFpsOverlay(ImGui::GetWindowViewport(), isFpsShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
-			ImGui::End(); // ImGui::Begin("Scene")
-		}
 
+		
+		}
+		ImGui::End(); // ImGui::Begin("Scene")
 		
 	}
 }
@@ -506,7 +508,7 @@ void EditorLayerTest::ShowFpsOverlay(ImGuiViewport* viewport, const bool& show, 
 		ImGui::SetNextWindowViewport(viewport->ID);
 		ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
 		ImGui::SetNextWindowPos(ImVec2{ ImGui::GetWindowPos().x + 12, ImGui::GetWindowPos().y + 32 }, ImGuiCond_Always);
-		if (ImGui::Begin("Example: Simple overlay", nullptr, window_flags))
+		ImGui::Begin("Example: Simple overlay", nullptr, window_flags);
 		{
 			ImGui::Text("Application average %.1f ms/frame (%.0f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		}
