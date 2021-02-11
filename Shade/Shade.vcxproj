@@ -68,6 +68,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Util\FileDialog.h" />
     <ClInclude Include="libraries\include\Shade\Core\Util\Log.h" />
     <ClInclude Include="libraries\include\Shade\Core\Util\Macros.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Util\Serializer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Util\ShadeException.h" />
     <ClInclude Include="libraries\include\Shade\Shade.h" />
     <ClInclude Include="libraries\include\stdafx.h" />
@@ -122,6 +123,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\WindowManager.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Util\FileDialog.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Util\Serializer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Util\ShadeException.cpp" />
     <ClCompile Include="libraries\include\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -152,6 +154,9 @@
     </ProjectReference>
     <ProjectReference Include="vendors\SDL2\VisualC\SDL\SDL.vcxproj">
       <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendors\Yaml\Yaml.vcxproj">
+      <Project>{9062c900-b4e4-45a2-8483-a53f4a7999c7}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -233,7 +238,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -256,7 +261,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -279,7 +284,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
@@ -302,7 +307,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>

@@ -20,6 +20,7 @@ se::Application::Application()
 				se::WindowManager::Resize();
 			}
 		
+
 			return false;
 		});
 }

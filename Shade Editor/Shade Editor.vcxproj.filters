@@ -14,12 +14,6 @@
       <Filter>Vendors</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade Editor\Serrializer.h" />
-    <ClInclude Include="libraries\include\Shade Editor\EditorLayer.h">
-      <Filter>Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\include\Shade Editor\EditorLayerTest.h">
-      <Filter>Layers</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\Shade Editor\Editor.h">
       <Filter>Util</Filter>
     </ClInclude>
@@ -27,6 +21,9 @@
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\Shade Editor\Util.h" />
+    <ClInclude Include="libraries\include\Shade Editor\EditorLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade Editor\MainLayer.cpp">
@@ -42,12 +39,6 @@
       <Filter>Vendors</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade Editor\Serrializer.cpp" />
-    <ClCompile Include="libraries\include\Shade Editor\EditorLayer.cpp">
-      <Filter>Layers</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\include\Shade Editor\EditorLayerTest.cpp">
-      <Filter>Layers</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\include\Shade Editor\Editor.cpp">
       <Filter>Util</Filter>
     </ClCompile>
@@ -55,6 +46,9 @@
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade Editor\Util.cpp" />
+    <ClCompile Include="libraries\include\Shade Editor\EditorLayer.cpp">
+      <Filter>Layers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">

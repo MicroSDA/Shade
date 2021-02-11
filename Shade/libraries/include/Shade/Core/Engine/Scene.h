@@ -9,6 +9,7 @@
 #include "Shade/Core/Engine/Timer.h"
 #include "Shade/Core/Engine/EntitiesDocker.h"
 #include "Shade/Core/Engine/FrameBuffer.h"
+#include "Shade/Core/Util/Serializer.h"
 #include "Shade/Core/Types.h"
 
 namespace se

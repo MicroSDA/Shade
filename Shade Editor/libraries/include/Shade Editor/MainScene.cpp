@@ -24,7 +24,7 @@ void MainScene::OnInit()
 	_MainCamera->SetPosition(0, 3, -5);
 	SetActiveCamera(_MainCamera);
 
-	se::Entity   _CameraEntity = CreateEntity();
+	se::Entity   _CameraEntity = CreateEntity("Camera");
 	_CameraEntity.AddComponent<se::CameraComponent>(_MainCamera);
 	_CameraEntity.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
 	
@@ -33,7 +33,10 @@ void MainScene::OnInit()
 	_GridEntity.AddComponent<se::Transform3DComponent>();
 	_GridEntity.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 500)));
 
-	{// Assets
+
+	
+
+	/*{// Assets
 		auto _Floor	     = se::AssetManager::Hold<se::Model3D>("Models.Floor", false);
 		auto _Cube	     = se::AssetManager::Hold<se::Model3D>("Models.Cube" , false);
 		auto _Samurai	 = se::AssetManager::Hold<se::Model3D>("Models.SamuraiHelmet", false);
@@ -79,8 +82,8 @@ void MainScene::OnInit()
 			_Transform.SetPostition(0.0f, - 0.8f);
 			_SpriteEntity.AddComponent<se::Transform2DComponent>(_Transform);
 			_SpriteEntity.AddComponent<se::SpriteComponent>(_POEInterfaceSprite);
-		}*/
-	}
+		}
+	}*/
 	{// Light
 		se::GeneralLight* _GeneraLight = new se::GeneralLight();
 		_GeneraLight->SetDirection(0.0198322f, -0.675238f, 0.737333f);
@@ -112,7 +115,8 @@ void MainScene::OnInit()
 		//CreateEntity().AddComponent<se::EnvironmentComponent>(_SpotLight);
 	}
 
-
+	//se::Serializer::SerializeScene("./scene.shade", *this);
+	
 	/*se::Entity _TextEntity = CreateEntity();
 	auto text = _TextEntity.AddComponent<se::DrawableTextComponent>(se::ShadeShared<se::Text>(new se::Text())).Text;
 	se::AssetData s;
@@ -121,10 +125,8 @@ void MainScene::OnInit()
 
 	CreateLayer<MainLayer>("Main");
 	InitLayer("Main");
-	CreateLayer<EditorLayerTest>("Editor");
+	CreateLayer<EditorLayer>("Editor");
 	InitLayer("Editor");
-
-	
 }
 	
 void MainScene::OnUpdate(const se::Timer& deltaTime)

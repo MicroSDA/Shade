@@ -85,9 +85,6 @@
       <Filter>Core\Engine</Filter>
     </ClInclude>
     <ClInclude Include="libraries\include\stdafx.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Util\ShadeException.h">
-      <Filter>Core\Util</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Util\Log.h">
       <Filter>Core\Util</Filter>
     </ClInclude>
@@ -235,6 +232,12 @@
     <ClInclude Include="libraries\include\Shade\Core\Util\FileDialog.h">
       <Filter>Core\Util</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Util\ShadeException.h">
+      <Filter>Core\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Util\Serializer.h">
+      <Filter>Core\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -244,9 +247,6 @@
       <Filter>Core\Engine</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\stdafx.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Util\ShadeException.cpp">
-      <Filter>Core\Util</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp">
       <Filter>Core\Util</Filter>
     </ClCompile>
@@ -368,6 +368,12 @@
       <Filter>Vendors\ImGizmo</Filter>
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Util\FileDialog.cpp">
+      <Filter>Core\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Util\ShadeException.cpp">
+      <Filter>Core\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Util\Serializer.cpp">
       <Filter>Core\Util</Filter>
     </ClCompile>
   </ItemGroup>

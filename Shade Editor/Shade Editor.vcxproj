@@ -184,7 +184,6 @@
     <ClInclude Include="libraries\include\Shade Editor\AssimpModel3D.h" />
     <ClInclude Include="libraries\include\Shade Editor\Editor.h" />
     <ClInclude Include="libraries\include\Shade Editor\EditorLayer.h" />
-    <ClInclude Include="libraries\include\Shade Editor\EditorLayerTest.h" />
     <ClInclude Include="libraries\include\Shade Editor\MainLayer.h" />
     <ClInclude Include="libraries\include\Shade Editor\MainScene.h" />
     <ClInclude Include="libraries\include\Shade Editor\ShadeEditor.h" />
@@ -196,7 +195,6 @@
     <ClCompile Include="libraries\include\Shade Editor\AssimpModel3D.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\Editor.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\EditorLayer.cpp" />
-    <ClCompile Include="libraries\include\Shade Editor\EditorLayerTest.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\MainLayer.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\MainScene.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\ShadeEditor.cpp" />
