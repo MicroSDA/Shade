@@ -20,10 +20,10 @@ void se::AssetManager::Clear()
 	GetInstance().m_Assets.clear();
 }
 
-void se::AssetManager::Free(const std::string& className)
+void se::AssetManager::Free(const std::string& assetId)
 {
 	auto& _Instance = GetInstance();
-	auto _AElement = _Instance.m_Assets.find(className);
+	auto _AElement = _Instance.m_Assets.find(assetId);
 
 	if (_AElement != _Instance.m_Assets.end())
 	{
@@ -36,18 +36,18 @@ void se::AssetManager::Free(const std::string& className)
 			}
 			else
 			{
-				SE_DEBUG_PRINT(std::string("Warning: Trying to free asset '" + className + "' which has more then one uses count.").c_str(), se::SLCode::Warning);
+				SE_DEBUG_PRINT(std::string("Warning: Trying to free asset '" + assetId + "' which has more then one uses count.").c_str(), se::SLCode::Warning);
 			}
 
 		}
 		else
 		{
-			SE_DEBUG_PRINT(std::string("Warning: Trying to free weak asset '" + className + "'.").c_str(), se::SLCode::Warning);
+			SE_DEBUG_PRINT(std::string("Warning: Trying to free weak asset '" + assetId + "'.").c_str(), se::SLCode::Warning);
 		}
 	}
 	else
 	{
-		SE_DEBUG_PRINT(std::string("Warning: Trying to free unloaded asset '" + className + "'.").c_str(), se::SLCode::Warning);
+		SE_DEBUG_PRINT(std::string("Warning: Trying to free unloaded asset '" + assetId + "'.").c_str(), se::SLCode::Warning);
 	}
 
 }
@@ -98,13 +98,13 @@ void se::AssetManager::_ReadRoadMap()
 
 }
 
-void se::AssetManager::ImLast(const std::string& className) 
+void se::AssetManager::ImLast(const std::string& assetId) 
 {
 	
 	auto& _Instance = GetInstance();
 	if (!_Instance.m_ImDestructing)
 	{
-		auto _AElement = _Instance.m_Assets.find(className);
+		auto _AElement = _Instance.m_Assets.find(assetId);
 		if (_AElement != _Instance.m_Assets.end())
 		{
 			_Instance.m_Assets.erase(_AElement);

@@ -181,6 +181,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="libraries\include\Shade Editor\AssimpModel3D.h" />
     <ClInclude Include="libraries\include\Shade Editor\Editor.h" />
     <ClInclude Include="libraries\include\Shade Editor\EditorLayer.h" />
     <ClInclude Include="libraries\include\Shade Editor\EditorLayerTest.h" />
@@ -188,9 +189,11 @@
     <ClInclude Include="libraries\include\Shade Editor\MainScene.h" />
     <ClInclude Include="libraries\include\Shade Editor\ShadeEditor.h" />
     <ClInclude Include="libraries\include\Shade Editor\Serrializer.h" />
+    <ClInclude Include="libraries\include\Shade Editor\Util.h" />
     <ClInclude Include="libraries\include\Vendors\stbi\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="libraries\include\Shade Editor\AssimpModel3D.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\Editor.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\EditorLayer.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\EditorLayerTest.cpp" />
@@ -198,6 +201,7 @@
     <ClCompile Include="libraries\include\Shade Editor\MainScene.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\ShadeEditor.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\Serrializer.cpp" />
+    <ClCompile Include="libraries\include\Shade Editor\Util.cpp" />
     <ClCompile Include="libraries\include\Vendors\stbi\stb_image.c" />
   </ItemGroup>
   <ItemGroup>

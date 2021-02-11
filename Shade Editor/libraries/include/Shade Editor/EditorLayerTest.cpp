@@ -351,7 +351,7 @@ void EditorLayerTest::ShowMeshComponent(se::Entity& entity, const bool& show)
 	{
 		if (entity.HasComponent<se::MeshComponent>())
 		{
-			std::string name = "Mesh: " + entity.GetComponent<se::MeshComponent>().Mesh->GetAssetData()->_Name;
+			std::string name = "Mesh: " + entity.GetComponent<se::MeshComponent>().Mesh->GetAssetData()._Name;
 
 			if (ImGui::TreeNode(name.c_str()))
 			{
@@ -399,9 +399,9 @@ void EditorLayerTest::ShowTextureComponent(se::Entity& entity, const bool& show)
 			auto texture = entity.GetComponent<se::TextureComponent>().Texture;
 			ImTextureID tid = reinterpret_cast<void*>(texture->GetTextureRenderId());
 			uint32_t id = entity;
-			if (ImGui::TreeNode(std::string("##" + std::to_string(id)).c_str(), "Texture: %s", texture->GetAssetData()->_Name.c_str()))
+			if (ImGui::TreeNode(std::string("##" + std::to_string(id)).c_str(), "Texture: %s", texture->GetAssetData()._Name.c_str()))
 			{
-				switch (texture->GetAssetData()->_SubType)
+				switch (texture->GetAssetData()._SubType)
 				{
 				case se::AssetDataSubType::Diffuse:
 					ImGui::Text("Type: Diffuse");

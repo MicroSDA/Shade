@@ -3,22 +3,22 @@
 #include "Shade/Core/Util/Log.h"
 #include "Shade/Core/Engine/AssetManager.h"
 
-se::Asset::Asset(const std::string& fullClassName, const se::AssetData* data) :
-	m_FullClassName(fullClassName), m_AssetData(data) , m_IsInitialized(false)
+se::Asset::Asset() :
+	m_AssetId(""), m_AssetData(nullptr) , m_IsInitialized(false)
 {
 }
 se::Asset::~Asset()
 {
-	se::AssetManager::ImLast(m_FullClassName);
-	SE_DEBUG_PRINT(std::string("Asset '" + m_FullClassName + "' has beed deleted").c_str(), se::SLCode::InfoPrimary);
+	se::AssetManager::ImLast(m_AssetId);
+	SE_DEBUG_PRINT(std::string("Asset '" + m_AssetId + "' has beed deleted").c_str(), se::SLCode::InfoPrimary);
 }
 
-const se::AssetData* se::Asset::GetAssetData() const
+const se::AssetData& se::Asset::GetAssetData() const
 {
-	return m_AssetData;
+	return *m_AssetData;
 }
 
-std::string se::Asset::GetAssetClassName() const
+std::string se::Asset::GetAssetId() const
 {
-	return m_FullClassName;
+	return m_AssetId;
 }

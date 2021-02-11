@@ -10,9 +10,8 @@ namespace se
 	class SE_API Shader : public se::Asset
 	{
 	public:
-		Shader(const std::string& parrentClassName, const se::AssetData* data);
+		Shader();
 		virtual ~Shader();
-
 		inline void Bind() const;
 		inline static void UnBind();
 		const GLuint& GetProgram() const { return m_Program; }
@@ -30,7 +29,7 @@ namespace se
 		inline void SendUniformBool(const std::string& name, const bool& value) const;
 		inline void SetAttribLocation(const std::string& name) const;
 
-		virtual void Load() override;
+		virtual void LoadFromAssetData(const std::string& assetId, se::AssetData& data) override;
 		virtual void Init() override;
 	protected:
 		std::vector<GLuint> m_Shaders;

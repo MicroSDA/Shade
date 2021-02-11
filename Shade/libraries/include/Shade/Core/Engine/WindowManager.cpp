@@ -89,7 +89,7 @@ void se::WindowManager::DestroyWindow()
 	_Manager.m_IsWindowCreated = false;
 }
 
-const se::Window& const se::WindowManager::GetWindow()
+const se::Window& se::WindowManager::GetWindow()
 {
 	return Get().m_Window;
 }

@@ -9,9 +9,9 @@ namespace se
 	class SE_API Sprite :public se::Asset, public se::Drawable, public se::EntitiesDocker
 	{
 	public:
-		Sprite(const std::string& fullClassName, const se::AssetData* data);
+		Sprite();
 		virtual ~Sprite();
-		virtual void Load() override;
+		virtual void LoadFromAssetData(const std::string& assetId, se::AssetData& data) override;
 		virtual void Init() override;
 		inline virtual const VertexBuffer& GetVertexBuffer() const
 		{

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Mesh.h"
 #include <utility>
-se::Mesh::Mesh(const std::string& fullClassName, const se::AssetData* data) : se::Asset(fullClassName, data), se::Drawable()
+se::Mesh::Mesh()
 {
 	m_DrawMode = se::DrawMode::TRIANGLES;
 }
@@ -21,9 +21,10 @@ void se::Mesh::SetIndices(std::vector<unsigned int>& indices)
 	m_DrawCount = static_cast<GLuint>(m_Indices.size());
 }
 
-void se::Mesh::Load()
+void se::Mesh::LoadFromAssetData(const std::string& assetId, se::AssetData& data)
 {
-	// Nothing to do
+	m_AssetId = assetId;
+	m_AssetData = &data;
 }
 
 void se::Mesh::Init()

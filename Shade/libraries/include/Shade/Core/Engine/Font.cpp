@@ -1,17 +1,19 @@
 #include "stdafx.h"
 #include "Font.h"
 
-se::Font::Font(const std::string& fullClassName, const se::AssetData* data) : se::Asset(fullClassName, data)
+se::Font::Font()
 {
-
 }
 
 se::Font::~Font()
 {
 }
 
-void se::Font::Load()
+void se::Font::LoadFromAssetData(const std::string& assetId, se::AssetData& data)
 {
+	m_AssetId   = assetId;
+	m_AssetData = &data;
+
 	std::ifstream _FontFile;
 	_FontFile.open(m_AssetData->_Path, std::ios::binary);
 	if (_FontFile.is_open())
@@ -63,7 +65,7 @@ void se::Font::Load()
 			}
 
 		}
-		
+
 		_FontFile.close();
 	}
 	std::string   _Node;

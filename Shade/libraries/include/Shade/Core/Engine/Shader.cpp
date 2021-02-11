@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Shader.h"
 
-se::Shader::Shader(const std::string& parrentClassName, const se::AssetData* data) :se::Asset(parrentClassName, data),
+se::Shader::Shader():
     m_Program(NULL)
 {
 }
@@ -24,50 +24,6 @@ inline void se::Shader::Bind() const
 inline void se::Shader::UnBind()
 {
 	glUseProgram(0);
-}
-
-void se::Shader::Load()
-{
-	std::ifstream _File;
-	_File.open(m_AssetData->_Path, std::ifstream::in);
-	if (_File.is_open())
-	{
-		_File.seekg(m_AssetData->_Offset);
-		std::string line;
-		while (_File.good())
-		{
-			std::getline(_File, line);
-			if (line == "#vertex")
-				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_VERTEX_SHADER));
-
-			if (line == "#fragment")
-				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_FRAGMENT_SHADER));
-		
-			if (line == "#geometry")
-				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_GEOMETRY_SHADER));
-		
-			if (line == "#---")
-				break;
-		}
-
-		_File.close();
-		if (m_Shaders.size() == 0)
-			throw se::ShadeException(std::string("Shaders count 0 in '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
-
-		m_Program = glCreateProgram();
-		for (unsigned int i = 0; i < m_Shaders.size(); i++) {
-			glAttachShader(m_Program, m_Shaders[i]);
-		}
-		glLinkProgram(m_Program);
-		CheckShaderError(m_Program, GL_LINK_STATUS, true, "Error: Shader program linkin faild: ");
-		glValidateProgram(m_Program);
-		CheckShaderError(m_Program, GL_VALIDATE_STATUS, true, "Error: Shader program validate faild: ");
-	}
-	else
-	{
-		throw se::ShadeException(std::string("Failed to open shader file '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
-	}
-
 }
 
 GLuint se::Shader::CreateShader(const std::string& text, GLenum shaderType)
@@ -181,6 +137,53 @@ inline GLint se::Shader::GetAttribLocation(const std::string& name) const
 		return _Location;
 	}
 	
+}
+
+void se::Shader::LoadFromAssetData(const std::string& assetId, se::AssetData& data)
+{
+	m_AssetId   = assetId;
+	m_AssetData = &data;
+
+	std::ifstream _File;
+	_File.open(m_AssetData->_Path, std::ifstream::in);
+	if (_File.is_open())
+	{
+		_File.seekg(m_AssetData->_Offset);
+		std::string line;
+		while (_File.good())
+		{
+			std::getline(_File, line);
+			if (line == "#vertex")
+				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_VERTEX_SHADER));
+
+			if (line == "#fragment")
+				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_FRAGMENT_SHADER));
+
+			if (line == "#geometry")
+				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_GEOMETRY_SHADER));
+
+			if (line == "#---")
+				break;
+		}
+
+		_File.close();
+		if (m_Shaders.size() == 0)
+			throw se::ShadeException(std::string("Shaders count 0 in '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+
+		m_Program = glCreateProgram();
+		for (unsigned int i = 0; i < m_Shaders.size(); i++) {
+			glAttachShader(m_Program, m_Shaders[i]);
+		}
+		glLinkProgram(m_Program);
+		CheckShaderError(m_Program, GL_LINK_STATUS, true, "Error: Shader program linkin faild: ");
+		glValidateProgram(m_Program);
+		CheckShaderError(m_Program, GL_VALIDATE_STATUS, true, "Error: Shader program validate faild: ");
+	}
+	else
+	{
+		throw se::ShadeException(std::string("Failed to open shader file '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+	}
+
 }
 
 void se::Shader::Init()

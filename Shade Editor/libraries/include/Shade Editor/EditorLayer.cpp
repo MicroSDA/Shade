@@ -401,7 +401,7 @@ void EditorLayer::ShowEntitiesInspector()
 							model3D->GetEntities().each([&](auto entityID)
 								{
 									se::Entity entity{ entityID , model3D.get() };
-									if (ImGui::TreeNode(std::string("##mesh" + entity).c_str(), "Mesh: %s", entity.GetComponent<se::MeshComponent>().Mesh->GetAssetData()->_Name.c_str()))
+									if (ImGui::TreeNode(std::string("##mesh" + entity).c_str(), "Mesh: %s", entity.GetComponent<se::MeshComponent>().Mesh->GetAssetData()._Name.c_str()))
 									{
 										if (ImGui::TreeNode(std::string("##material" + entity).c_str(), "Material"))
 										{

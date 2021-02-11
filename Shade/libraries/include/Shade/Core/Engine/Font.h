@@ -23,10 +23,10 @@ namespace se
 	class SE_API Font : public se::Asset
 	{
 	public:
-		Font(const std::string& fullClassName, const se::AssetData* data);
+		Font();
 		virtual ~Font();
 		// Inherited via Asset
-		virtual void Load() override;
+		virtual void LoadFromAssetData(const std::string& assetId, se::AssetData& data) override;
 		virtual void Init() override;
 		const se::FontData& GetFontData() const;
 		const GLuint& GetAtlas() const;

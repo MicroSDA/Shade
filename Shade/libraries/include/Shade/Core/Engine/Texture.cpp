@@ -2,7 +2,7 @@
 #include "Texture.h"
 #include "Shade/Core/Util/Binarizer.h"
 
-se::Texture::Texture(const std::string& fullClassName, const se::AssetData* data) : se::Asset(fullClassName, data),
+se::Texture::Texture() :
 	m_Texture(NULL)
 {
 }
@@ -29,9 +29,11 @@ const GLuint& se::Texture::GetTextureRenderId() const
 	return m_Texture;
 }
 
-void se::Texture::Load()
+void se::Texture::LoadFromAssetData(const std::string& assetId, se::AssetData& data)
 {
-	
+	m_AssetId   = assetId;
+	m_AssetData = &data;
+
 	std::ifstream _File;
 	_File.open(m_AssetData->_Path, std::ios::binary);
 
@@ -42,14 +44,14 @@ void se::Texture::Load()
 		if (_Header == "#ShadeImage")
 		{
 			m_ImageData.m_Width = se::Binarizer::ReadNext<int>(_File);
-			if(m_ImageData.m_Width < 1 || m_ImageData.m_Width > 10000)
+			if (m_ImageData.m_Width < 1 || m_ImageData.m_Width > 10000)
 				throw se::ShadeException(std::string("Wrong image width '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
 
 			m_ImageData.m_Height = se::Binarizer::ReadNext<int>(_File);
 			if (m_ImageData.m_Height < 1 || m_ImageData.m_Height > 10000)
 				throw se::ShadeException(std::string("Wrong image height '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
 
-			m_ImageData.m_InternalFormat = se::Binarizer::ReadNext<int>(_File) ;
+			m_ImageData.m_InternalFormat = se::Binarizer::ReadNext<int>(_File);
 			m_ImageData.m_BufferSize = se::Binarizer::ReadNext<unsigned int>(_File);
 
 			if (m_ImageData.m_BufferSize < 1 || m_ImageData.m_BufferSize > 104857600)
@@ -63,7 +65,7 @@ void se::Texture::Load()
 		{
 			throw se::ShadeException(std::string("Wrong texture header '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
 		}
-		
+
 	}
 	else
 	{

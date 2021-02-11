@@ -15,16 +15,16 @@ namespace se
 	class SE_API Asset
 	{
 	public:
-		Asset(const std::string& fullClassName, const se::AssetData* data); // ??
+		Asset(); // ??
 		virtual ~Asset();
-		virtual void Load() = 0;
+		virtual void LoadFromAssetData(const std::string& assetId, se::AssetData& data) = 0;
 		virtual void Init() = 0;
-		const se::AssetData* GetAssetData() const;
-		std::string          GetAssetClassName() const;
+		const se::AssetData& GetAssetData() const;
+		std::string          GetAssetId() const;
 	protected:
-		const se::AssetData* m_AssetData;
-		const std::string    m_FullClassName;
-		bool m_IsInitialized;
+		std::string    m_AssetId;
+		se::AssetData* m_AssetData;
+		bool           m_IsInitialized;
 	private:
 	};
 }

@@ -18,13 +18,13 @@ namespace se
 	class SE_API Texture : public se::Asset
 	{
 	public:
-		Texture(const std::string& fullClassName, const se::AssetData* data);
+		Texture();
 		virtual ~Texture();
 		inline const void Bind(const uint32_t& id) const;
 		static void UnBind(const uint32_t& id);
 		const GLuint& GetTextureRenderId() const;
 		// Унаследовано через Asset
-		virtual void Load() override;
+		virtual void LoadFromAssetData(const std::string& assetId, se::AssetData& data) override;
 		virtual void Init() override;
 	private:
 		GLuint m_Texture;

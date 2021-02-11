@@ -36,7 +36,7 @@ namespace se
 
 		static void Create(const Window& window);
 		static void DestroyWindow();
-		static const se::Window& const GetWindow();
+		static const se::Window& GetWindow();
 		static void Close();
 		static bool IsClosed();
 		static void Resize();

@@ -11,12 +11,12 @@ namespace se
 	class SE_API Mesh :public se::Asset, public se::Drawable, public se::EntitiesDocker
 	{
 	public:
-		Mesh(const std::string& fullClassName, const se::AssetData* data);
+		Mesh();
 		virtual ~Mesh();
 		void SetVertices(std::vector<se::Vertex>& vertices);
 		void SetIndices(std::vector<unsigned int>& indices);
 		// Inherited via Asset
-		virtual void Load() override;
+		virtual void LoadFromAssetData(const std::string& assetId, se::AssetData& data) override;
 		virtual void Init() override;
 		// Inherited via Drawable
 		inline virtual const VertexBuffer& GetVertexBuffer() const override

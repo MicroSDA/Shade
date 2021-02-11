@@ -5,19 +5,19 @@
 #include "Shade/Core/Engine/AssetManager.h"
 #include "Shade/Core/Engine/Components.h"
 
-se::Model3D::Model3D(const std::string& fullClassName, const se::AssetData* data) :se::Asset(fullClassName, data)
+se::Model3D::Model3D()
 {
 }
-
 se::Model3D::~Model3D()
 {
 	
 }
-
-void se::Model3D::Load()
+void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& data)
 {
-	std::map<std::string, se::Material> _MaterialsMap;
+	m_AssetId   = assetId;
+	m_AssetData = &data;
 
+	std::map<std::string, se::Material> _MaterialsMap;
 	if (m_AssetData->_Dependency.size())
 	{
 		for (auto& _Asset : m_AssetData->_Dependency)
@@ -135,7 +135,7 @@ void se::Model3D::Load()
 			_Indices.push_back(se::Binarizer::ReadNext<unsigned int>(_File));
 		
 		// Creating otside of AssetManager
-		auto _pMesh = se::AssetManager::Hold<se::Mesh>(m_FullClassName + "." + m_AssetData->_Dependency[m]._Name, false);
+		auto _pMesh = se::AssetManager::Hold<se::Mesh>(m_AssetId + "." + m_AssetData->_Dependency[m]._Name, false);
 		_pMesh->SetVertices(_Vertices);
 		_pMesh->SetIndices(_Indices);
 		se::MeshComponent& _MeshComponent = _MeshEntity.AddComponent<se::MeshComponent>(_pMesh);
@@ -148,7 +148,7 @@ void se::Model3D::Load()
 				if (_Asset._Type == se::AssetDataType::Texture)
 				{
 					auto _TextureEntity = _MeshComponent.Mesh->CreateEntity();
-					_TextureEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>(m_FullClassName + "." + m_AssetData->_Dependency[m]._Name + "." + _Asset._Name, false));
+					_TextureEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>(m_AssetId + "." + m_AssetData->_Dependency[m]._Name + "." + _Asset._Name, false));
 				}
 			}
 		}

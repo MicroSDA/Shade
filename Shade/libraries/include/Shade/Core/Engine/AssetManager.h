@@ -87,10 +87,10 @@ namespace se
 				if (_RElement != _Instance.m_RoadMap.end())
 				{
 					// Loading asset
-					auto _Asset = new T(_RElement->first, _RElement->second);
+					auto _Asset = new T();
 					if (_Asset)
 					{
-						_Asset->Load();
+						_Asset->LoadFromAssetData(_RElement->first, const_cast<se::AssetData&>(*_RElement->second));
 						_Asset->Init(); // Temporary here 
 						se::AssetPointer<se::Asset> _Out(_Asset);
 						if (keepAlive)
@@ -142,7 +142,7 @@ namespace se
 		void _WriteRoadMap(std::ofstream& file, const se::AssetData& asset);
 		void _ReadRoadMap();
 		// Internal use for asset object only, will remove entry from AssetData map
-		static void ImLast(const std::string& className) ;
+		static void ImLast(const std::string& assetId) ;
 		void ReadAssetsData(std::ifstream& file, se::AssetData& asset);
 		void SetRoadMap(const se::AssetData* asset, std::unordered_map<std::string, const se::AssetData*>& map);
 		// Internal use for Application only

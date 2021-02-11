@@ -5,7 +5,7 @@
 GLfloat se::Sprite::m_Quad[8] = { -1.0,1.0,  -1.0,-1.0,  1.0,1.0,  1.0,-1.0 };
 se::VertexBuffer se::Sprite::m_VertexBuffer;
 
-se::Sprite::Sprite(const std::string& fullClassName, const se::AssetData* data): se::Asset(fullClassName, data), se::Drawable()
+se::Sprite::Sprite()
 {
 	m_DrawMode = se::DrawMode::TRIANGLE_STRIP;
 	m_DrawCount = 4; 
@@ -14,6 +14,12 @@ se::Sprite::Sprite(const std::string& fullClassName, const se::AssetData* data):
 se::Sprite::~Sprite()
 {
 
+}
+
+void se::Sprite::LoadFromAssetData(const std::string& assetId, se::AssetData& data)
+{
+	m_AssetId   = assetId;
+	m_AssetData = &data;
 }
 
 void se::Sprite::Init()
@@ -46,9 +52,3 @@ void se::Sprite::Init()
 	}*/
 
 }
-
-void se::Sprite::Load()
-{
-	
-}
-

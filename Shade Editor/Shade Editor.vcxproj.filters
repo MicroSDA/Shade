@@ -23,6 +23,10 @@
     <ClInclude Include="libraries\include\Shade Editor\Editor.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade Editor\AssimpModel3D.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade Editor\Util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade Editor\MainLayer.cpp">
@@ -47,6 +51,10 @@
     <ClCompile Include="libraries\include\Shade Editor\Editor.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="libraries\include\Shade Editor\AssimpModel3D.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade Editor\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scene">
