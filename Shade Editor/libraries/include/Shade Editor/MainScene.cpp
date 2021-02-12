@@ -19,7 +19,7 @@ void MainScene::OnCreate()
 	CreateLayer<EditorLayer>("Editor"); InitLayer("Editor");
 	
 
-	se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
+	//se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
 	//Camera
 	se::Entity   mainCamera = this->CreateEntity("Camera");
 	mainCamera.AddComponent<se::CameraComponent>(new se::Camera()).Camera->SetPosition(0, 5, -5);
@@ -40,7 +40,7 @@ void MainScene::OnInit()
 
 
 	// Assets
-	/*auto floor = se::AssetManager::Hold<se::Model3D>("Models.Floor", false);
+	auto floor = se::AssetManager::Hold<se::Model3D>("Models.Floor", false);
 	auto cube = se::AssetManager::Hold<se::Model3D>("Models.Cube", false);
 	auto skull = se::AssetManager::Hold<se::Model3D>("Models.Skull", false);
 	// Entities
@@ -52,7 +52,7 @@ void MainScene::OnInit()
 	cubeEntity.AddComponent<se::Transform3DComponent>();
 	se::Entity skullEntity = CreateEntity("Skull");
 	skullEntity.AddComponent<se::Model3DComponent>(skull);
-	skullEntity.AddComponent<se::Transform3DComponent>();*/
+	skullEntity.AddComponent<se::Transform3DComponent>();
 }
 
 void MainScene::OnUpdate(const se::Timer& deltaTime)

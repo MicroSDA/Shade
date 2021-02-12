@@ -15,9 +15,10 @@ public:
 private:
 	void ShowMainMenu(const bool& show);
 	void ShowEntitiesList(const bool& show);
-	void ProcessEntities(se::Entity& entity);
+	void ProcessEntities(const std::string& filter, se::Entity& entity);
 	void ShowInspector(const bool& show);
 	void ShowScene(const bool& show);
+	void ShowProject(const bool& show);
 
 	void ShowTagComponent(se::Entity& entity, const bool& show);
 	void ShowTransform3DComponent(se::Entity& entity, const bool& show);
@@ -30,6 +31,9 @@ private:
 	bool ShowImGuizmo(glm::mat4& transform, const bool& show, const float& x, const float& y, const float& w, const float& h);
 	void ShowFpsOverlay(ImGuiViewport* viewport, const bool& show, const float& x, const float& y);
 
+	void NewEntityModal(se::EntitiesDocker& docker);
+	void CreateEntity(se::EntitiesDocker& docker, const std::string& name);
+
 	bool isMainMenuShow = true;
 	bool isEntitiesListShow = true;
 	bool isInspectorShow = true;
@@ -40,6 +44,7 @@ private:
 	bool isTextureComponentShow = true;
 	bool isEnvironmentComponentShow = true;
 	bool isSceneShow = true;
+	bool isProjectShow = true;
 	bool isFpsShow = true;
 
 	se::Entity m_SelectedEntity;

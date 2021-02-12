@@ -66,9 +66,9 @@ void EditorLayer::OnRender()
 		}
 
 		this->ShowMainMenu(isMainMenuShow);
-		this->ShowEntitiesList(isEntitiesListShow);
 		this->ShowInspector(isInspectorShow);
 		this->ShowScene(isSceneShow);
+		this->ShowProject(isProjectShow);
 
 	} ImGui::End(); // Begin("DockSpace")*/
 
@@ -88,18 +88,18 @@ void EditorLayer::ShowMainMenu(const bool& show)
 			{
 				if (ImGui::MenuItem("New")) {}
 
-				if (ImGui::MenuItem("Open")) 
+				if (ImGui::MenuItem("Open"))
 				{
 					this->GetScene()->DestroyEntities();
 					se::Serializer::DeserializeScene("./scene.shade", *this->GetScene());
 				}
-				
+
 				if (ImGui::MenuItem("Save")) { se::Serializer::SerializeScene("./scene.shade", *this->GetScene()); }
 
 				if (ImGui::MenuItem("Import"))
 				{
 					std::string path = se::FileDialog::OpenFile("Model3D\0");
-					if(!path.empty())
+					if (!path.empty())
 						Editor::Import(Editor::ImportType::Model3D, path);
 				}
 
@@ -118,26 +118,51 @@ void EditorLayer::ShowEntitiesList(const bool& show)
 {
 	if (show)
 	{
-		ImGui::Begin("Entities");
+		if (ImGui::CollapsingHeader("Entities"))
 		{
-			GetScene()->GetEntities().each([&](auto entityID)
-				{
-					se::Entity entity{ entityID , GetScene() };
-					ProcessEntities(entity);
-				});
+			if (ImGui::Button("New entity", ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
+				ImGui::OpenPopup("New entity##create_new_entity");
+
+			static char buffer[256] = ""; 
+			ImGui::Text("Search"); ImGui::SameLine();
+			ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
+			ImGui::InputTextWithHint("##entities_search", "Entity name", buffer, sizeof(buffer));
+			ImGui::PopItemWidth();
+			if (ImGui::ListBoxHeader("##", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y)))
+			{
+				GetScene()->GetEntities().each([&](auto entityID)
+					{
+						se::Entity entity{ entityID , GetScene() };
+						ProcessEntities(buffer, entity);
+					});
+
+				ImGui::ListBoxFooter();
+			}
+
+			NewEntityModal(*this->GetScene());
 		}
-		ImGui::End();
 	}
 }
 
-void EditorLayer::ProcessEntities(se::Entity& entity)
+void EditorLayer::ProcessEntities(const std::string& filter, se::Entity& entity)
 {
 	if (entity.HasComponent<se::TagComponent>())
 	{
 		auto& tag = entity.GetComponent<se::TagComponent>().Tag;
-		//ImGui::Dummy(ImVec2()); ImGui::SameLine(25.0f);
-		if (ImGui::Selectable(std::string(tag + "##" + entity).c_str(), m_SelectedEntity == entity))
-			m_SelectedEntity = entity;
+		if (filter.size())
+		{
+			if (filter.size() && tag == filter)
+			{
+				if (ImGui::Selectable(std::string(tag + "##" + entity).c_str(), m_SelectedEntity == entity))
+					m_SelectedEntity = entity;
+			}
+		}
+		else
+		{
+			if (ImGui::Selectable(std::string(tag + "##" + entity).c_str(), m_SelectedEntity == entity))
+				m_SelectedEntity = entity;
+		}
+
 	}
 }
 
@@ -178,7 +203,7 @@ void EditorLayer::ShowScene(const bool& show)
 			auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
 			if (frameBuffer != nullptr)
 			{
-				
+
 				auto viewPortEntitis = se::Application::GetApplication().GetEntities().view<glm::vec2, se::TagComponent>();
 
 				for (auto& viewPort : viewPortEntitis)
@@ -205,7 +230,7 @@ void EditorLayer::ShowScene(const bool& show)
 					ImTextureID tid = reinterpret_cast<void*>(frameBuffer->GetTextureAttachment());
 					ImGui::Image(tid, ImVec2{ ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
-				
+
 					if (m_SelectedEntity.IsValid())
 					{
 						if (m_SelectedEntity.HasComponent<se::Transform3DComponent>())
@@ -260,7 +285,7 @@ void EditorLayer::ShowScene(const bool& show)
 								auto pLight = static_cast<se::SpotLight*>(environment);
 
 								glm::mat4 translate = glm::translate(pLight->GetPosition());
-								glm::mat4 rotate    = glm::toMat4(glm::quat(pLight->GetDirection()));
+								glm::mat4 rotate = glm::toMat4(glm::quat(pLight->GetDirection()));
 								glm::mat4 transform = translate * rotate;
 								if (this->ShowImGuizmo(transform, true, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
 								{
@@ -280,10 +305,30 @@ void EditorLayer::ShowScene(const bool& show)
 
 			ShowFpsOverlay(ImGui::GetWindowViewport(), isFpsShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 
-		
+
 		}
 		ImGui::End(); // ImGui::Begin("Scene")
-		
+
+	}
+}
+
+void EditorLayer::ShowProject(const bool& show)
+{
+	ShowDemoWindow();
+	if (show)
+	{
+		ImGui::Begin("Project");
+		{
+			if (ImGui::TreeNode("Scene##MainScene", "Scene: MainScene"))
+			{
+
+				ImGui::BulletText("Name: %s", "MainScene");
+				this->ShowEntitiesList(isEntitiesListShow);
+
+				ImGui::TreePop();
+			}
+		}
+		ImGui::End();
 	}
 }
 
@@ -366,7 +411,7 @@ void EditorLayer::ShowMeshComponent(se::Entity& entity, const bool& show)
 			}
 		}
 	}
-	
+
 }
 
 void EditorLayer::ShowMaterialComponent(se::Entity& entity, se::MeshComponent& mesh, const bool& show)
@@ -419,7 +464,7 @@ void EditorLayer::ShowTextureComponent(se::Entity& entity, const bool& show)
 					ImGui::Text("Type: NormalMap");
 					break;
 				}
-				
+
 				ImGui::Image(tid, ImVec2{ width, height }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 				ImGui::TreePop();
 			}
@@ -459,7 +504,7 @@ void EditorLayer::ShowEnvironmentComponent(se::Entity& entity, const bool& show)
 				this->DrawDragFloat("Constant", pLight->GetConstant(), 1.0f, 100.0f, 400.0f);
 				this->DrawDragFloat("Linear", pLight->GetLinear(), 0.7f, 100.0f, 400.0f);
 				this->DrawDragFloat("Qaudratic", pLight->GetQaudratic(), 1.8f, 100.0f, 400.0f);
-				break; 
+				break;
 			}
 			case se::Environment::EnvironmentType::SpotLight:
 				auto pLight = static_cast<se::SpotLight*>(environment);
@@ -518,4 +563,40 @@ void EditorLayer::ShowFpsOverlay(ImGuiViewport* viewport, const bool& show, cons
 		}
 		ImGui::End();
 	}
+}
+
+void EditorLayer::NewEntityModal(se::EntitiesDocker& docker)
+{
+	
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	if (ImGui::BeginPopupModal("New entity##create_new_entity", NULL, ImGuiWindowFlags_MenuBar| ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		
+		static char buffer[256] = "";
+		ImGui::Text("Name"); ImGui::SameLine();
+		ImGui::PushItemWidth(400);
+		ImGui::InputTextWithHint("##entities_search", "Entity name", buffer, sizeof(buffer));
+		ImGui::PopItemWidth();
+		ImGui::NewLine();
+
+		if (ImGui::Button("Create"))
+		{
+			CreateEntity(docker, buffer);
+			memset(buffer, 0, sizeof(buffer));
+			ImGui::CloseCurrentPopup();
+		}
+
+
+		ImGui::SameLine();
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+}
+
+void EditorLayer::CreateEntity(se::EntitiesDocker& docker, const std::string& name)
+{
+	if(name.size())
+		docker.CreateEntity(name);
 }
