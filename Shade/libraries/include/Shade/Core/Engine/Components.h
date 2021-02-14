@@ -29,7 +29,7 @@ namespace se
 	// Use when you want to name a specific entity
 	// Will be added automatically when an entity is being created
 	// Default value for Tag is 'Entity'
-	struct TagComponent
+	struct TagComponent : se::ComponentBase
 	{
 		std::string Tag;
 		TagComponent() = default;

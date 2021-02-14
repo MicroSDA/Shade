@@ -188,6 +188,7 @@
     <ClInclude Include="libraries\include\Shade Editor\MainScene.h" />
     <ClInclude Include="libraries\include\Shade Editor\ShadeEditor.h" />
     <ClInclude Include="libraries\include\Shade Editor\Serrializer.h" />
+    <ClInclude Include="libraries\include\Shade Editor\TestLayer.h" />
     <ClInclude Include="libraries\include\Shade Editor\Util.h" />
     <ClInclude Include="libraries\include\Vendors\stbi\stb_image.h" />
   </ItemGroup>
@@ -199,6 +200,7 @@
     <ClCompile Include="libraries\include\Shade Editor\MainScene.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\ShadeEditor.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\Serrializer.cpp" />
+    <ClCompile Include="libraries\include\Shade Editor\TestLayer.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\Util.cpp" />
     <ClCompile Include="libraries\include\Vendors\stbi\stb_image.c" />
   </ItemGroup>

@@ -39,10 +39,17 @@ se::Camera::~Camera()
 void se::Camera::Resize(const float& aspect)
 {
 	if (aspect)
+	{
 		m_Aspect = aspect;
+		m_Perpective = glm::perspective(glm::radians(m_Fov), m_Aspect, m_zNear, m_zFar);
+	}
 	else
-		m_Aspect = (float)se::WindowManager::GetWindow().Width / (float)se::WindowManager::GetWindow().Height;
+	{
+		m_Perpective = glm::perspective(glm::radians(m_Fov), m_Aspect, m_zNear, m_zFar);
+	}
+		
+		//m_Aspect = (float)se::WindowManager::GetWindow().Width / (float)se::WindowManager::GetWindow().Height;
 	
-	m_Perpective = glm::perspective(glm::radians(m_Fov), m_Aspect, m_zNear, m_zFar);
+	//m_Perpective = glm::perspective(glm::radians(m_Fov), m_Aspect, m_zNear, m_zFar);
 	//TODO Zoom
 }

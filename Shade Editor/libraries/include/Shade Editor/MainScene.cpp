@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MainScene.h"
-#include "Shade/Core/Engine/ImGuiLayer.h"
+//#include "Shade/Core/Engine/ImGuiLayer.h"
 
 MainScene::MainScene(const std::string& name) :se::Scene(name)
 {
@@ -16,10 +16,11 @@ void MainScene::OnCreate()
 {
 
 	CreateLayer<MainLayer>("Main");	    InitLayer("Main");
-	CreateLayer<EditorLayer>("Editor"); InitLayer("Editor");
+	CreateLayer<TestLayer>("Editor");   InitLayer("Editor");
 	
 
 	//se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
+	se::Renderer::SetClearColor(0.46f, 0.61f, 0.66f, 1.0f);
 	//Camera
 	se::Entity   mainCamera = this->CreateEntity("Camera");
 	mainCamera.AddComponent<se::CameraComponent>(new se::Camera()).Camera->SetPosition(0, 5, -5);
@@ -47,9 +48,11 @@ void MainScene::OnInit()
 	se::Entity floorEntity = CreateEntity("Floor");
 	floorEntity.AddComponent<se::Model3DComponent>(floor);
 	floorEntity.AddComponent<se::Transform3DComponent>();
+
 	se::Entity cubeEntity = CreateEntity("Cube");
 	cubeEntity.AddComponent<se::Model3DComponent>(cube);
 	cubeEntity.AddComponent<se::Transform3DComponent>();
+
 	se::Entity skullEntity = CreateEntity("Skull");
 	skullEntity.AddComponent<se::Model3DComponent>(skull);
 	skullEntity.AddComponent<se::Transform3DComponent>();

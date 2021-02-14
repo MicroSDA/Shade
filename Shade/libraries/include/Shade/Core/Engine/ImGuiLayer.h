@@ -27,9 +27,15 @@ namespace se
 		ImGuiViewport* m_Viewport;
 		ImGuizmo::OPERATION m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 		void ShowDemoWindow();
-		void DrawVec3(const std::string& label, glm::vec3& values, const float& min =-FLT_MAX, const float& max = FLT_MAX, const float& reset = 0.0, const float& cw1 = 100.0f, const float& cw2 = 0);
-		void DrawDragFloat(const std::string& label, float& values, const float& reset = 0.0f, const float& cw1 = 100.0f, const float& cw2 = 0);
+		static void DrawVec3(const std::string& label, glm::vec3& values, const float& min =-FLT_MAX, const float& max = FLT_MAX, const float& reset = 0.0, const float& cw1 = 100.0f, const float& cw2 = 0);
+		bool DrawDragFloat(const std::string& label, float& values, const float& reset = 0.0f, const float& cw1 = 100.0f, const float& cw2 = 0);
 		void DrawColor3(const std::string& label, glm::vec3& values, const float& cw1 = 100.0f, const float& cw2 = 0);
+		void PushItemFlag(int option);
+		void PopItemFlag();
+		bool ShowImGuizmo(glm::mat4& transform, const se::Camera* camera, const bool& show, const float& x, const float& y, const float& w, const float& h);
+		void ShowFPSOverlay(ImGuiViewport* viewport, const bool& show, const float& x, const float& y);
+
+		ImVec2 CalcItemSize(ImVec2 size, float default_w, float default_h);
 	private:
 		void SetupImGuiStyle(bool bStyleDark_, float alpha_);
 	};

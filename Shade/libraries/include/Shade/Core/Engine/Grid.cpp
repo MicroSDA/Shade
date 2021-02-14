@@ -38,7 +38,7 @@ se::Grid::Grid(const float& width, const float& height, const int& density)
 
 	m_DrawCount = static_cast<GLuint>(m_Indices.size() * 4);
 
-	glLineWidth(1.0f);
+	glLineWidth(1.5f);
 }
 
 se::Grid::~Grid()

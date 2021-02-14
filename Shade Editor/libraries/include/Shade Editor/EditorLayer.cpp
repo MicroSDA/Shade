@@ -123,7 +123,7 @@ void EditorLayer::ShowEntitiesList(const bool& show)
 			if (ImGui::Button("New entity", ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
 				ImGui::OpenPopup("New entity##create_new_entity");
 
-			static char buffer[256] = ""; 
+			static char buffer[256] = "";
 			ImGui::Text("Search"); ImGui::SameLine();
 			ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
 			ImGui::InputTextWithHint("##entities_search", "Entity name", buffer, sizeof(buffer));
@@ -133,7 +133,7 @@ void EditorLayer::ShowEntitiesList(const bool& show)
 				GetScene()->GetEntities().each([&](auto entityID)
 					{
 						se::Entity entity{ entityID , GetScene() };
-						ProcessEntities(buffer, entity);
+						ProcessEntities(buffer, entity, m_SelectedEntity);
 					});
 
 				ImGui::ListBoxFooter();
@@ -144,25 +144,37 @@ void EditorLayer::ShowEntitiesList(const bool& show)
 	}
 }
 
-void EditorLayer::ProcessEntities(const std::string& filter, se::Entity& entity)
+void EditorLayer::ProcessEntities(const std::string& filter, se::Entity& entity, se::Entity& selectedEntity)
 {
-	if (entity.HasComponent<se::TagComponent>())
-	{
-		auto& tag = entity.GetComponent<se::TagComponent>().Tag;
-		if (filter.size())
-		{
-			if (filter.size() && tag == filter)
-			{
-				if (ImGui::Selectable(std::string(tag + "##" + entity).c_str(), m_SelectedEntity == entity))
-					m_SelectedEntity = entity;
-			}
-		}
-		else
-		{
-			if (ImGui::Selectable(std::string(tag + "##" + entity).c_str(), m_SelectedEntity == entity))
-				m_SelectedEntity = entity;
-		}
+	auto& tag = entity.GetComponent<se::TagComponent>().Tag;
 
+	if (filter.size())
+	{
+		if (filter.size() && tag == filter)
+		{
+			if (ImGui::Selectable(std::string(tag + "##" + entity).c_str(), selectedEntity == entity))
+				selectedEntity = entity;
+		}
+	}
+	else
+	{
+		if (ImGui::Selectable(std::string(tag + "##" + entity).c_str(), selectedEntity == entity))
+			selectedEntity = entity;
+	}
+
+	if (ImGui::BeginPopupContextItem())
+	{
+		PushItemFlag(32); // For opening modal
+		if (ImGui::MenuItem("Add Component"))
+			ImGui::OpenPopup("Add component##add_component");
+		this->PopItemFlag();
+
+		if (ImGui::MenuItem("Delete Entity"))
+			this->DeletEntity(*this->GetScene(), entity);
+
+		this->AddComponentModal(entity);
+
+		ImGui::EndPopup();
 	}
 }
 
@@ -178,11 +190,33 @@ void EditorLayer::ShowInspector(const bool& show)
 				{
 					if (ImGui::BeginTabItem("Components"))
 					{
-						ShowTagComponent(m_SelectedEntity, isTagComponentShow);
+						DrawComponent<se::TagComponent>("Tag", m_SelectedEntity, isTagComponentShow, [&]() {
+							ShowTagComponent(m_SelectedEntity);
+							});
+						DrawComponent<se::Transform3DComponent>("Transform3D", m_SelectedEntity, isTransform3DComponentShow, [&]() {
+							ShowTransform3DComponent(m_SelectedEntity);
+							});
+						DrawComponent<se::Model3DComponent>("Model3D", m_SelectedEntity, isModel3DComponentShow, [&]() {
+							ShowModel3DComponent(m_SelectedEntity);
+							});
+						/*DrawComponent<se::EnvironmentComponent>("Environment", m_SelectedEntity, isTagComponentShow, [&]() {
+							ShowEnvironmentComponent(m_SelectedEntity, nullptr);
+							});
+						DrawComponent<se::CameraComponent>("Camera", m_SelectedEntity, isTagComponentShow, [&]() {
+							ShowCameraComponent(m_SelectedEntity, nullptr);
+							});*/
+						//DrawComponent<se::Transform3DComponent>("Transform3D", m_SelectedEntity, isTransform3DComponentShow, ShowTransform3DComponent);
+						//DrawComponent<se::Model3DComponent>("Model3D", m_SelectedEntity, isModel3DComponentShow, ShowModel3DComponent);
+						/*DrawComponent<se::Transform3DComponent>("Transform3D", m_SelectedEntity, []() {});
+						DrawComponent<se::Model3DComponent>("Model3D", m_SelectedEntity, []() {});
+						DrawComponent<se::EnvironmentComponent>("Environment", m_SelectedEntity, []() {});
+						DrawComponent<se::CameraComponent>("Camera", m_SelectedEntity, []() {});*/
+
+						/*ShowTagComponent(m_SelectedEntity, isTagComponentShow);
 						ShowTransform3DComponent(m_SelectedEntity, isTransform3DComponentShow);
 						ShowModel3DComponent(m_SelectedEntity, isModel3DComponentShow);
 						ShowEnvironmentComponent(m_SelectedEntity, isEnvironmentComponentShow);
-
+						ShowCameraComponent(m_SelectedEntity, isCameraComponentShow);*/
 						ImGui::EndTabItem();
 					}
 
@@ -314,7 +348,7 @@ void EditorLayer::ShowScene(const bool& show)
 
 void EditorLayer::ShowProject(const bool& show)
 {
-	ShowDemoWindow();
+
 	if (show)
 	{
 		ImGui::Begin("Project");
@@ -332,67 +366,41 @@ void EditorLayer::ShowProject(const bool& show)
 	}
 }
 
-void EditorLayer::ShowTagComponent(se::Entity& entity, const bool& show)
+void EditorLayer::ShowTagComponent(se::Entity& entity)
 {
-	if (show)
+
+	static char buffer[256]; memset(buffer, 0, sizeof(buffer));
+	auto& tag = entity.GetComponent<se::TagComponent>().Tag;
+	std::strncpy(buffer, tag.c_str(), sizeof(buffer));
+
+	if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
+		tag = std::string(buffer);
+}
+
+void EditorLayer::ShowTransform3DComponent(se::Entity& entity)
+{
+	auto& transform = entity.GetComponent<se::Transform3DComponent>().Transform;
 	{
-		if (m_SelectedEntity.HasComponent<se::TagComponent>())
-		{
-			if (ImGui::TreeNode("Name"))
-			{
-				static char buffer[256]; memset(buffer, 0, sizeof(buffer));
-				auto& tag = m_SelectedEntity.GetComponent<se::TagComponent>().Tag;
-				std::strncpy(buffer, tag.c_str(), sizeof(buffer));
-
-				if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-					tag = std::string(buffer);
-
-				ImGui::TreePop();
-			}
-		}
+		DrawVec3("Position", transform.GetPosition(), -FLT_MAX, FLT_MAX, 0.0, 100.0f, 400.0f);
+		DrawVec3("Rotation", transform.GetRotation(), -FLT_MAX, FLT_MAX, 0.0, 100.0f, 400.0f);
+		DrawVec3("Scale", transform.GetScale(), 0.0f, FLT_MAX, 1.0f, 100.0f, 400.0f);
 	}
 }
 
-void EditorLayer::ShowTransform3DComponent(se::Entity& entity, const bool& show)
+void EditorLayer::ShowModel3DComponent(se::Entity& entity)
 {
-	if (show)
+	auto& model3D = entity.GetComponent<se::Model3DComponent>().Model3D;
+	if (model3D != nullptr)
 	{
-		if (m_SelectedEntity.HasComponent<se::Transform3DComponent>())
-		{
-			if (ImGui::TreeNode("Transform3D"))
+		static se::Entity selectedEntity;
+		model3D->GetEntities().each([&](auto entityID)
 			{
-				auto& transform = m_SelectedEntity.GetComponent<se::Transform3DComponent>().Transform;
-				{
-					DrawVec3("Position", transform.GetPositionRef(), -FLT_MAX, FLT_MAX, 0.0, 100.0f, 400.0f);
-					DrawVec3("Rotation", transform.GetRotationRef(), -FLT_MAX, FLT_MAX, 0.0, 100.0f, 400.0f);
-					DrawVec3("Scale", transform.GetScaleRef(), 0.0f, FLT_MAX, 1.0f, 100.0f, 400.0f);
-				}
-
-				ImGui::TreePop();
-			}
-		}
-	}
-}
-
-void EditorLayer::ShowModel3DComponent(se::Entity& entity, const bool& show)
-{
-	if (show)
-	{
-		if (entity.HasComponent<se::Model3DComponent>())
-		{
-			if (ImGui::TreeNode("Model3D"))
-			{
-				auto& model3D = m_SelectedEntity.GetComponent<se::Model3DComponent>().Model3D;
-
-				model3D->GetEntities().each([&](auto entityID)
-					{
-						se::Entity entity{ entityID , model3D.get() };
-						ShowMeshComponent(entity, isModel3DComponentShow);
-					});
-
-				ImGui::TreePop();
-			}
-		}
+				se::Entity entity{ entityID , model3D.get() };
+				ProcessEntities("", entity, selectedEntity);
+				
+				//ShowMeshComponent(entity, isModel3DComponentShow);
+			});
+		ShowInspector(isInspectorShow);
 	}
 }
 
@@ -524,6 +532,29 @@ void EditorLayer::ShowEnvironmentComponent(se::Entity& entity, const bool& show)
 	}
 }
 
+void EditorLayer::ShowCameraComponent(se::Entity& entity, const bool& show)
+{
+	if (show)
+	{
+		if (entity.HasComponent<se::CameraComponent>())
+		{
+			std::string name = "CameraComponent##" + std::string(entity);
+
+			if (ImGui::TreeNode(name.c_str()))
+			{
+				auto& camera = entity.GetComponent<se::CameraComponent>().Camera;
+				DrawVec3("Position", camera->GetPosition());
+				DrawVec3("Dirrection", camera->GetForwardDirrection(), -1.0, 1, 0, 100.0f, 400.0f);
+				if (DrawDragFloat("Fov", camera->GetFov(), 45.0, 100.0f, 350.0f))
+					camera->Resize();
+
+				ImGui::TreePop();
+			}
+		}
+
+	}
+}
+
 bool EditorLayer::ShowImGuizmo(glm::mat4& transform, const bool& show, const float& x, const float& y, const float& w, const float& h)
 {
 	ImGuizmo::SetOrthographic(false);
@@ -543,6 +574,7 @@ bool EditorLayer::ShowImGuizmo(glm::mat4& transform, const bool& show, const flo
 
 void EditorLayer::ShowFpsOverlay(ImGuiViewport* viewport, const bool& show, const float& x, const float& y)
 {
+	ShowDemoWindow();
 	if (show)
 	{
 		ImGuiIO& io = ImGui::GetIO();
@@ -567,16 +599,16 @@ void EditorLayer::ShowFpsOverlay(ImGuiViewport* viewport, const bool& show, cons
 
 void EditorLayer::NewEntityModal(se::EntitiesDocker& docker)
 {
-	
+
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-	if (ImGui::BeginPopupModal("New entity##create_new_entity", NULL, ImGuiWindowFlags_MenuBar| ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal("New entity##create_new_entity", NULL, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize))
 	{
-		
+
 		static char buffer[256] = "";
 		ImGui::Text("Name"); ImGui::SameLine();
 		ImGui::PushItemWidth(400);
-		ImGui::InputTextWithHint("##entities_search", "Entity name", buffer, sizeof(buffer));
+		ImGui::InputTextWithHint("##new_entity_name", "Entity name", buffer, sizeof(buffer));
 		ImGui::PopItemWidth();
 		ImGui::NewLine();
 
@@ -597,6 +629,73 @@ void EditorLayer::NewEntityModal(se::EntitiesDocker& docker)
 
 void EditorLayer::CreateEntity(se::EntitiesDocker& docker, const std::string& name)
 {
-	if(name.size())
+	if (name.size())
 		docker.CreateEntity(name);
+}
+
+void EditorLayer::DeletEntity(se::EntitiesDocker& docker, se::Entity& entity)
+{
+	if (entity.IsValid())
+		docker.DestroyEntity(entity);
+}
+
+void EditorLayer::AddComponentModal(se::Entity& entity)
+{
+
+
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	if (ImGui::BeginPopupModal("Add component##add_component", NULL, ImGuiWindowFlags_MenuBar))
+	{
+		static int item_current = 0;
+		std::vector<const char*> components;
+
+		if (!entity.HasComponent<se::Transform3DComponent>())
+			components.push_back("Transform3DComponent");
+
+		if (!entity.HasComponent<se::Model3DComponent>())
+			components.push_back("Model3DComponent");
+
+		if (!entity.HasComponent<se::EnvironmentComponent>())
+			components.push_back("EnvironmentComponent");
+
+		if (!entity.HasComponent<se::CameraComponent>())
+			components.push_back("CameraComponent");
+
+		if (components.size())
+		{
+			ImGui::Combo("##componnents", &item_current, components.data(), components.size());
+
+			if (ImGui::Button("Add"))
+			{
+				if (components[item_current] == "Transform3DComponent")
+					AddComponent<se::Transform3DComponent>(entity);
+
+				if (components[item_current] == "Model3DComponent")
+				{
+					AddComponent<se::Model3DComponent>(entity);
+				}
+
+				if (components[item_current] == "EnvironmentComponent")
+					AddComponent<se::EnvironmentComponent>(entity);
+
+				if (components[item_current] == "CameraComponent")
+				{
+					auto& component = AddComponent<se::CameraComponent>(entity);
+					component.Camera = se::ShadeShared<se::Camera>(new se::Camera());
+				}
+
+
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("Close"))
+		{
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
 }

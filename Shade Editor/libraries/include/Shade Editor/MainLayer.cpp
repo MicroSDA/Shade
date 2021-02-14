@@ -62,19 +62,6 @@ void MainLayer::OnRender()
 {
 	auto activeCamera = GetScene()->GetActiveCamera();
 	{
-		//Grid// TODO move to another layer i guess
-		auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Grid", true);
-		_Shader->Bind();
-		_Shader->SendUniformMatrix4Float("ViewMatrix", GL_FALSE, GetScene()->GetActiveCamera()->GetView());
-		_Shader->SendUniformMatrix4Float("ProjectionMatrix", GL_FALSE, GetScene()->GetActiveCamera()->GetProjection());
-
-		auto _Entities = GetScene()->GetEntities().view<se::DrawableComponent, se::Transform3DComponent>();
-		for (auto& _Entity : _Entities) {
-			_Shader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModelMatrix());
-			se::Renderer::DrawIndexed(*_Entities.get<se::DrawableComponent>(_Entity).Drawable);
-		}
-	}
-	{
 		// Modles 
 		auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.BasicModel", true);
 
@@ -111,6 +98,21 @@ void MainLayer::OnRender()
 
 					se::Renderer::DrawIndexed(*_Mesh);
 				}
+			}
+		}
+		{
+			//Grid// TODO move to another layer i guess
+			auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Grid", true);
+			_Shader->Bind();
+			_Shader->SendUniformMatrix4Float("ViewMatrix", GL_FALSE, GetScene()->GetActiveCamera()->GetView());
+			_Shader->SendUniformMatrix4Float("ProjectionMatrix", GL_FALSE, GetScene()->GetActiveCamera()->GetProjection());
+			_Shader->SendUniform3Float("CameraPosition", GetScene()->GetActiveCamera()->GetPosition());
+
+			auto _Entities = GetScene()->GetEntities().view<se::DrawableComponent, se::Transform3DComponent>();
+			for (auto& _Entity : _Entities) {
+				_Shader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModelMatrix());
+			
+				se::Renderer::DrawIndexed(*_Entities.get<se::DrawableComponent>(_Entity).Drawable);
 			}
 		}
 	}

@@ -3,6 +3,7 @@
 #include "MainLayer.h"
 //#include "EditorLayer.h"
 #include "EditorLayer.h"
+#include "TestLayer.h"
 #include "Shade/Core/Engine/Text.h"
 
 class MainScene : public se::Scene

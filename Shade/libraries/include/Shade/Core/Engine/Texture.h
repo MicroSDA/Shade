@@ -21,6 +21,11 @@ namespace se
 		Texture();
 		virtual ~Texture();
 		inline const void Bind(const uint32_t& id) const;
+		static const void BindTest(const uint32_t& id)
+		{
+			glActiveTexture(GL_TEXTURE0 + static_cast<GLuint>(0));
+			glBindTexture(GL_TEXTURE_2D, id);
+		}
 		static void UnBind(const uint32_t& id);
 		const GLuint& GetTextureRenderId() const;
 		// Унаследовано через Asset

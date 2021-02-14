@@ -250,7 +250,7 @@ namespace se
 		ImGui::Columns(1);
 		ImGui::PopID();
 	}
-	void ImGuiLayer::DrawDragFloat(const std::string& label, float& values, const float& reset, const float& cw1, const float& cw2 )
+	bool ImGuiLayer::DrawDragFloat(const std::string& label, float& values, const float& reset, const float& cw1, const float& cw2 )
 	{
 		ImGui::PushID(label.c_str());
 		ImGui::Columns(2);
@@ -261,10 +261,12 @@ namespace se
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 		ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
-		ImGui::DragFloat("##value", &values, 0.01f,-FLT_MAX, FLT_MAX, "%.4f");
+		bool isUsed = ImGui::DragFloat("##value", &values, 0.01f,-FLT_MAX, FLT_MAX, "%.4f");
 		ImGui::PopItemWidth();
 		ImGui::Columns(1);
 		ImGui::PopID();
+
+		return isUsed;
 	}
 	void ImGuiLayer::DrawColor3(const std::string& label, glm::vec3& values, const float& cw1, const float& cw2)
 	{
@@ -282,5 +284,62 @@ namespace se
 		ImGui::PopItemWidth();
 		ImGui::Columns(1);
 		ImGui::PopID();
+	}
+	void ImGuiLayer::PushItemFlag(int option)
+	{
+		ImGui::PushItemFlag(option, true);
+	}
+	void ImGuiLayer::PopItemFlag()
+	{
+		ImGui::PopItemFlag();
+	}
+	bool ImGuiLayer::ShowImGuizmo(glm::mat4& transform, const se::Camera* camera, const bool& show, const float& x, const float& y, const float& w, const float& h)
+	{
+		if (show)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+			ImGuizmo::SetRect(x, y, w, h);
+
+			auto cameraView = camera->GetView();
+			auto cameraProjection = camera->GetProjection();
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), m_GuizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(transform));
+
+			if (ImGuizmo::IsUsing())
+				return true;
+			else
+				return false;
+		}
+		else
+			return false;
+		
+	}
+	void ImGuiLayer::ShowFPSOverlay(ImGuiViewport* viewport, const bool& show, const float& x, const float& y)
+	{
+		if (show)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			ImGuiWindowFlags window_flags =
+				ImGuiWindowFlags_NoDecoration |
+				ImGuiWindowFlags_NoDocking |
+				ImGuiWindowFlags_AlwaysAutoResize |
+				ImGuiWindowFlags_NoSavedSettings |
+				ImGuiWindowFlags_NoFocusOnAppearing |
+				ImGuiWindowFlags_NoNav;
+
+			ImGui::SetNextWindowViewport(viewport->ID);
+			ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+			ImGui::SetNextWindowPos(ImVec2{ ImGui::GetWindowPos().x + 12, ImGui::GetWindowPos().y + 32 }, ImGuiCond_Always);
+			if(ImGui::Begin("FPS", nullptr, window_flags))
+			{
+				ImGui::Text("Application average %.1f ms/frame (%.0f FPS)", 1000.0f / io.Framerate, io.Framerate);
+			}
+			ImGui::End();
+		}
+	}
+	ImVec2 ImGuiLayer::CalcItemSize(ImVec2 size, float default_w, float default_h)
+	{
+		return ImGui::CalcItemSize(size, default_w, default_h);
 	}
 }
