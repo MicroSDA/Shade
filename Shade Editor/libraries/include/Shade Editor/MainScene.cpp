@@ -23,19 +23,19 @@ void MainScene::OnCreate()
 	se::Renderer::SetClearColor(0.46f, 0.61f, 0.66f, 1.0f);
 	//Camera
 	se::Entity   mainCamera = this->CreateEntity("Camera");
-	mainCamera.AddComponent<se::CameraComponent>(new se::Camera()).Camera->SetPosition(0, 5, -5);
+	mainCamera.AddComponent<se::CameraComponent>(new se::Camera()).IsPrimary = true;
 	mainCamera.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
-	SetActiveCamera(mainCamera.GetComponent<se::CameraComponent>().Camera);
+	SetActiveCamera(mainCamera.GetComponent<se::CameraComponent>().Camera);/*
 	//Lights
 
 	CreateEntity("General light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::GeneralLight()));
-	CreateEntity("Point light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::PointLight()));
+	CreateEntity("Point light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::PointLight()));*/
 	//CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::SpotLight()));
 }
 
 void MainScene::OnInit()
 {
-	se::Entity grid = this->CreateEntity("Grid"); // TODO move to Aplication entt
+	/*se::Entity grid = this->CreateEntity("Grid"); // TODO move to Aplication entt
 	grid.AddComponent<se::Transform3DComponent>();
 	grid.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 500)));
 
@@ -55,7 +55,7 @@ void MainScene::OnInit()
 
 	se::Entity skullEntity = CreateEntity("Skull");
 	skullEntity.AddComponent<se::Model3DComponent>(skull);
-	skullEntity.AddComponent<se::Transform3DComponent>();
+	skullEntity.AddComponent<se::Transform3DComponent>();*/
 }
 
 void MainScene::OnUpdate(const se::Timer& deltaTime)

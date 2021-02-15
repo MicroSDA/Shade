@@ -45,13 +45,14 @@ namespace se
 	{
 		// Set shared i guess TODO
 		se::ShadeShared<se::Camera> Camera;
+		bool IsPrimary = false;
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
 		CameraComponent(const se::ShadeShared<se::Camera>& other)
 			:Camera(other)
 		{
 		}
-		CameraComponent(se::Camera* camera)
+		CameraComponent(se::Camera* camera) // Disable this becouse we need to pas only shared pointer
 			:Camera(se::ShadeShared<se::Camera>(camera))
 		{
 		}

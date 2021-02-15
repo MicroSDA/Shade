@@ -225,7 +225,9 @@ void TestLayer::DrawEntities(se::Entity& selectedEntity, se::EntitiesDocker* doc
 	{
 		ImGui::NewLine();
 		if (ImGui::Button("New entity", ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
-			ImGui::OpenPopup("New entity##create_new_entity");
+			ImGui::OpenPopup("##create_new_entity");
+		CreateEntityModal("##create_new_entity", *docker);
+
 		ImGui::NewLine();
 		static char buffer[256] = "";
 		ImGui::Text("Search"); ImGui::SameLine();
@@ -244,6 +246,8 @@ void TestLayer::DrawEntities(se::Entity& selectedEntity, se::EntitiesDocker* doc
 			ImGui::ListBoxFooter();
 		}
 		ImGui::TreePop();
+
+	
 	}
 }
 
@@ -268,10 +272,15 @@ void TestLayer::DrawEntity(se::Entity& entity, se::Entity& selectedEntity, const
 
 	if (ImGui::BeginPopupContextItem())
 	{
-		AddComponent<se::Transform3DComponent>("Transform3DComponent", entity);
-		AddComponent<se::Model3DComponent>("Model3DComponent", entity);
-		AddComponent<se::EnvironmentComponent>("EnvironmentComponent", entity);
-		AddComponent<se::CameraComponent>("CameraComponent", entity);
+		//AddComponent<se::Transform3DComponent>("Transform3DComponent", entity);
+		//AddComponent<se::Model3DComponent>("Model3DComponent", entity);
+		//AddComponent<se::EnvironmentComponent>("EnvironmentComponent", entity);
+		AddComponent<se::CameraComponent>("CameraComponent", entity, [&](se::CameraComponent& component) {
+			
+			auto pCamera = new se::Camera();
+			component.IsPrimary = true;
+			component.Camera = se::ShadeShared<se::Camera>(pCamera);
+			});
 
 
 		ImGui::Separator();
@@ -609,5 +618,37 @@ void TestLayer::ShowEnvironmentImGuizmo(se::Entity& entity)
 			pLight->SetDirection(glm::radians(rotation));
 		}
 		break;
+	}
+}
+
+void TestLayer::CreateEntityModal(const char* modalName, se::EntitiesDocker& docker)
+{
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	if (ImGui::BeginPopupModal(modalName, NULL, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize))
+	{
+
+		static char buffer[256] = "";
+		ImGui::Text("Name"); ImGui::SameLine();
+		ImGui::PushItemWidth(400);
+		ImGui::InputTextWithHint("##new_entity_name", "Entity name", buffer, sizeof(buffer));
+		ImGui::PopItemWidth();
+		ImGui::NewLine();
+
+		if (ImGui::Button("Create"))
+		{
+			if (strcmp(buffer, "") == 1)
+			{
+				docker.CreateEntity(buffer);
+				memset(buffer, 0, sizeof(buffer));
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+
+		ImGui::SameLine();
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
 	}
 }

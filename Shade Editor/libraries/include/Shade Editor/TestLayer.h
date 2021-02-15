@@ -37,6 +37,8 @@ private:
 	bool DrawFloat(const char* lable, float* data, const float& reset = 0.0f, const float& min = -FLT_MAX, const float& max = FLT_MAX, const float& cw1 = 80.0f, const float& cw2 = 0);
 	void ShowEnvironmentImGuizmo(se::Entity& entity);
 
+	void CreateEntityModal(const char* modalName, se::EntitiesDocker& docker);
+
 	template<typename T, typename Callback>
 	void DrawComponent(const char* name, se::Entity& entity, Callback callback, const bool& isShow = true)
 	{
@@ -52,17 +54,18 @@ private:
 			}
 		}
 	};
-	template<typename T>
-	T& AddComponent(const char* componentName, se::Entity& entity)
+	template<typename T, typename Callback>
+	void AddComponent(const char* componentName, se::Entity& entity, Callback callback, const bool& isShow = true)
 	{
 		if (!entity.HasComponent<T>())
 		{
 			if (ImGui::MenuItem(componentName))
-				return entity.AddComponent<T>();
+			{
+				callback(entity.AddComponent<T>());
+			}
 		}
-
-		return *static_cast<T*>(nullptr);
 	}
+
 
 	bool m_IsMainMenu = true;
 	bool m_IsProjectBar = true;

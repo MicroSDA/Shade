@@ -1,5 +1,6 @@
 #pragma once
-#include <Shade/Core/CoreAPI.h>
+#include "Shade/Core/CoreAPI.h"
+#include "Shade/Core/Engine/Entity.h"
 
 namespace se
 {
@@ -11,7 +12,7 @@ namespace se
 		static bool SerializeScene(const std::string& filepath,   se::Scene& scene);
 		static bool DeserializeScene(const std::string& filepath, se::Scene& scene);
 	private:
-		
+
 	};
 }
 

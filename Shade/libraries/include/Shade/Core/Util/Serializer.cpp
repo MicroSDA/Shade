@@ -3,8 +3,8 @@
 #include <Shade/Core/Engine/Scene.h>
 #include <Shade/Core/Engine/Entity.h>
 #include <Shade/Core/Engine/Components.h>
-
 #include <yaml-cpp/yaml.h>
+
 
 namespace YAML {
 
@@ -75,98 +75,137 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v)
 	return out;
 }
 
-static bool SerializeEntity(YAML::Emitter& out, se::Entity& entity)
+static bool SerrializeTagComponent(se::Entity& entity, YAML::Emitter& emitter)
 {
-	out << YAML::BeginMap; // Entity
-	out << YAML::Key << "Entity" << YAML::Value << std::string(entity); // TODO: Entity ID goes here
 	if (entity.HasComponent<se::TagComponent>())
 	{
-		out << YAML::Key << "TagComponent";
-		out << YAML::BeginMap;
-
 		auto& component = entity.GetComponent<se::TagComponent>().Tag;
-		out << YAML::Key << "Tag" << YAML::Value << component;
-
-		out << YAML::EndMap; 
+		emitter << YAML::Key << "TagComponent" << YAML::BeginMap;
+		emitter << YAML::Key << "Tag" << YAML::Value << component;
+		emitter << YAML::EndMap;
+		return true;
 	}
+	else
+		return false;
+}
+
+static bool SerrializeTransform3DComponent(se::Entity& entity, YAML::Emitter& emitter)
+{
 	if (entity.HasComponent<se::Transform3DComponent>())
 	{
-		out << YAML::Key << "Transform3DComponent";
-		out << YAML::BeginMap; // TransformComponent
-
 		auto& component = entity.GetComponent<se::Transform3DComponent>().Transform;
-		out << YAML::Key << "Position" << YAML::Value << component.GetPosition();
-		out << YAML::Key << "Rotation" << YAML::Value << component.GetRotation();
-		out << YAML::Key << "Scale" << YAML::Value << component.GetScale();
-
-		out << YAML::EndMap; // TransformComponent
+		emitter << YAML::Key << "Transform3DComponent" << YAML::BeginMap;
+		emitter << YAML::Key << "Position" << YAML::Value << component.GetPosition();
+		emitter << YAML::Key << "Rotation" << YAML::Value << component.GetRotation();
+		emitter << YAML::Key << "Scale" << YAML::Value << component.GetScale();
+		emitter << YAML::EndMap;
+		return true;
 	}
+	else
+		return false;
+}
+
+static bool SerrializeModel3DComponent(se::Entity& entity, YAML::Emitter& emitter)
+{
 	if (entity.HasComponent<se::Model3DComponent>())
 	{
-		out << YAML::Key << "Model3DComponent";
-		out << YAML::BeginMap; // Model3DComponent
-
 		auto& component = entity.GetComponent<se::Model3DComponent>().Model3D;
-
-		out << YAML::Key << "Asset" << YAML::Value << component->GetAssetId();
-
-		out << YAML::EndMap; // Model3DComponent
+		emitter << YAML::Key << "Model3DComponent" << YAML::BeginMap;
+		emitter << YAML::Key << "Asset" << YAML::Value << component->GetAssetId();
+		emitter << YAML::EndMap;
+		return true;
 	}
+	else
+		return false;
+}
+
+static bool SerrializeCameraComponent(se::Entity& entity, YAML::Emitter& emitter)
+{
+	if (entity.HasComponent<se::CameraComponent>())
+	{
+		auto& component = entity.GetComponent<se::CameraComponent>();
+		emitter << YAML::Key << "CameraComponent" << YAML::BeginMap;
+		emitter << YAML::Key << "IsPrimary" << YAML::Value << component.IsPrimary;
+		emitter << YAML::Key << "Position" << YAML::Value << component.Camera->GetPosition();
+		emitter << YAML::Key << "Direction" << YAML::Value << component.Camera->GetForwardDirrection();
+		emitter << YAML::Key << "Fov" << YAML::Value << component.Camera->GetFov();
+		emitter << YAML::Key << "Aspect" << YAML::Value << component.Camera->GetAspect();
+		emitter << YAML::Key << "Near" << YAML::Value << component.Camera->GetNear();
+		emitter << YAML::Key << "Far" << YAML::Value << component.Camera->GetFar();
+		emitter << YAML::EndMap; // CameraComponent
+		return true;
+	}
+	else
+		return false;
+}
+
+static bool SerrializeEnvironmentComponent(se::Entity& entity, YAML::Emitter& emitter)
+{
 	if (entity.HasComponent<se::EnvironmentComponent>())
 	{
-		out << YAML::Key << "EnvironmentComponent";
-		out << YAML::BeginMap; // EnvironmentComponent
-
 		auto& environment = entity.GetComponent<se::EnvironmentComponent>().Environment;
-
+		emitter << YAML::Key << "EnvironmentComponent" << YAML::BeginMap;
 		switch (environment->GetType())
 		{
 		case se::Environment::Type::GeneralLight:
 		{
 			auto pLight = static_cast<se::GeneralLight*>(environment.get());
-			out << YAML::Key << "Type"       << YAML::Value << static_cast<uint32_t>(pLight->GetType());
-			out << YAML::Key << "Direction"  << YAML::Value << pLight->GetDirection();
-			out << YAML::Key << "Ambient"    << YAML::Value << pLight->GetAmbientColor();
-			out << YAML::Key << "Diffuse"   << YAML::Value << pLight->GetDiffuseColor();
-			out << YAML::Key << "Specular"   << YAML::Value << pLight->GetSpecularColor();
+			emitter << YAML::Key << "Type" << YAML::Value << static_cast<uint32_t>(pLight->GetType());
+			emitter << YAML::Key << "Direction" << YAML::Value << pLight->GetDirection();
+			emitter << YAML::Key << "Ambient" << YAML::Value << pLight->GetAmbientColor();
+			emitter << YAML::Key << "Diffuse" << YAML::Value << pLight->GetDiffuseColor();
+			emitter << YAML::Key << "Specular" << YAML::Value << pLight->GetSpecularColor();
 			break;
 		}
 		case se::Environment::Type::PointLight:
 		{
 			auto pLight = static_cast<se::PointLight*>(environment.get());
-			out << YAML::Key << "Type"      << YAML::Value << static_cast<uint32_t>(pLight->GetType());
-			out << YAML::Key << "Position"  << YAML::Value  << pLight->GetPosition();
-			out << YAML::Key << "Ambient"   << YAML::Value  << pLight->GetAmbientColor();
-			out << YAML::Key << "Diffuse"   << YAML::Value  << pLight->GetDiffuseColor();
-			out << YAML::Key << "Specular"  << YAML::Value  << pLight->GetSpecularColor();
-			out << YAML::Key << "Constant"  << YAML::Value  << pLight->GetConstant();
-			out << YAML::Key << "Linear"    << YAML::Value  << pLight->GetLinear();
-			out << YAML::Key << "Qaudratic" << YAML::Value  << pLight->GetQaudratic();
+			emitter << YAML::Key << "Type" << YAML::Value << static_cast<uint32_t>(pLight->GetType());
+			emitter << YAML::Key << "Position" << YAML::Value << pLight->GetPosition();
+			emitter << YAML::Key << "Ambient" << YAML::Value << pLight->GetAmbientColor();
+			emitter << YAML::Key << "Diffuse" << YAML::Value << pLight->GetDiffuseColor();
+			emitter << YAML::Key << "Specular" << YAML::Value << pLight->GetSpecularColor();
+			emitter << YAML::Key << "Constant" << YAML::Value << pLight->GetConstant();
+			emitter << YAML::Key << "Linear" << YAML::Value << pLight->GetLinear();
+			emitter << YAML::Key << "Qaudratic" << YAML::Value << pLight->GetQaudratic();
 			break;
 		}
 		case se::Environment::Type::SpotLight:
 		{
 			auto pLight = static_cast<se::SpotLight*>(environment.get());
-			out << YAML::Key << "Type"       << YAML::Value << static_cast<uint32_t>(pLight->GetType());
-			out << YAML::Key << "Position"   << YAML::Value << pLight->GetPosition();
-			out << YAML::Key << "Direction"	 << YAML::Value << pLight->GetDirection();
-			out << YAML::Key << "Ambient"    << YAML::Value << pLight->GetAmbientColor();
-			out << YAML::Key << "Diffuse"    << YAML::Value << pLight->GetDiffuseColor();
-			out << YAML::Key << "Specular"   << YAML::Value << pLight->GetSpecularColor();
-			out << YAML::Key << "Constant"   << YAML::Value << pLight->GetConstant();
-			out << YAML::Key << "Linear"     << YAML::Value << pLight->GetLinear();
-			out << YAML::Key << "Qaudratic"  << YAML::Value << pLight->GetQaudratic();
-			out << YAML::Key << "MinAngle"   << YAML::Value << pLight->GetMinAngle();
-			out << YAML::Key << "MaxAngle"   << YAML::Value << pLight->GetMaxAngle();
+			emitter << YAML::Key << "Type" << YAML::Value << static_cast<uint32_t>(pLight->GetType());
+			emitter << YAML::Key << "Position" << YAML::Value << pLight->GetPosition();
+			emitter << YAML::Key << "Direction" << YAML::Value << pLight->GetDirection();
+			emitter << YAML::Key << "Ambient" << YAML::Value << pLight->GetAmbientColor();
+			emitter << YAML::Key << "Diffuse" << YAML::Value << pLight->GetDiffuseColor();
+			emitter << YAML::Key << "Specular" << YAML::Value << pLight->GetSpecularColor();
+			emitter << YAML::Key << "Constant" << YAML::Value << pLight->GetConstant();
+			emitter << YAML::Key << "Linear" << YAML::Value << pLight->GetLinear();
+			emitter << YAML::Key << "Qaudratic" << YAML::Value << pLight->GetQaudratic();
+			emitter << YAML::Key << "MinAngle" << YAML::Value << pLight->GetMinAngle();
+			emitter << YAML::Key << "MaxAngle" << YAML::Value << pLight->GetMaxAngle();
 			break;
 		}
 		}
-		out << YAML::EndMap; // EnvironmentComponent
+		emitter << YAML::EndMap;
+		return true;
 	}
-	out << YAML::EndMap; // Entity
-
-	return false;
+	else
+		return false;
 }
+
+static bool SerializeEntity(se::Entity& entity, YAML::Emitter& emitter)
+{
+	emitter << YAML::BeginMap << YAML::Key << "Entity" << YAML::Value << static_cast<uint32_t>(entity);
+	SerrializeTagComponent(entity, emitter);
+	SerrializeTransform3DComponent(entity, emitter);
+	SerrializeModel3DComponent(entity, emitter);
+	SerrializeCameraComponent(entity, emitter);
+	SerrializeEnvironmentComponent(entity, emitter);
+	emitter << YAML::EndMap;
+	return true; // TODO hm it's looks useless
+}
+
 bool se::Serializer::SerializeScene(const std::string& filepath, se::Scene& scene)
 {
 	YAML::Emitter out;
@@ -175,102 +214,163 @@ bool se::Serializer::SerializeScene(const std::string& filepath, se::Scene& scen
 	out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 	scene.GetEntities().each([&](auto entityID)
 		{
-			se::Entity entity { entityID , &scene };
+			se::Entity entity{ entityID , &scene };
 			if (!entity)
 				return;
-
-				SerializeEntity(out, entity);
+			SerializeEntity(entity, out);
 		});
 	out << YAML::EndSeq;
 	out << YAML::EndMap;
 
 	std::ofstream fout(filepath);
 	fout << out.c_str();
-    return false;
+	return false;
+}
+
+static bool DeserializeTagComponent(se::Entity& entity, YAML::detail::iterator_value& iter_value)
+{
+	if (iter_value["TagComponent"])
+	{
+		entity.GetComponent<se::TagComponent>().Tag = iter_value["TagComponent"]["Tag"].as<std::string>();
+		return true;
+	}
+	else
+		return false;
+}
+
+static bool DeserializeTransform3DComponent(se::Entity& entity, YAML::detail::iterator_value& iter_value)
+{
+	if (iter_value["Transform3DComponent"])
+	{
+		auto ser_component = iter_value["Transform3DComponent"];
+		se::Transform3DComponent transform_component;
+		transform_component.Transform.SetPostition(ser_component["Position"].as<glm::vec3>());
+		transform_component.Transform.SetRotation(ser_component["Rotation"].as<glm::vec3>());
+		transform_component.Transform.SetScale(ser_component["Scale"].as<glm::vec3>());
+		entity.AddComponent<se::Transform3DComponent>(transform_component);
+		return true;
+	}
+	else
+		return false;
+}
+
+static bool DeserializeModel3DComponent(se::Entity& entity, YAML::detail::iterator_value& iter_value)
+{
+	if (iter_value["Model3DComponent"])
+	{
+		auto ser_component = iter_value["Model3DComponent"];
+		const std::string asset = ser_component["Asset"].as<std::string>();
+		auto pModel = se::AssetManager::Hold<se::Model3D>(asset);
+		entity.AddComponent<se::Model3DComponent>(pModel);
+		return true;
+	}
+	else
+		return false;
+}
+
+static bool DeserializeCameraComponent(se::Entity& entity, YAML::detail::iterator_value& iter_value)
+{
+	if (iter_value["CameraComponent"])
+	{
+		se::Camera* pCamera = new se::Camera();
+		auto ser_component = iter_value["CameraComponent"];
+		pCamera->SetPosition(ser_component["Position"].as<glm::vec3>());
+		pCamera->SeDirection(ser_component["Direction"].as<glm::vec3>());
+		pCamera->SetAspect(ser_component["Aspect"].as<float>());
+		pCamera->SetFov(ser_component["Fov"].as<float>());
+		pCamera->SetNear(ser_component["Near"].as<float>());
+		pCamera->SetFar(ser_component["Far"].as<float>());
+		pCamera->Resize();
+		entity.AddComponent<se::CameraComponent>(pCamera).IsPrimary = ser_component["IsPrimary"].as<bool>();
+		return true;
+	}
+	else
+		return false;
+}
+
+static bool DeserializeEnvironmentComponent(se::Entity& entity, YAML::detail::iterator_value& iter_value)
+{
+	if (iter_value["EnvironmentComponent"])
+	{
+		auto ser_component = iter_value["EnvironmentComponent"];
+		switch (ser_component["Type"].as<uint32_t>())
+		{
+		case (uint32_t)se::Environment::Type::GeneralLight: // TODO how to convert it to uint32_t without cast
+		{
+			auto pLight = new se::GeneralLight();
+			pLight->SetDirection(ser_component["Direction"].as<glm::vec3>());
+			pLight->SetAmbientColor(ser_component["Ambient"].as<glm::vec3>());
+			pLight->SetDiffuseColor(ser_component["Diffuse"].as<glm::vec3>());
+			pLight->SetSpecularColor(ser_component["Specular"].as<glm::vec3>());
+			entity.AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(pLight));
+			return true;
+		}
+		case (uint32_t)se::Environment::Type::PointLight: // TODO how to convert it to uint32_t without cast
+		{
+			auto pLight = new se::PointLight();
+			pLight->SetPosition(ser_component["Position"].as<glm::vec3>());
+			pLight->SetAmbientColor(ser_component["Ambient"].as<glm::vec3>());
+			pLight->SetDiffuseColor(ser_component["Diffuse"].as<glm::vec3>());
+			pLight->SetSpecularColor(ser_component["Specular"].as<glm::vec3>());
+			pLight->SetConstant(ser_component["Constant"].as<float>());
+			pLight->SetLinear(ser_component["Linear"].as<float>());
+			pLight->SetQaudratic(ser_component["Qaudratic"].as<float>());
+			entity.AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(pLight));
+			return true;
+		}
+		case (uint32_t)se::Environment::Type::SpotLight: // TODO how to convert it to uint32_t without cast
+		{
+			auto pLight = new se::SpotLight();
+			pLight->SetPosition(ser_component["Position"].as<glm::vec3>());
+			pLight->SetDirection(ser_component["Direction"].as<glm::vec3>());
+			pLight->SetAmbientColor(ser_component["Ambient"].as<glm::vec3>());
+			pLight->SetDiffuseColor(ser_component["Diffuse"].as<glm::vec3>());
+			pLight->SetSpecularColor(ser_component["Specular"].as<glm::vec3>());
+			pLight->SetConstant(ser_component["Constant"].as<float>());
+			pLight->SetLinear(ser_component["Linear"].as<float>());
+			pLight->SetQaudratic(ser_component["Qaudratic"].as<float>());
+			pLight->SetMinAngle(ser_component["MinAngle"].as<float>());
+			pLight->SetMaxAngle(ser_component["MaxAngle"].as<float>());
+			entity.AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(pLight));
+			return true;
+		}
+		default:
+			return false; // keep in mind
+		}
+	}
+	else
+		return false;
+}
+
+static bool DeserializeEntity(se::Entity& entity, YAML::detail::iterator_value& iter_value)
+{
+
+	DeserializeTagComponent(entity, iter_value);
+	DeserializeTransform3DComponent(entity, iter_value);
+	DeserializeModel3DComponent(entity, iter_value);
+	DeserializeCameraComponent(entity, iter_value);
+	DeserializeEnvironmentComponent(entity, iter_value);
+
+	return true; // usless
 }
 
 bool se::Serializer::DeserializeScene(const std::string& filepath, se::Scene& scene)
 {
-	YAML::Node data = YAML::LoadFile(filepath);
-	if (!data["Scene"])
+	YAML::Node serialized_scene = YAML::LoadFile(filepath);
+	if (!serialized_scene["Scene"])
 		return false;
 
-	std::string sceneName = data["Scene"].as<std::string>();
-
-	auto entities = data["Entities"];
-	if (entities)
+	std::string sceneName    = serialized_scene["Scene"].as<std::string>();
+	auto serialized_entities = serialized_scene["Entities"];
+	if (serialized_entities)
 	{
-		for (auto entity : entities)
+		for (auto entity : serialized_entities)
 		{
 			std::uint32_t id = entity["Entity"].as<std::uint32_t>(); 
-			if (entity["TagComponent"])
-			{
-				auto newEntity = scene.CreateEntity(entity["TagComponent"]["Tag"].as<std::string>());
-
-				if (entity["Transform3DComponent"])
-				{
-					se::Transform3D transform;
-					transform.SetPostition(entity["Transform3DComponent"]["Position"].as<glm::vec3>());
-					transform.SetRotation(entity["Transform3DComponent"]["Rotation"].as<glm::vec3>());
-					transform.SetScale(entity["Transform3DComponent"]["Scale"].as<glm::vec3>());
-					newEntity.AddComponent<se::Transform3DComponent>(transform);
-				}
-				if (entity["Model3DComponent"])
-				{
-					se::AssetPointer<se::Model3D> pModel3D(se::AssetManager::Hold<se::Model3D>(entity["Model3DComponent"]["Asset"].as<std::string>()));
-					newEntity.AddComponent<se::Model3DComponent>(pModel3D);
-				}
-				if (entity["EnvironmentComponent"])
-				{
-					auto& envcomp = newEntity.AddComponent<se::EnvironmentComponent>();
-					switch (entity["EnvironmentComponent"]["Type"].as<uint32_t>())
-					{
-					case (uint32_t)se::Environment::Type::GeneralLight: // TODO how to convert it to uint32_t without cast
-					{
-						auto pLight = new se::GeneralLight();
-						pLight->SetDirection(entity["EnvironmentComponent"]["Direction"].as<glm::vec3>());
-						pLight->SetAmbientColor(entity["EnvironmentComponent"]["Ambient"].as<glm::vec3>());
-						pLight->SetDiffuseColor(entity["EnvironmentComponent"]["Diffuse"].as<glm::vec3>());
-						pLight->SetSpecularColor(entity["EnvironmentComponent"]["Specular"].as<glm::vec3>());
-						envcomp.Environment = se::ShadeShared<se::Environment>(pLight);
-						break;
-					}
-					case (uint32_t)se::Environment::Type::PointLight: // TODO how to convert it to uint32_t without cast
-					{
-						auto pLight = new se::PointLight();
-						pLight->SetPosition(entity["EnvironmentComponent"]["Position"].as<glm::vec3>());
-						pLight->SetAmbientColor(entity["EnvironmentComponent"]["Ambient"].as<glm::vec3>());
-						pLight->SetDiffuseColor(entity["EnvironmentComponent"]["Diffuse"].as<glm::vec3>());
-						pLight->SetSpecularColor(entity["EnvironmentComponent"]["Specular"].as<glm::vec3>());
-						pLight->SetConstant(entity["EnvironmentComponent"]["Constant"].as<float>());
-						pLight->SetLinear(entity["EnvironmentComponent"]["Linear"].as<float>());
-						pLight->SetQaudratic(entity["EnvironmentComponent"]["Qaudratic"].as<float>());
-						envcomp.Environment = se::ShadeShared<se::Environment>(pLight);
-						break;
-					}
-					case (uint32_t)se::Environment::Type::SpotLight: // TODO how to convert it to uint32_t without cast
-					{
-						auto pLight = new se::SpotLight();
-						pLight->SetPosition(entity["EnvironmentComponent"]["Position"].as<glm::vec3>());
-						pLight->SetDirection(entity["EnvironmentComponent"]["Direction"].as<glm::vec3>());
-						pLight->SetAmbientColor(entity["EnvironmentComponent"]["Ambient"].as<glm::vec3>());
-						pLight->SetDiffuseColor(entity["EnvironmentComponent"]["Diffuse"].as<glm::vec3>());
-						pLight->SetSpecularColor(entity["EnvironmentComponent"]["Specular"].as<glm::vec3>());
-						pLight->SetConstant(entity["EnvironmentComponent"]["Constant"].as<float>());
-						pLight->SetLinear(entity["EnvironmentComponent"]["Linear"].as<float>());
-						pLight->SetQaudratic(entity["EnvironmentComponent"]["Qaudratic"].as<float>());
-						pLight->SetMinAngle(entity["EnvironmentComponent"]["MinAngle"].as<float>());
-						pLight->SetMaxAngle(entity["EnvironmentComponent"]["MaxAngle"].as<float>());
-						envcomp.Environment = se::ShadeShared<se::Environment>(pLight);
-						break;
-					}
-					default:
-						break;
-					}
-				}
-			}
+			auto entt = scene.CreateEntity(entity["TagComponent"]["Tag"].as<std::string>());
+			DeserializeEntity(entt, entity);
 		}
-	}
 
-	return false;
+		return true;
+	}
 }

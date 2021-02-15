@@ -55,12 +55,22 @@ void MainLayer::OnInit()
 
 void MainLayer::OnUpdate(const se::Timer& deltaTime)
 {
-	
+	auto ñameras = GetScene()->GetEntities().view<se::CameraComponent>();
+	for (auto& camera : ñameras)
+	{
+		auto& camera_component = ñameras.get<se::CameraComponent>(camera);
+		if (camera_component.IsPrimary)
+		{
+			GetScene()->SetActiveCamera(camera_component.Camera);
+			break;
+		}	
+	}
 }
 
 void MainLayer::OnRender()
 {
 	auto activeCamera = GetScene()->GetActiveCamera();
+	if(activeCamera != nullptr)
 	{
 		// Modles 
 		auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.BasicModel", true);

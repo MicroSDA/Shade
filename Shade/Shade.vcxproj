@@ -263,6 +263,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -309,6 +310,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
