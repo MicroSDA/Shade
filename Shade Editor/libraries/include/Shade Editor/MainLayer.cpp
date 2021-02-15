@@ -116,7 +116,6 @@ void MainLayer::OnRender()
 			}
 		}
 	}
-
 	/*auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text", true);
 	auto texts = GetScene()->GetEntities().view<se::DrawableTextComponent>();
 	se::Transform2D transform;

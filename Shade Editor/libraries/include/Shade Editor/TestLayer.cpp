@@ -85,7 +85,8 @@ void TestLayer::OnRender()
 		this->ShowMainMenu(m_IsMainMenu);
 		this->ShowProjectBar(m_IsProjectBar);
 		this->ShowSceneWindow(m_IsSceneWindow);
-
+		//ShowDemoWindow();
+		
 	} ImGui::End(); // Begin("DockSpace")*/
 }
 
@@ -106,11 +107,22 @@ void TestLayer::ShowMainMenu(const bool& show)
 
 				if (ImGui::MenuItem("Open"))
 				{
-					this->GetScene()->DestroyEntities();
-					se::Serializer::DeserializeScene("./scene.shade", *this->GetScene());
+					std::string filePath = se::FileDialog::OpenFile("");
+					if (filePath.size())
+					{
+						this->GetScene()->DestroyEntities();
+						se::Serializer::DeserializeScene(filePath, *this->GetScene());
+					}
 				}
 
-				if (ImGui::MenuItem("Save")) { se::Serializer::SerializeScene("./scene.shade", *this->GetScene()); }
+				if (ImGui::MenuItem("Save")) 
+				{ 
+					std::string filePath = se::FileDialog::OpenFile("");
+					if (filePath.size())
+					{
+						se::Serializer::SerializeScene(filePath, *this->GetScene());
+					}
+				}
 
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit"))  se::Application::GetApplication().Quit();
@@ -123,9 +135,9 @@ void TestLayer::ShowMainMenu(const bool& show)
 				ImGui::MenuItem("Scene", "", &m_IsSceneWindow);
 				ImGui::MenuItem("ImGuizmo", "", &m_IsImGuizmoShow);
 				ImGui::MenuItem("FPS", "", &m_IsFpsShow);
-				
+
 				ImGui::EndMenu();
-			} 
+			}
 
 		} ImGui::EndMenuBar();
 	}
@@ -194,6 +206,10 @@ void TestLayer::ShowSceneWindow(const bool& show)
 							transform.SetScale(scale);
 						}
 					}
+					else if (m_SelectedEntity.HasComponent<se::EnvironmentComponent>())
+					{
+						ShowEnvironmentImGuizmo(m_SelectedEntity);
+					}
 				}
 
 				this->ShowFPSOverlay(ImGui::GetWindowViewport(), m_IsFpsShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
@@ -205,8 +221,7 @@ void TestLayer::ShowSceneWindow(const bool& show)
 
 void TestLayer::DrawEntities(se::Entity& selectedEntity, se::EntitiesDocker* docker)
 {
-	std::string name = std::string("Entities##" + std::to_string((uint32_t)docker));
-	if (ImGui::CollapsingHeader(name.c_str()))
+	if (ImGui::TreeNodeEx("Entities", ImGuiTreeNodeFlags_SelectedWhenOpen))
 	{
 		ImGui::NewLine();
 		if (ImGui::Button("New entity", ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
@@ -228,8 +243,7 @@ void TestLayer::DrawEntities(se::Entity& selectedEntity, se::EntitiesDocker* doc
 
 			ImGui::ListBoxFooter();
 		}
-
-		//UpdateInspector(selectedEntity);
+		ImGui::TreePop();
 	}
 }
 
@@ -336,30 +350,131 @@ void TestLayer::Model3DCallback(se::Entity& entity)
 	auto* pModel = entity.GetComponent<se::Model3DComponent>().Model3D.get();
 	if (pModel != nullptr)
 	{
-		if (ImGui::CollapsingHeader("Meshes"))
+		// Drwaing tag agin it's only for nice TreeNode
+		DrawComponent<se::TagComponent>("Meshes", entity, [&]()
+			{
+				pModel->GetEntities().each([&](auto entityID)
+					{
+						se::Entity entity{ entityID , pModel };
+						DrawComponent<se::MeshComponent>(entity.GetComponent<se::TagComponent>().Tag.c_str(), entity, [&]()
+							{
+								MeshCallback(entity);
+							});
+					});
+			});
+	}
+}
+
+void TestLayer::MeshCallback(se::Entity& entity)
+{
+	DrawComponent<se::TagComponent>("Tag", entity, [&]()
 		{
-			pModel->GetEntities().each([&](auto entityID)
+			TagCallback(entity);
+		});
+	DrawComponent<se::MaterialComponent>("Material", entity, [&]()
+		{
+			MaterialCallback(entity);
+		});
+}
+
+void TestLayer::TextureCallback(se::Entity& entity)
+{
+	const float width = 100.0f, height = 100.0f;
+	auto texture = entity.GetComponent<se::TextureComponent>().Texture;
+	ImTextureID tid = reinterpret_cast<void*>(texture->GetTextureRenderId());
+	uint32_t id = entity;
+
+	switch (texture->GetAssetData()._SubType)
+	{
+	case se::AssetDataSubType::Diffuse:
+		ImGui::BulletText("Type: Diffuse");
+		break;
+	case se::AssetDataSubType::Specular:
+		ImGui::BulletText("Type: Specular");
+		break;
+	case se::AssetDataSubType::NormalMap:
+		ImGui::BulletText("Type: NormalMap");
+		break;
+	}
+
+	ImGui::Image(tid, ImVec2{ width, height }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+}
+
+void TestLayer::MaterialCallback(se::Entity& entity)
+{
+	auto& material = entity.GetComponent<se::MaterialComponent>().Material;
+	float tab_width = 145.0f;
+	DrawColor3("Ambient", glm::value_ptr(material.GetAmbientColor()), tab_width);
+	DrawColor3("Diffuse", glm::value_ptr(material.GetDiffuseColor()), tab_width);
+	DrawColor3("Scpecular", glm::value_ptr(material.GetSpecularColor()), tab_width);
+	DrawFloat("Shininess", &material.GetShininess(), 0.0f, -FLT_MAX, FLT_MAX, tab_width);
+	DrawFloat("Shininess strength", &material.GetShininessStrength(), 0.0f, -FLT_MAX, FLT_MAX, tab_width);
+
+	auto& mesh = entity.GetComponent<se::MeshComponent>().Mesh;
+
+	DrawComponent<se::TagComponent>("Textures", entity, [&]
+		{
+			mesh->GetEntities().each([&](auto entityID)
 				{
-					se::Entity entity{ entityID , pModel };
-					DrawComponent<se::TagComponent>("Tag", entity, [&]()
+					se::Entity entity{ entityID , mesh.get() };
+					std::string name = entity.GetComponent<se::TagComponent>().Tag + "##" + entity;
+
+					DrawComponent<se::TagComponent>(name.c_str(), entity, [&]
 						{
-							TagCallback(entity);
+							TextureCallback(entity);
 						});
 				});
-		}
-	}
+		});
+	
 }
 
 void TestLayer::EnvironmentCallback(se::Entity& entity)
 {
+	auto& env = entity.GetComponent<se::EnvironmentComponent>().Environment;
+	switch (env->GetType())
+	{
+	case se::Environment::Type::GeneralLight:
+	{
+		m_GuizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		auto pLight = static_cast<se::GeneralLight*>(env.get());
+		ImGui::BulletText("Type: %s", "General light");
+		this->DrawFloatVec3("Direction", glm::value_ptr(pLight->GetDirection()), 0.0, -1.0f, 1.0f);
+		this->DrawColor3("Ambient", glm::value_ptr(pLight->GetAmbientColor()));
+		this->DrawColor3("Diffuse", glm::value_ptr(pLight->GetDiffuseColor()));
+		this->DrawColor3("Specular", glm::value_ptr(pLight->GetSpecularColor()));
+		break;
+	}
+	case se::Environment::Type::PointLight:
+	{
+		m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+		auto pLight = static_cast<se::PointLight*>(env.get());
+		ImGui::BulletText("Type: %s", "Point light");
+		this->DrawFloatVec3("Position", glm::value_ptr(pLight->GetPosition()), 0.0);
+		this->DrawColor3("Ambient", glm::value_ptr(pLight->GetAmbientColor()));
+		this->DrawColor3("Diffuse", glm::value_ptr(pLight->GetDiffuseColor()));
+		this->DrawColor3("Specular", glm::value_ptr(pLight->GetSpecularColor()));
+		this->DrawFloat("Constant", &pLight->GetConstant(), 1.0f);
+		this->DrawFloat("Linear", &pLight->GetLinear(), 0.0f);
+		this->DrawFloat("Qaudratic", &pLight->GetQaudratic(), 0.0f);
+		break;
+	}
+	case se::Environment::Type::SpotLight:
+	{
+
+		break;
+	}
+	default:
+
+		break;
+	}
 }
 
 void TestLayer::CameraCallback(se::Entity& entity)
 {
 	auto& camera = entity.GetComponent<se::CameraComponent>().Camera;
-	DrawFloatVec3("Position",	 glm::value_ptr(camera->GetPosition()));
-	DrawFloatVec3("Dirrection",  glm::value_ptr(camera->GetForwardDirrection()), -1.0, 1, 0);
-	if (DrawFloat("Fov",         &camera->GetFov(), 45.0))
+	DrawFloatVec3("Position", glm::value_ptr(camera->GetPosition()));
+	DrawFloatVec3("Dirrection", glm::value_ptr(camera->GetForwardDirrection()), -1.0, 1, 0);
+	if (DrawFloat("Fov", &camera->GetFov(), 45.0))
 		camera->Resize();
 }
 
@@ -444,4 +559,55 @@ bool TestLayer::DrawFloat(const char* lable, float* data, const float& reset, co
 	ImGui::PopID();
 
 	return isUsed;
+}
+
+void TestLayer::ShowEnvironmentImGuizmo(se::Entity& entity)
+{
+	auto environment = entity.GetComponent<se::EnvironmentComponent>().Environment.get();
+	switch (environment->GetType())
+	{
+	case se::Environment::Type::Environment:
+		break;
+	case se::Environment::Type::GeneralLight:
+	{
+		auto pLight = static_cast<se::GeneralLight*>(environment);
+		glm::mat4 transform = glm::toMat4(glm::quat((pLight->GetDirection())));
+
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera().get(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		{
+			glm::vec3 position, rotation, scale;
+			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
+			pLight->SetDirection(glm::radians(rotation)); // TODO: Normalize
+		}
+		break;
+	}
+	case se::Environment::Type::PointLight:
+	{
+		auto pLight = static_cast<se::PointLight*>(environment);
+
+		glm::mat4 transform = glm::translate(pLight->GetPosition());
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera().get(),m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		{
+			glm::vec3 position, rotation, scale;
+			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
+			pLight->SetPosition(position);
+		}
+
+		break;
+	}
+	case se::Environment::Type::SpotLight:
+		auto pLight = static_cast<se::SpotLight*>(environment);
+
+		glm::mat4 translate = glm::translate(pLight->GetPosition());
+		glm::mat4 rotate = glm::toMat4(glm::quat(pLight->GetDirection()));
+		glm::mat4 transform = translate * rotate;
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera().get(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		{
+			glm::vec3 position, rotation, scale;
+			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
+			pLight->SetPosition(position);
+			pLight->SetDirection(glm::radians(rotation));
+		}
+		break;
+	}
 }

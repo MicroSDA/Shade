@@ -44,7 +44,7 @@ namespace se
 					}
 					else
 					{   // Check if asset has correct type
-						auto _pAsset = dynamic_cast<T*>(_Weak.lock().get());
+						auto _pAsset = static_cast<T*>(_Weak.lock().get()); // TODO keep it in mind
 						
 						if (_pAsset)
 						{

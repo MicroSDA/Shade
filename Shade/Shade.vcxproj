@@ -304,7 +304,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SE_DLL;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

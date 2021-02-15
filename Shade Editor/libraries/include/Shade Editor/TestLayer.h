@@ -26,12 +26,17 @@ private:
 	void TagCallback(se::Entity& entity);
 	void Transform3DCallback(se::Entity& entity);
 	void Model3DCallback(se::Entity& entity);
+	void MeshCallback(se::Entity& entity);
+	void TextureCallback(se::Entity& entity);
+	void MaterialCallback(se::Entity& entity);
 	void EnvironmentCallback(se::Entity& entity);
 	void CameraCallback(se::Entity& entity);
 
 	bool DrawColor3(const char* lable, float* data, const float& cw1 = 80.0f, const float& cw2 = 0);
 	bool DrawFloatVec3(const char* lable, float* data, const float& reset = 0.0f, const float& min = -FLT_MAX, const float& max = FLT_MAX, const float& cw1 = 80.0f);
 	bool DrawFloat(const char* lable, float* data, const float& reset = 0.0f, const float& min = -FLT_MAX, const float& max = FLT_MAX, const float& cw1 = 80.0f, const float& cw2 = 0);
+	void ShowEnvironmentImGuizmo(se::Entity& entity);
+
 	template<typename T, typename Callback>
 	void DrawComponent(const char* name, se::Entity& entity, Callback callback, const bool& isShow = true)
 	{
@@ -39,8 +44,7 @@ private:
 		{
 			if (entity.HasComponent<T>())
 			{
-				std::string n = std::string(name) + "##" + std::string(entity);
-				if (ImGui::TreeNode(n.c_str()))
+				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_SelectedWhenOpen))
 				{
 					callback();
 					ImGui::TreePop();
@@ -60,11 +64,11 @@ private:
 		return *static_cast<T*>(nullptr);
 	}
 
-	bool m_IsMainMenu     = true;
-	bool m_IsProjectBar   = true;
-	bool m_IsSceneWindow  = true;
+	bool m_IsMainMenu = true;
+	bool m_IsProjectBar = true;
+	bool m_IsSceneWindow = true;
 	bool m_IsImGuizmoShow = true;
-	bool m_IsFpsShow	  = true;
+	bool m_IsFpsShow = true;
 	se::Entity  m_SelectedEntity;
 	se::Entity  m_MainSceneVeiwPort;
 };

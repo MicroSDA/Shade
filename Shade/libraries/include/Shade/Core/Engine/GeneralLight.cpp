@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GeneralLight.h"
 
-se::GeneralLight::GeneralLight() : se::Light(se::Environment::EnvironmentType::GeneralLight),
+se::GeneralLight::GeneralLight() : se::Light(se::Environment::Type::GeneralLight),
 	m_Direction(0.0f, 0.0f, 1.0f)
 {
 }

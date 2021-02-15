@@ -26,7 +26,7 @@
 
 	7,    1.0,     0.7,    1.8
 */
-se::SpotLight::SpotLight() : se::Light(se::Environment::EnvironmentType::SpotLight),
+se::SpotLight::SpotLight() : se::Light(se::Environment::Type::SpotLight),
 	m_Direction(0.0, 0.0f, 1.0f),
 	m_Position(0.0f, 0.0f, 0.0f),
 	m_Constant(1.0f),

@@ -93,7 +93,7 @@ void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 
 	for (unsigned int m = 0; m < _MeshCount; m++)
 	{
-		se::Entity _MeshEntity = this->CreateEntity();
+		se::Entity _MeshEntity = this->CreateEntity(m_AssetData->_Dependency[m]._Name);
 
 		std::string _MeshName = se::Binarizer::ReadNext<std::string>(_File);
 		_MeshName.pop_back();
@@ -147,7 +147,7 @@ void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 			{
 				if (_Asset._Type == se::AssetDataType::Texture)
 				{
-					auto _TextureEntity = _MeshComponent.Mesh->CreateEntity();
+					auto _TextureEntity = _MeshComponent.Mesh->CreateEntity(_Asset._Name);
 					_TextureEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>(m_AssetId + "." + m_AssetData->_Dependency[m]._Name + "." + _Asset._Name, false));
 				}
 			}

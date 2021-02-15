@@ -1,29 +1,60 @@
 Scene: MainScene
 Entities:
-  - Entity: 7
+  - Entity: 1048582
     TagComponent:
       Tag: Skull
-    Model3DComponent:
-      Asset: Models.Skull
-    Transform3DComponent:
-      Position: [-7.74596548, 2.26496243, 0]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
-  - Entity: 6
-    TagComponent:
-      Tag: Cube
-    Model3DComponent:
-      Asset: Models.Cube
-    Transform3DComponent:
-      Position: [5.72057295, 0.973017216, 0]
-      Rotation: [0, -0, 0]
-      Scale: [1, 1, 1]
-  - Entity: 5
-    TagComponent:
-      Tag: Floor
-    Model3DComponent:
-      Asset: Models.Floor
     Transform3DComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
+    Model3DComponent:
+      Asset: Models.Skull
+  - Entity: 1048581
+    TagComponent:
+      Tag: Cube
+    Transform3DComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Model3DComponent:
+      Asset: Models.Cube
+  - Entity: 1048580
+    TagComponent:
+      Tag: Floor
+    Transform3DComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Model3DComponent:
+      Asset: Models.Floor
+  - Entity: 1048579
+    TagComponent:
+      Tag: Grid
+    Transform3DComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 1048578
+    TagComponent:
+      Tag: Point light
+    EnvironmentComponent:
+      Type: 2
+      Position: [0, 0, 0]
+      Ambient: [0.100000001, 0.100000001, 0.100000001]
+      Diffuse: [1, 1, 1]
+      Specular: [1, 1, 1]
+      Constant: 1
+      Linear: 0.699999988
+      Qaudratic: 1.79999995
+  - Entity: 1048577
+    TagComponent:
+      Tag: General light
+    EnvironmentComponent:
+      Type: 1
+      Direction: [0, -0.959999979, 1]
+      Ambient: [0.100000001, 0.100000001, 0.100000001]
+      Diffuse: [0.694323182, 0.00303198094, 0.00303198094]
+      Specular: [1, 1, 1]
+  - Entity: 1048576
+    TagComponent:
+      Tag: Camera

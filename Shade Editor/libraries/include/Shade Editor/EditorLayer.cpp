@@ -284,11 +284,11 @@ void EditorLayer::ShowScene(const bool& show)
 						else if (m_SelectedEntity.HasComponent<se::EnvironmentComponent>())
 						{
 							auto environment = m_SelectedEntity.GetComponent<se::EnvironmentComponent>().Environment.get();
-							switch (environment->Type)
+							switch (environment->GetType())
 							{
-							case se::Environment::EnvironmentType::Environment:
+							case se::Environment::Type::Environment:
 								break;
-							case se::Environment::EnvironmentType::GeneralLight:
+							case se::Environment::Type::GeneralLight:
 							{
 								auto pLight = static_cast<se::GeneralLight*>(environment);
 								glm::mat4 transform = glm::toMat4(glm::quat((pLight->GetDirection())));
@@ -301,7 +301,7 @@ void EditorLayer::ShowScene(const bool& show)
 								}
 								break;
 							}
-							case se::Environment::EnvironmentType::PointLight:
+							case se::Environment::Type::PointLight:
 							{
 								auto pLight = static_cast<se::PointLight*>(environment);
 
@@ -315,7 +315,7 @@ void EditorLayer::ShowScene(const bool& show)
 
 								break;
 							}
-							case se::Environment::EnvironmentType::SpotLight:
+							case se::Environment::Type::SpotLight:
 								auto pLight = static_cast<se::SpotLight*>(environment);
 
 								glm::mat4 translate = glm::translate(pLight->GetPosition());
@@ -487,11 +487,11 @@ void EditorLayer::ShowEnvironmentComponent(se::Entity& entity, const bool& show)
 		if (m_SelectedEntity.HasComponent<se::EnvironmentComponent>())
 		{
 			auto environment = m_SelectedEntity.GetComponent<se::EnvironmentComponent>().Environment.get();
-			switch (environment->Type)
+			switch (environment->GetType())
 			{
-			case se::Environment::EnvironmentType::Environment:
+			case se::Environment::Type::Environment:
 				break;
-			case se::Environment::EnvironmentType::GeneralLight:
+			case se::Environment::Type::GeneralLight:
 			{
 				m_GuizmoOperation = ImGuizmo::OPERATION::ROTATE;
 				auto pLight = static_cast<se::GeneralLight*>(environment);
@@ -501,7 +501,7 @@ void EditorLayer::ShowEnvironmentComponent(se::Entity& entity, const bool& show)
 				this->DrawColor3("Specular", pLight->GetSpecularColor(), 100, 400.0f);
 				break;
 			}
-			case se::Environment::EnvironmentType::PointLight:
+			case se::Environment::Type::PointLight:
 			{
 				m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 				auto pLight = static_cast<se::PointLight*>(environment);
@@ -514,7 +514,7 @@ void EditorLayer::ShowEnvironmentComponent(se::Entity& entity, const bool& show)
 				this->DrawDragFloat("Qaudratic", pLight->GetQaudratic(), 1.8f, 100.0f, 400.0f);
 				break;
 			}
-			case se::Environment::EnvironmentType::SpotLight:
+			case se::Environment::Type::SpotLight:
 				auto pLight = static_cast<se::SpotLight*>(environment);
 				this->DrawVec3("Position", pLight->GetPosition(), -FLT_MAX, FLT_MAX, 0.0f, 100.0f, 450.0f);
 				this->DrawVec3("Dirrection", pLight->GetDirection(), -1.0, 1.0, 0.0f, 100.0f, 450.0f);

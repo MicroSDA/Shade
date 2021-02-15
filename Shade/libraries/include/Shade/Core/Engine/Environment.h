@@ -8,20 +8,20 @@ namespace se
 	class SE_API Environment
 	{
 	public:
-		const enum class EnvironmentType
+		enum class Type : uint32_t
 		{
 			Environment,
 			GeneralLight,
 			PointLight,
 			SpotLight
-
-		} Type;
-		Environment(const EnvironmentType& type);
+		};
+		Environment(const Environment::Type& type);
 		virtual ~Environment();
 		virtual void OnUpdate(const se::Timer& deltaTime) = 0;
 		virtual void Process(const se::Shader* shader) = 0;
+		const Environment::Type& GetType() const ;
 	protected:
-
+		const Environment::Type m_Type;
 	private:
 	};
 
