@@ -22,7 +22,7 @@ void MainScene::OnCreate()
 	//se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
 	se::Renderer::SetClearColor(0.46f, 0.61f, 0.66f, 1.0f);
 	//Camera
-	se::Entity   mainCamera = this->CreateEntity("Camera");
+	/*se::Entity   mainCamera = this->CreateEntity("Camera");
 	mainCamera.AddComponent<se::CameraComponent>(new se::Camera()).IsPrimary = true;
 	mainCamera.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
 	SetActiveCamera(mainCamera.GetComponent<se::CameraComponent>().Camera);/*

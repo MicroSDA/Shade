@@ -52,7 +52,7 @@ void TestLayer::OnInit()
 
 void TestLayer::OnUpdate(const se::Timer& deltaTime)
 {
-
+	// Changing scene veiw port
 	auto entts = se::Application::GetApplication().GetEntities().view<glm::vec2, se::TagComponent>();
 	for (auto& ent : entts)
 	{
@@ -85,8 +85,6 @@ void TestLayer::OnRender()
 		this->ShowMainMenu(m_IsMainMenu);
 		this->ShowProjectBar(m_IsProjectBar);
 		this->ShowSceneWindow(m_IsSceneWindow);
-		//ShowDemoWindow();
-		
 	} ImGui::End(); // Begin("DockSpace")*/
 }
 
@@ -107,7 +105,7 @@ void TestLayer::ShowMainMenu(const bool& show)
 
 				if (ImGui::MenuItem("Open"))
 				{
-					std::string filePath = se::FileDialog::OpenFile("");
+					std::string filePath = se::FileDialog::OpenFile("Shade Scene (*.sahde)\0*.shade\0");
 					if (filePath.size())
 					{
 						this->GetScene()->DestroyEntities();
@@ -117,7 +115,7 @@ void TestLayer::ShowMainMenu(const bool& show)
 
 				if (ImGui::MenuItem("Save")) 
 				{ 
-					std::string filePath = se::FileDialog::OpenFile("");
+					std::string filePath = se::FileDialog::OpenFile("Shade Scene (*.sahde)\0*.shade\0");
 					if (filePath.size())
 					{
 						se::Serializer::SerializeScene(filePath, *this->GetScene());
@@ -149,14 +147,14 @@ void TestLayer::ShowProjectBar(const bool& show)
 	{
 		if (ImGui::Begin("Project"))
 		{
-			if (ImGui::TreeNode("Scene##MainScene", "Scene: MainScene"))
+			if (ImGui::TreeNode(std:: string("##" + GetScene()->GetName()).c_str(), std::string("Scene: " + GetScene()->GetName()).c_str()))
 			{
-
-				ImGui::BulletText("Name: %s", "MainScene");
 				DrawEntities(m_SelectedEntity, this->GetScene());
 				DrawInspector(m_SelectedEntity);
 				ImGui::TreePop();
 			}
+
+			this->ShowAssetList(m_IsAssetListShow);
 
 		} ImGui::End();
 	}
@@ -219,6 +217,23 @@ void TestLayer::ShowSceneWindow(const bool& show)
 	}
 }
 
+void TestLayer::ShowAssetList(const bool& show)
+{
+	if (show)
+	{
+		if (ImGui::Begin("Asset list"))
+		{
+			auto list = se::AssetManager::GetAssetDataList();
+			for (auto& node : list._Dependency)
+			{
+				DrawAssetDataNode(node);
+			}
+			
+
+		} ImGui::End();
+	}
+}
+
 void TestLayer::DrawEntities(se::Entity& selectedEntity, se::EntitiesDocker* docker)
 {
 	if (ImGui::TreeNodeEx("Entities", ImGuiTreeNodeFlags_SelectedWhenOpen))
@@ -276,10 +291,7 @@ void TestLayer::DrawEntity(se::Entity& entity, se::Entity& selectedEntity, const
 		//AddComponent<se::Model3DComponent>("Model3DComponent", entity);
 		//AddComponent<se::EnvironmentComponent>("EnvironmentComponent", entity);
 		AddComponent<se::CameraComponent>("CameraComponent", entity, [&](se::CameraComponent& component) {
-			
-			auto pCamera = new se::Camera();
-			component.IsPrimary = true;
-			component.Camera = se::ShadeShared<se::Camera>(pCamera);
+				AddCameraComponentCallback(component); 
 			});
 
 
@@ -333,6 +345,25 @@ void TestLayer::DrawAddComponentDelteEntity(se::Entity& entity)
 		if (ImGui::MenuItem("Add Component")) {}
 		if (ImGui::MenuItem("Delete Entity")) {}
 		ImGui::EndPopup();
+	}
+}
+
+void TestLayer::DrawAssetDataNode(se::AssetData& data)
+{
+	if (ImGui::TreeNodeEx(data._Name.c_str(), ImGuiTreeNodeFlags_SelectedWhenOpen))
+	{
+		if (!data._Name.empty())
+			ImGui::TextWrapped("Name: %s", data._Name.c_str());
+		if (!data._Path.empty())
+			ImGui::TextWrapped("Path: %s", data._Path.c_str());
+		
+
+		for (auto& node : data._Dependency)
+		{
+			DrawAssetDataNode(node);
+		}
+
+		ImGui::TreePop();
 	}
 }
 
@@ -485,6 +516,49 @@ void TestLayer::CameraCallback(se::Entity& entity)
 	DrawFloatVec3("Dirrection", glm::value_ptr(camera->GetForwardDirrection()), -1.0, 1, 0);
 	if (DrawFloat("Fov", &camera->GetFov(), 45.0))
 		camera->Resize();
+
+	if (entity.HasComponent<se::NativeScriptComponent>())
+	{
+		auto instance = entity.GetComponent<se::NativeScriptComponent>().Instance;
+
+		if (instance)
+		{
+			auto free_camera = dynamic_cast<se::FreeCameraController*>(instance);
+			if (!free_camera)
+			{
+				if (ImGui::Button("Free move"))
+				{
+
+				}
+			}
+		}
+		else
+		{
+			if (ImGui::Button("Free move"))
+			{
+
+			}
+		}
+	}
+	else
+	{
+		if (ImGui::Button("Free move"))
+		{
+
+		}
+	}
+
+
+	
+}
+
+void TestLayer::AddCameraComponentCallback(se::CameraComponent& component)
+{
+	auto pCamera = new se::Camera();
+	auto aspect = m_MainSceneVeiwPort.GetComponent<glm::vec2>();
+	pCamera->Resize( aspect.x / aspect.y);
+	component.IsPrimary = true;
+	component.Camera = se::ShadeShared<se::Camera>(pCamera);
 }
 
 bool TestLayer::DrawColor3(const char* lable, float* data, const float& cw1, const float& cw2)

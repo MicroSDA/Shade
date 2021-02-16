@@ -129,7 +129,7 @@ static bool SerrializeCameraComponent(se::Entity& entity, YAML::Emitter& emitter
 		emitter << YAML::Key << "Position" << YAML::Value << component.Camera->GetPosition();
 		emitter << YAML::Key << "Direction" << YAML::Value << component.Camera->GetForwardDirrection();
 		emitter << YAML::Key << "Fov" << YAML::Value << component.Camera->GetFov();
-		emitter << YAML::Key << "Aspect" << YAML::Value << component.Camera->GetAspect();
+		//emitter << YAML::Key << "Aspect" << YAML::Value << component.Camera->GetAspect();
 		emitter << YAML::Key << "Near" << YAML::Value << component.Camera->GetNear();
 		emitter << YAML::Key << "Far" << YAML::Value << component.Camera->GetFar();
 		emitter << YAML::EndMap; // CameraComponent
@@ -276,7 +276,7 @@ static bool DeserializeCameraComponent(se::Entity& entity, YAML::detail::iterato
 		auto ser_component = iter_value["CameraComponent"];
 		pCamera->SetPosition(ser_component["Position"].as<glm::vec3>());
 		pCamera->SeDirection(ser_component["Direction"].as<glm::vec3>());
-		pCamera->SetAspect(ser_component["Aspect"].as<float>());
+		//pCamera->SetAspect(ser_component["Aspect"].as<float>());
 		pCamera->SetFov(ser_component["Fov"].as<float>());
 		pCamera->SetNear(ser_component["Near"].as<float>());
 		pCamera->SetFar(ser_component["Far"].as<float>());
