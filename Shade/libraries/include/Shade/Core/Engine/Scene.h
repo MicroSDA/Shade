@@ -11,6 +11,7 @@
 #include "Shade/Core/Engine/FrameBuffer.h"
 #include "Shade/Core/Util/Serializer.h"
 #include "Shade/Core/Types.h"
+#include "Shade/Core/Engine/Event.h"
 
 namespace se
 {
@@ -22,7 +23,7 @@ namespace se
 	class SE_API Scene : public EntitiesDocker
 	{
 	public:
-	
+		friend class EventManager;
 		friend class Application;
 
 		Scene(const std::string& name);
@@ -38,6 +39,7 @@ namespace se
 	protected:
 		virtual void OnCreate() = 0;
 		virtual void OnInit() = 0;
+		virtual void OnEvent(const se::Event& event) = 0;
 		void         DeleteLayers();
 		void         InitLayers();
 		void         InitLayer(const std::string& name);
@@ -52,8 +54,15 @@ namespace se
 			m_Layers.push_back(_Layer);
 			return _Layer;
 		}
-
 		std::string    m_Name;
+
+		void SetUpdate(const bool&  update);
+		void SetRender(const bool&  render);
+		void SetOnEvent(const bool& event);
+
+		const bool& IsUpdate()  const;
+		const bool& IsRender()  const;
+		const bool& IsOnEvent() const;
 	private:
 		std::vector<se::Layer*> m_Layers;
 		void         UpdateNativeScripts(const se::Timer& deltaTime);
@@ -61,9 +70,11 @@ namespace se
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
 		se::ShadeShared<se::Camera> m_pMainCamera;
-		bool		m_IsInitalized;
-
+		bool						m_IsInitalized;
         std::unordered_map<std::string, se::ShadeShared<se::FrameBuffer>> m_FrameBuffers;
+		bool m_IsUpdate  = true;
+		bool m_IsRender  = true;
+		bool m_IsOnEvent = true;
 	};
 
 }

@@ -124,7 +124,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x86\_Release\</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -157,7 +157,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;STB_IMAGE_IMPLEMENTATION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\vendors\;$(SolutionDir)Shade\libraries\include\;$(SolutionDir)Shade\vendors\;$(SolutionDir)Shade\libraries\include\vendors\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -166,7 +166,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x64\_Release\</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
@@ -183,24 +183,22 @@
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade Editor\AssimpModel3D.h" />
     <ClInclude Include="libraries\include\Shade Editor\Editor.h" />
-    <ClInclude Include="libraries\include\Shade Editor\EditorLayer.h" />
     <ClInclude Include="libraries\include\Shade Editor\MainLayer.h" />
     <ClInclude Include="libraries\include\Shade Editor\MainScene.h" />
     <ClInclude Include="libraries\include\Shade Editor\ShadeEditor.h" />
     <ClInclude Include="libraries\include\Shade Editor\Serrializer.h" />
-    <ClInclude Include="libraries\include\Shade Editor\TestLayer.h" />
+    <ClInclude Include="libraries\include\Shade Editor\EditorLayer.h" />
     <ClInclude Include="libraries\include\Shade Editor\Util.h" />
     <ClInclude Include="libraries\include\Vendors\stbi\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade Editor\AssimpModel3D.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\Editor.cpp" />
-    <ClCompile Include="libraries\include\Shade Editor\EditorLayer.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\MainLayer.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\MainScene.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\ShadeEditor.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\Serrializer.cpp" />
-    <ClCompile Include="libraries\include\Shade Editor\TestLayer.cpp" />
+    <ClCompile Include="libraries\include\Shade Editor\EditorLayer.cpp" />
     <ClCompile Include="libraries\include\Shade Editor\Util.cpp" />
     <ClCompile Include="libraries\include\Vendors\stbi\stb_image.c" />
   </ItemGroup>

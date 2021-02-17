@@ -238,6 +238,9 @@
     <ClInclude Include="libraries\include\Shade\Core\Util\Serializer.h">
       <Filter>Core\Util</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Event.h">
+      <Filter>Core\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -375,6 +378,9 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Util\Serializer.cpp">
       <Filter>Core\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Event.cpp">
+      <Filter>Core\Engine</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

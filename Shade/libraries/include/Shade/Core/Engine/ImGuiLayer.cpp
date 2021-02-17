@@ -17,7 +17,7 @@ namespace se
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
-		
+
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
 		ImGui::StyleColorsDark();
@@ -40,43 +40,7 @@ namespace se
 
 		m_Viewport = ImGui::GetMainViewport();
 
-	
-		se::EventManager::RegLayerEventCallback(se::EventType::SDL_WINDOWEVENT, GetScene(), this,
-			[&](se::Event const& event) {
-				ImGui_ImplSDL2_ProcessWindowEvent(&event);
 
-				return false;
-			});
-		se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYDOWN, GetScene(), this,
-			[&](se::Event const& event) {
-				ImGui_ImplSDL2_ProcessKeyDownUpEvent(&event);
-
-				return false;
-			});
-		se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYUP, GetScene(), this,
-			[&](se::Event const& event) {
-				ImGui_ImplSDL2_ProcessKeyDownUpEvent(&event);
-
-				return false;
-			});
-		se::EventManager::RegLayerEventCallback(se::EventType::SDL_MOUSEMOTION, GetScene(), this,
-			[&](se::Event const& event) {
-				ImGui_ImplSDL2_ProcessMouseButtonEvent(&event);
-
-				return false;
-			});
-		se::EventManager::RegLayerEventCallback(se::EventType::SDL_MOUSEWHEEL, GetScene(), this,
-			[&](se::Event const& event) {
-				ImGui_ImplSDL2_ProcessMouseWheelEvent(&event);
-
-				return false;
-			});
-		se::EventManager::RegLayerEventCallback(se::EventType::SDL_TEXTINPUT, GetScene(), this,
-			[&](se::Event const& event) {
-				ImGui_ImplSDL2_ProcessTexInputEvent(&event);
-
-				return false;
-			});
 
 		SetupImGuiStyle(true, true);
 	}
@@ -88,7 +52,7 @@ namespace se
 
 	void ImGuiLayer::OnCreate()
 	{
-		
+
 	}
 	void ImGuiLayer::OnInit()
 	{
@@ -126,6 +90,71 @@ namespace se
 			ImGui::RenderPlatformWindowsDefault();
 			SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 		}
+	}
+
+	void ImGuiLayer::OnImGuiEvent(const se::Event& event)
+	{
+		SDL_Event sdl_event;
+		sdl_event = const_cast<se::Event&>(event);
+
+		switch (event.GetType())
+		{
+		case se::Event::Type::Window:
+			ImGui_ImplSDL2_ProcessWindowEvent(&sdl_event);
+			break;
+		case se::Event::Type::KeyDown:
+			ImGui_ImplSDL2_ProcessKeyDownUpEvent(&sdl_event);
+			break;
+		case se::Event::Type::KeyUp:
+			ImGui_ImplSDL2_ProcessKeyDownUpEvent(&sdl_event);
+			break;
+		case se::Event::Type::MouseMotion:
+			ImGui_ImplSDL2_ProcessMouseButtonEvent(&sdl_event);
+			break;
+		case se::Event::Type::MouseWheel:
+			ImGui_ImplSDL2_ProcessMouseWheelEvent(&sdl_event);
+			break;
+		case se::Event::Type::TextInput:
+			ImGui_ImplSDL2_ProcessTexInputEvent(&sdl_event);
+			break;
+		}
+		/*se::EventManager::RegLayerEventCallback(se::EventType::SDL_WINDOWEVENT, GetScene(), this,
+		[&](se::Event const& event) {
+			ImGui_ImplSDL2_ProcessWindowEvent(&event);
+
+			return false;
+		});
+	se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYDOWN, GetScene(), this,
+		[&](se::Event const& event) {
+			ImGui_ImplSDL2_ProcessKeyDownUpEvent(&event);
+
+			return false;
+		});
+	se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYUP, GetScene(), this,
+		[&](se::Event const& event) {
+			ImGui_ImplSDL2_ProcessKeyDownUpEvent(&event);
+
+			return false;
+		});
+	se::EventManager::RegLayerEventCallback(se::EventType::SDL_MOUSEMOTION, GetScene(), this,
+		[&](se::Event const& event) {
+			ImGui_ImplSDL2_ProcessMouseButtonEvent(&event);
+
+			return false;
+		});
+	se::EventManager::RegLayerEventCallback(se::EventType::SDL_MOUSEWHEEL, GetScene(), this,
+		[&](se::Event const& event) {
+			ImGui_ImplSDL2_ProcessMouseWheelEvent(&event);
+
+			return false;
+		});
+	se::EventManager::RegLayerEventCallback(se::EventType::SDL_TEXTINPUT, GetScene(), this,
+		[&](se::Event const& event) {
+			ImGui_ImplSDL2_ProcessTexInputEvent(&event);
+
+			return false;
+		});*/
+
 	}
 
 	void ImGuiLayer::ShowDemoWindow()

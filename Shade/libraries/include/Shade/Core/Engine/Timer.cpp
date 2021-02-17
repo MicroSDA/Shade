@@ -10,8 +10,8 @@ int se::Timer::GetFps()
 void se::Timer::Update()
 {
 	m_TimeLast = m_TimeNow;
-	m_TimeNow = SDL_GetPerformanceCounter();
-	m_DeltaTime = (double)((m_TimeNow - m_TimeLast) * 1000 / (double)SDL_GetPerformanceFrequency());
+	m_TimeNow = static_cast<double>(SDL_GetPerformanceCounter());
+	m_DeltaTime = (m_TimeNow - m_TimeLast) * 1000 / static_cast<double>(SDL_GetPerformanceFrequency());
 }
 
 

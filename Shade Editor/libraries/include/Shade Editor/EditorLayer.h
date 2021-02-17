@@ -6,77 +6,79 @@ class EditorLayer :public se::ImGuiLayer
 public:
 	EditorLayer(const std::string& name, se::Scene* scene);
 	virtual ~EditorLayer();
-
 	virtual void OnCreate() override;
-	virtual void OnInit() override;
+	virtual void OnInit()   override;
 	virtual void OnUpdate(const se::Timer& deltaTime) override;
 	virtual void OnRender() override;
 	virtual void OnDelete() override;
+	virtual void OnEvent(const se::Event& event) override;
 private:
+
 	void ShowMainMenu(const bool& show);
-	void ShowEntitiesList(const bool& show);
-	void ProcessEntities(const std::string& filter, se::Entity& entity, se::Entity& selectedEntity);
-	void ShowInspector(const bool& show);
-	void ShowScene(const bool& show);
-	void ShowProject(const bool& show);
+	void ShowProjectBar(const bool& show);
+	void ShowSceneWindow(const bool& show);
+	void ShowAssetList(const bool& show);
 
-	void ShowTagComponent(se::Entity& entity);
-	void ShowTransform3DComponent(se::Entity& entity);
-	void ShowModel3DComponent(se::Entity& entity);
+	void DrawEntities(se::Entity& selectedEntity, se::EntitiesDocker* docker);
+	void DrawEntity(se::Entity& entity, se::Entity& selectedEntity, const std::string& filter = "");
+	void DrawInspector(se::Entity& entity);
+	void DrawAddComponentDelteEntity(se::Entity& entity);
+	void DrawAssetDataNode(se::AssetData& data);
 
-	void ShowMeshComponent(se::Entity& entity, const bool& show);
-	void ShowMaterialComponent(se::Entity& entity, se::MeshComponent& mesh, const bool& show);
-	void ShowTextureComponent(se::Entity& entity, const bool& show);
-	void ShowEnvironmentComponent(se::Entity& entity, const bool& show);
-	void ShowCameraComponent(se::Entity& entity, const bool& show);
+	void TagCallback(se::Entity& entity);
+	void Transform3DCallback(se::Entity& entity);
+	void Model3DCallback(se::Entity& entity);
+	void MeshCallback(se::Entity& entity);
+	void TextureCallback(se::Entity& entity);
+	void MaterialCallback(se::Entity& entity);
+	void EnvironmentCallback(se::Entity& entity);
+	void CameraCallback(se::Entity& entity);
+	void AddCameraComponentCallback(se::CameraComponent& component);
 
-	bool ShowImGuizmo(glm::mat4& transform, const bool& show, const float& x, const float& y, const float& w, const float& h);
-	void ShowFpsOverlay(ImGuiViewport* viewport, const bool& show, const float& x, const float& y);
 
-	void NewEntityModal(se::EntitiesDocker& docker);
-	void CreateEntity(se::EntitiesDocker& docker, const std::string& name);
-	void DeletEntity(se::EntitiesDocker& docker, se::Entity& entity);
-	void AddComponentModal(se::Entity& entity);
-	template<typename T>
-	T& AddComponent(se::Entity& entity)
-	{
-		return entity.AddComponent<T>();
-	}
-	template<typename T>
-	void RemoveComponent(se::Entity& entity)
-	{
-		return entity.RemoveComponent<T>();
-	}
+	bool DrawColor3(const char* lable, float* data, const float& cw1 = 80.0f, const float& cw2 = 0);
+	bool DrawFloatVec3(const char* lable, float* data, const float& reset = 0.0f, const float& min = -FLT_MAX, const float& max = FLT_MAX, const float& cw1 = 80.0f);
+	bool DrawFloat(const char* lable, float* data, const float& reset = 0.0f, const float& min = -FLT_MAX, const float& max = FLT_MAX, const float& cw1 = 80.0f, const float& cw2 = 0);
+	void ShowEnvironmentImGuizmo(se::Entity& entity);
 
-	template<typename T, typename C>
-	void DrawComponent(const char* name, se::Entity& entity, const bool& isShow, C callback)
+	void CreateEntityModal(const char* modalName, se::EntitiesDocker& docker);
+
+	template<typename T, typename Callback>
+	void DrawComponent(const char* name, se::Entity& entity, Callback callback, const bool& isShow = true)
 	{
 		if (isShow)
 		{
 			if (entity.HasComponent<T>())
 			{
-				if (ImGui::TreeNode(name))
+				if (ImGui::TreeNodeEx(name, ImGuiTreeNodeFlags_SelectedWhenOpen))
 				{
 					callback();
 					ImGui::TreePop();
 				}
 			}
 		}
+	};
+	template<typename T, typename C>
+	void AddComponent(const char* componentName, se::Entity& entity, C callback, const bool& isShow = true)
+	{
+		if (!entity.HasComponent<T>())
+		{
+			if (ImGui::MenuItem(componentName))
+			{
+				callback(entity.AddComponent<T>());
+			}
+		}
 	}
-	bool isMainMenuShow = true;
-	bool isProjectShow = true;
-	bool isEntitiesListShow = true;
-	bool isInspectorShow = true;
-	bool isTagComponentShow = true;
-	bool isTransform3DComponentShow = true;
-	bool isModel3DComponentShow = true;
-	bool isMaterialComponentShow = true;
-	bool isTextureComponentShow = true;
-	bool isEnvironmentComponentShow = true;
-	bool isCameraComponentShow = true;
-	bool isSceneShow = true;
-	bool isFpsShow = true;
 
-	se::Entity m_SelectedEntity;
+
+	bool m_IsMainMenu      = true;
+	bool m_IsProjectBar    = true;
+	bool m_IsSceneWindow   = true;
+	bool m_IsImGuizmoShow  = true;
+	bool m_IsFpsShow       = true;
+	bool m_IsAssetListShow = true;
+
+	se::Entity  m_SelectedEntity;
+	se::Entity  m_MainSceneVeiwPort;
 };
 

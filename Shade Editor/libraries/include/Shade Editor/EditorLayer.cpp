@@ -3,9 +3,8 @@
 #endif
 
 #include "stdafx.h"
-#include "EditorLayer.h"
 #include "Shade/Core/Util/FileDialog.h"
-#include "Editor.h"
+#include "EditorLayer.h"
 
 EditorLayer::EditorLayer(const std::string& name, se::Scene* scene) : se::ImGuiLayer(name, scene)
 {
@@ -17,7 +16,7 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnCreate()
 {
-	se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYDOWN, GetScene(), this,
+	/*se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYDOWN, GetScene(), this,
 		[&](se::Event const& event) {
 
 			if (event.key.keysym.scancode == SDL_SCANCODE_F)
@@ -36,9 +35,13 @@ void EditorLayer::OnCreate()
 				}
 
 			}
+			else if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
+			{
+				m_SelectedEntity = se::Entity();
+			}
 
 			return false;
-		});
+		});*/
 }
 
 void EditorLayer::OnInit()
@@ -49,6 +52,20 @@ void EditorLayer::OnInit()
 
 void EditorLayer::OnUpdate(const se::Timer& deltaTime)
 {
+	// Changing scene veiw port
+	auto entts = se::Application::GetApplication().GetEntities().view<glm::vec2, se::TagComponent>();
+	for (auto& ent : entts)
+	{
+		se::Entity entity{ ent , &se::Application::GetApplication() };
+
+		if (entity.IsValid())
+		{
+			if (entity.GetComponent<se::TagComponent>().Tag == "SceneViewPort")
+			{
+				m_MainSceneVeiwPort = entity;
+			}
+		}
+	}
 }
 
 void EditorLayer::OnRender()
@@ -65,17 +82,43 @@ void EditorLayer::OnRender()
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), m_DockSpaceFlags);
 		}
 
-		this->ShowMainMenu(isMainMenuShow);
-		this->ShowInspector(isInspectorShow);
-		this->ShowScene(isSceneShow);
-		this->ShowProject(isProjectShow);
-
+		this->ShowMainMenu(m_IsMainMenu);
+		this->ShowProjectBar(m_IsProjectBar);
+		this->ShowSceneWindow(m_IsSceneWindow);
 	} ImGui::End(); // Begin("DockSpace")*/
-
 }
 
 void EditorLayer::OnDelete()
 {
+
+}
+
+void EditorLayer::OnEvent(const se::Event& event)
+{
+	OnImGuiEvent(event);
+
+	if (event.GetType() == se::Event::Type::KeyDown)
+	{
+		if (event.GetKeyboard().ScanCode == se::Event::Keyboard::SCode::F)
+		{
+			switch (m_GuizmoOperation)
+			{
+			case ImGuizmo::OPERATION::TRANSLATE:
+				m_GuizmoOperation = ImGuizmo::OPERATION::ROTATE;
+				break;
+			case ImGuizmo::OPERATION::ROTATE:
+				m_GuizmoOperation = ImGuizmo::OPERATION::SCALE;
+				break;
+			case ImGuizmo::OPERATION::SCALE:
+				m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+				break;
+			}
+		}
+		else if (event.GetKeyboard().ScanCode == se::Event::Keyboard::SCode::Escape)
+		{
+			m_SelectedEntity = se::Entity();
+		}
+	}
 }
 
 void EditorLayer::ShowMainMenu(const bool& show)
@@ -90,17 +133,21 @@ void EditorLayer::ShowMainMenu(const bool& show)
 
 				if (ImGui::MenuItem("Open"))
 				{
-					this->GetScene()->DestroyEntities();
-					se::Serializer::DeserializeScene("./scene.shade", *this->GetScene());
+					std::string filePath = se::FileDialog::OpenFile("Shade Scene (*.sahde)\0*.shade\0");
+					if (filePath.size())
+					{
+						this->GetScene()->DestroyEntities();
+						se::Serializer::DeserializeScene(filePath, *this->GetScene());
+					}
 				}
 
-				if (ImGui::MenuItem("Save")) { se::Serializer::SerializeScene("./scene.shade", *this->GetScene()); }
-
-				if (ImGui::MenuItem("Import"))
-				{
-					std::string path = se::FileDialog::OpenFile("Model3D\0");
-					if (!path.empty())
-						Editor::Import(Editor::ImportType::Model3D, path);
+				if (ImGui::MenuItem("Save")) 
+				{ 
+					std::string filePath = se::FileDialog::OpenFile("Shade Scene (*.sahde)\0*.shade\0");
+					if (filePath.size())
+					{
+						se::Serializer::SerializeScene(filePath, *this->GetScene());
+					}
 				}
 
 				ImGui::Separator();
@@ -108,501 +155,579 @@ void EditorLayer::ShowMainMenu(const bool& show)
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Options"))
+			{
+				ImGui::MenuItem("Project", "", &m_IsProjectBar);
+				ImGui::MenuItem("Scene", "", &m_IsSceneWindow);
+				ImGui::MenuItem("ImGuizmo", "", &m_IsImGuizmoShow);
+				ImGui::MenuItem("FPS", "", &m_IsFpsShow);
 
+				ImGui::EndMenu();
+			}
 
 		} ImGui::EndMenuBar();
 	}
 }
 
-void EditorLayer::ShowEntitiesList(const bool& show)
+void EditorLayer::ShowProjectBar(const bool& show)
 {
 	if (show)
 	{
-		if (ImGui::CollapsingHeader("Entities"))
+		if (ImGui::Begin("Project"))
 		{
-			if (ImGui::Button("New entity", ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
-				ImGui::OpenPopup("New entity##create_new_entity");
-
-			static char buffer[256] = "";
-			ImGui::Text("Search"); ImGui::SameLine();
-			ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
-			ImGui::InputTextWithHint("##entities_search", "Entity name", buffer, sizeof(buffer));
-			ImGui::PopItemWidth();
-			if (ImGui::ListBoxHeader("##", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y)))
+			if (ImGui::TreeNode(std:: string("##" + GetScene()->GetName()).c_str(), std::string("Scene: " + GetScene()->GetName()).c_str()))
 			{
-				GetScene()->GetEntities().each([&](auto entityID)
-					{
-						se::Entity entity{ entityID , GetScene() };
-						ProcessEntities(buffer, entity, m_SelectedEntity);
-					});
-
-				ImGui::ListBoxFooter();
+				DrawEntities(m_SelectedEntity, this->GetScene());
+				DrawInspector(m_SelectedEntity);
+				ImGui::TreePop();
 			}
 
-			NewEntityModal(*this->GetScene());
-		}
+			this->ShowAssetList(m_IsAssetListShow);
+
+		} ImGui::End();
 	}
 }
 
-void EditorLayer::ProcessEntities(const std::string& filter, se::Entity& entity, se::Entity& selectedEntity)
+void EditorLayer::ShowSceneWindow(const bool& show)
 {
-	auto& tag = entity.GetComponent<se::TagComponent>().Tag;
+	if (show)
+	{
+		if (ImGui::Begin("Scene"))
+		{
+			auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
+			if (frameBuffer != nullptr)
+			{
+				auto& viewPortSize = m_MainSceneVeiwPort.GetComponent<glm::vec2>();
+
+				if (viewPortSize.x != ImGui::GetContentRegionAvail().x
+					|| viewPortSize.y != ImGui::GetContentRegionAvail().y)
+				{
+					viewPortSize.x = ImGui::GetContentRegionAvail().x;
+					viewPortSize.y = ImGui::GetContentRegionAvail().y;
+
+					//Create window resize event and grab it in MainLayer
+					 se::Event event;
+					 event.SetType(se::Event::Type::Window);
+					 event.SetWindow(se::Event::Window::Resized);
+					se::EventManager::PusEvent(event);
+				}
+
+				ImTextureID tid = reinterpret_cast<void*>(frameBuffer->GetTextureAttachment());
+				ImGui::Image(tid, ImVec2{ viewPortSize.x, viewPortSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+				if (m_SelectedEntity.IsValid())
+				{
+					if (m_SelectedEntity.HasComponent<se::Transform3DComponent>())
+					{
+						auto transform_tmp = m_SelectedEntity.GetComponent<se::Transform3DComponent>().Transform.GetModelMatrix();
+
+						if (this->ShowImGuizmo(transform_tmp, GetScene()->GetActiveCamera().get(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+						{
+							glm::vec3 position, rotation, scale;
+							ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform_tmp), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
+
+							auto& transform = m_SelectedEntity.GetComponent<se::Transform3DComponent>().Transform;
+							transform.SetPostition(position);
+							transform.SetRotation(glm::radians(rotation));
+							transform.SetScale(scale);
+						}
+					}
+					else if (m_SelectedEntity.HasComponent<se::EnvironmentComponent>())
+					{
+						ShowEnvironmentImGuizmo(m_SelectedEntity);
+					}
+				}
+
+				this->ShowFPSOverlay(ImGui::GetWindowViewport(), m_IsFpsShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
+			}
+
+		} ImGui::End();
+	}
+}
+
+void EditorLayer::ShowAssetList(const bool& show)
+{
+	if (show)
+	{
+		if (ImGui::Begin("Asset list"))
+		{
+			auto list = se::AssetManager::GetAssetDataList();
+			for (auto& node : list._Dependency)
+			{
+				DrawAssetDataNode(node);
+			}
+			
+
+		} ImGui::End();
+	}
+}
+
+void EditorLayer::DrawEntities(se::Entity& selectedEntity, se::EntitiesDocker* docker)
+{
+	if (ImGui::TreeNodeEx("Entities", ImGuiTreeNodeFlags_SelectedWhenOpen))
+	{
+		ImGui::NewLine();
+		if (ImGui::Button("New entity", ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
+			ImGui::OpenPopup("##create_new_entity");
+		CreateEntityModal("##create_new_entity", *docker);
+
+		ImGui::NewLine();
+		static char buffer[256] = "";
+		ImGui::Text("Search"); ImGui::SameLine();
+		ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
+		ImGui::InputTextWithHint("##entities_search", "Entity name", buffer, sizeof(buffer));
+		ImGui::PopItemWidth();
+		if (ImGui::ListBoxHeader("##list", ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y)))
+		{
+			GetScene()->GetEntities().each([&](auto entityID)
+				{
+					se::Entity entity{ entityID , docker };
+
+					DrawEntity(entity, selectedEntity, buffer);
+				});
+
+			ImGui::ListBoxFooter();
+		}
+		ImGui::TreePop();
+
+	
+	}
+}
+
+void EditorLayer::DrawEntity(se::Entity& entity, se::Entity& selectedEntity, const std::string& filter)
+{
+	auto& name = entity.GetComponent<se::TagComponent>().Tag;
 
 	if (filter.size())
 	{
-		if (filter.size() && tag == filter)
+		if (filter.size() && name == filter)
 		{
-			if (ImGui::Selectable(std::string(tag + "##" + entity).c_str(), selectedEntity == entity))
+			if (ImGui::Selectable(std::string(name + "##" + entity).c_str(), selectedEntity == entity))
 				selectedEntity = entity;
 		}
 	}
 	else
 	{
-		if (ImGui::Selectable(std::string(tag + "##" + entity).c_str(), selectedEntity == entity))
+		if (ImGui::Selectable(std::string(name + "##" + entity).c_str(), selectedEntity == entity))
 			selectedEntity = entity;
 	}
 
+
 	if (ImGui::BeginPopupContextItem())
 	{
-		PushItemFlag(32); // For opening modal
-		if (ImGui::MenuItem("Add Component"))
-			ImGui::OpenPopup("Add component##add_component");
-		this->PopItemFlag();
+		//AddComponent<se::Transform3DComponent>("Transform3DComponent", entity);
+		//AddComponent<se::Model3DComponent>("Model3DComponent", entity);
+		//AddComponent<se::EnvironmentComponent>("EnvironmentComponent", entity);
+		AddComponent<se::CameraComponent>("CameraComponent", entity, [&](se::CameraComponent& component) {
+				AddCameraComponentCallback(component); 
+			});
 
-		if (ImGui::MenuItem("Delete Entity"))
-			this->DeletEntity(*this->GetScene(), entity);
 
-		this->AddComponentModal(entity);
+		ImGui::Separator();
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7, 0, 0, 1));
+		if (ImGui::MenuItem("Remove entity"))
+			entity.Destroy();
+		ImGui::PopStyleColor();
 
 		ImGui::EndPopup();
 	}
 }
 
-void EditorLayer::ShowInspector(const bool& show)
+
+void EditorLayer::DrawInspector(se::Entity& entity)
 {
-	if (show)
+	if (ImGui::Begin("Inspector##inspector"))
 	{
-		ImGui::Begin("Inspector");
+		if (entity.IsValid())
 		{
-			if (m_SelectedEntity.IsValid())
-			{
-				if (ImGui::BeginTabBar("InspectorTabs", ImGuiTabBarFlags_None))
+			DrawComponent<se::TagComponent>("Tag", entity, [&]()
 				{
-					if (ImGui::BeginTabItem("Components"))
-					{
-						DrawComponent<se::TagComponent>("Tag", m_SelectedEntity, isTagComponentShow, [&]() {
-							ShowTagComponent(m_SelectedEntity);
-							});
-						DrawComponent<se::Transform3DComponent>("Transform3D", m_SelectedEntity, isTransform3DComponentShow, [&]() {
-							ShowTransform3DComponent(m_SelectedEntity);
-							});
-						DrawComponent<se::Model3DComponent>("Model3D", m_SelectedEntity, isModel3DComponentShow, [&]() {
-							ShowModel3DComponent(m_SelectedEntity);
-							});
-						/*DrawComponent<se::EnvironmentComponent>("Environment", m_SelectedEntity, isTagComponentShow, [&]() {
-							ShowEnvironmentComponent(m_SelectedEntity, nullptr);
-							});
-						DrawComponent<se::CameraComponent>("Camera", m_SelectedEntity, isTagComponentShow, [&]() {
-							ShowCameraComponent(m_SelectedEntity, nullptr);
-							});*/
-						//DrawComponent<se::Transform3DComponent>("Transform3D", m_SelectedEntity, isTransform3DComponentShow, ShowTransform3DComponent);
-						//DrawComponent<se::Model3DComponent>("Model3D", m_SelectedEntity, isModel3DComponentShow, ShowModel3DComponent);
-						/*DrawComponent<se::Transform3DComponent>("Transform3D", m_SelectedEntity, []() {});
-						DrawComponent<se::Model3DComponent>("Model3D", m_SelectedEntity, []() {});
-						DrawComponent<se::EnvironmentComponent>("Environment", m_SelectedEntity, []() {});
-						DrawComponent<se::CameraComponent>("Camera", m_SelectedEntity, []() {});*/
-
-						/*ShowTagComponent(m_SelectedEntity, isTagComponentShow);
-						ShowTransform3DComponent(m_SelectedEntity, isTransform3DComponentShow);
-						ShowModel3DComponent(m_SelectedEntity, isModel3DComponentShow);
-						ShowEnvironmentComponent(m_SelectedEntity, isEnvironmentComponentShow);
-						ShowCameraComponent(m_SelectedEntity, isCameraComponentShow);*/
-						ImGui::EndTabItem();
-					}
-
-				} ImGui::EndTabBar();
-			}
-
-		}
-		ImGui::End();
-	}
-}
-
-void EditorLayer::ShowScene(const bool& show)
-{
-	if (show)
-	{
-		ImGui::Begin("Scene");
-		{
-			auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
-			if (frameBuffer != nullptr)
-			{
-
-				auto viewPortEntitis = se::Application::GetApplication().GetEntities().view<glm::vec2, se::TagComponent>();
-
-				for (auto& viewPort : viewPortEntitis)
+					TagCallback(entity);
+				});
+			DrawComponent<se::Transform3DComponent>("Transform3D", entity, [&]()
 				{
-					if (viewPortEntitis.get<se::TagComponent>(viewPort).Tag == "SceneViewPort")
-					{
-						auto& viewPortSize = viewPortEntitis.get<glm::vec2>(viewPort);
-
-						if (viewPortSize.x != ImGui::GetContentRegionAvail().x
-							|| viewPortSize.y != ImGui::GetContentRegionAvail().y)
-						{
-							viewPortSize.x = ImGui::GetContentRegionAvail().x;
-							viewPortSize.y = ImGui::GetContentRegionAvail().y;
-
-							//Create window resize event and grab it in MainLayer
-							se::Event _Event;
-							_Event.type = SDL_WINDOWEVENT;
-							_Event.window.event = SDL_WINDOWEVENT_RESIZED;
-							se::EventManager::PusEvent(_Event);
-						}
-					}
-
-
-					ImTextureID tid = reinterpret_cast<void*>(frameBuffer->GetTextureAttachment());
-					ImGui::Image(tid, ImVec2{ ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-
-					if (m_SelectedEntity.IsValid())
-					{
-						if (m_SelectedEntity.HasComponent<se::Transform3DComponent>())
-						{
-							auto transform = m_SelectedEntity.GetComponent<se::Transform3DComponent>().Transform.GetModelMatrix();
-
-							if (this->ShowImGuizmo(transform, true, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
-							{
-								glm::vec3 position, rotation, scale;
-								ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
-
-								m_SelectedEntity.GetComponent<se::Transform3DComponent>().Transform.SetPostition(position);
-								m_SelectedEntity.GetComponent<se::Transform3DComponent>().Transform.SetRotation(glm::radians(rotation));
-								m_SelectedEntity.GetComponent<se::Transform3DComponent>().Transform.SetScale(scale);
-							}
-						}
-						else if (m_SelectedEntity.HasComponent<se::EnvironmentComponent>())
-						{
-							auto environment = m_SelectedEntity.GetComponent<se::EnvironmentComponent>().Environment.get();
-							switch (environment->GetType())
-							{
-							case se::Environment::Type::Environment:
-								break;
-							case se::Environment::Type::GeneralLight:
-							{
-								auto pLight = static_cast<se::GeneralLight*>(environment);
-								glm::mat4 transform = glm::toMat4(glm::quat((pLight->GetDirection())));
-
-								if (this->ShowImGuizmo(transform, true, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
-								{
-									glm::vec3 position, rotation, scale;
-									ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
-									pLight->SetDirection(glm::radians(rotation)); // TODO: Normalize
-								}
-								break;
-							}
-							case se::Environment::Type::PointLight:
-							{
-								auto pLight = static_cast<se::PointLight*>(environment);
-
-								glm::mat4 transform = glm::translate(pLight->GetPosition());
-								if (this->ShowImGuizmo(transform, true, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
-								{
-									glm::vec3 position, rotation, scale;
-									ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
-									pLight->SetPosition(position);
-								}
-
-								break;
-							}
-							case se::Environment::Type::SpotLight:
-								auto pLight = static_cast<se::SpotLight*>(environment);
-
-								glm::mat4 translate = glm::translate(pLight->GetPosition());
-								glm::mat4 rotate = glm::toMat4(glm::quat(pLight->GetDirection()));
-								glm::mat4 transform = translate * rotate;
-								if (this->ShowImGuizmo(transform, true, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
-								{
-									glm::vec3 position, rotation, scale;
-									ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
-									pLight->SetPosition(position);
-									pLight->SetDirection(glm::radians(rotation));
-								}
-								break;
-							}
-						}
-
-					}
-
-				}
-			}
-
-			ShowFpsOverlay(ImGui::GetWindowViewport(), isFpsShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
-
-
+					Transform3DCallback(entity);
+				});
+			DrawComponent<se::Model3DComponent>("Model3D", entity, [&]()
+				{
+					Model3DCallback(entity);
+				});
+			DrawComponent<se::EnvironmentComponent>("Environment", entity, [&]()
+				{
+					EnvironmentCallback(entity);
+				});
+			DrawComponent<se::CameraComponent>("Camera", entity, [&]()
+				{
+					CameraCallback(entity);
+				});
 		}
-		ImGui::End(); // ImGui::Begin("Scene")
-
 	}
+
+	ImGui::End();
 }
 
-void EditorLayer::ShowProject(const bool& show)
+void EditorLayer::DrawAddComponentDelteEntity(se::Entity& entity)
 {
-
-	if (show)
+	if (ImGui::BeginPopupContextItem())
 	{
-		ImGui::Begin("Project");
-		{
-			if (ImGui::TreeNode("Scene##MainScene", "Scene: MainScene"))
-			{
-
-				ImGui::BulletText("Name: %s", "MainScene");
-				this->ShowEntitiesList(isEntitiesListShow);
-
-				ImGui::TreePop();
-			}
-		}
-		ImGui::End();
+		if (ImGui::MenuItem("Add Component")) {}
+		if (ImGui::MenuItem("Delete Entity")) {}
+		ImGui::EndPopup();
 	}
 }
 
-void EditorLayer::ShowTagComponent(se::Entity& entity)
+void EditorLayer::DrawAssetDataNode(se::AssetData& data)
 {
+	if (ImGui::TreeNodeEx(data._Name.c_str(), ImGuiTreeNodeFlags_SelectedWhenOpen))
+	{
+		if (!data._Name.empty())
+			ImGui::TextWrapped("Name: %s", data._Name.c_str());
+		if (!data._Path.empty())
+			ImGui::TextWrapped("Path: %s", data._Path.c_str());
+		
 
+		for (auto& node : data._Dependency)
+		{
+			DrawAssetDataNode(node);
+		}
+
+		ImGui::TreePop();
+	}
+}
+
+void EditorLayer::TagCallback(se::Entity& entity)
+{
 	static char buffer[256]; memset(buffer, 0, sizeof(buffer));
 	auto& tag = entity.GetComponent<se::TagComponent>().Tag;
 	std::strncpy(buffer, tag.c_str(), sizeof(buffer));
 
-	if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
+	if (ImGui::InputTextWithHint("##Tag", tag.c_str(), buffer, sizeof(buffer)))
 		tag = std::string(buffer);
 }
 
-void EditorLayer::ShowTransform3DComponent(se::Entity& entity)
+void EditorLayer::Transform3DCallback(se::Entity& entity)
 {
 	auto& transform = entity.GetComponent<se::Transform3DComponent>().Transform;
-	{
-		DrawVec3("Position", transform.GetPosition(), -FLT_MAX, FLT_MAX, 0.0, 100.0f, 400.0f);
-		DrawVec3("Rotation", transform.GetRotation(), -FLT_MAX, FLT_MAX, 0.0, 100.0f, 400.0f);
-		DrawVec3("Scale", transform.GetScale(), 0.0f, FLT_MAX, 1.0f, 100.0f, 400.0f);
-	}
+	DrawFloatVec3("Position", glm::value_ptr(transform.GetPosition()));
+	DrawFloatVec3("Roatation", glm::value_ptr(transform.GetRotation()));
+	DrawFloatVec3("Scale", glm::value_ptr(transform.GetScale()));
 }
 
-void EditorLayer::ShowModel3DComponent(se::Entity& entity)
+void EditorLayer::Model3DCallback(se::Entity& entity)
 {
-	auto& model3D = entity.GetComponent<se::Model3DComponent>().Model3D;
-	if (model3D != nullptr)
+	auto* pModel = entity.GetComponent<se::Model3DComponent>().Model3D.get();
+	if (pModel != nullptr)
 	{
-		static se::Entity selectedEntity;
-		model3D->GetEntities().each([&](auto entityID)
+		// Drwaing tag agin it's only for nice TreeNode
+		DrawComponent<se::TagComponent>("Meshes", entity, [&]()
 			{
-				se::Entity entity{ entityID , model3D.get() };
-				ProcessEntities("", entity, selectedEntity);
-				
-				//ShowMeshComponent(entity, isModel3DComponentShow);
-			});
-		ShowInspector(isInspectorShow);
-	}
-}
-
-void EditorLayer::ShowMeshComponent(se::Entity& entity, const bool& show)
-{
-	if (show)
-	{
-		if (entity.HasComponent<se::MeshComponent>())
-		{
-			std::string name = "Mesh: " + entity.GetComponent<se::MeshComponent>().Mesh->GetAssetData()._Name;
-
-			if (ImGui::TreeNode(name.c_str()))
-			{
-				this->ShowMaterialComponent(entity, entity.GetComponent<se::MeshComponent>(), isMaterialComponentShow);
-				ImGui::TreePop();
-			}
-		}
-	}
-
-}
-
-void EditorLayer::ShowMaterialComponent(se::Entity& entity, se::MeshComponent& mesh, const bool& show)
-{
-	if (show)
-	{
-		if (entity.HasComponent<se::MaterialComponent>())
-		{
-			uint32_t id = entity;
-			if (ImGui::TreeNode(std::string("##material" + std::to_string(id)).c_str(), "Material"))
-			{
-				auto& material = entity.GetComponent<se::MaterialComponent>().Material;
-				DrawColor3("Ambient", material.GetAmbientColor(), 150.0f, 400.0f);
-				DrawColor3("Diffuse", material.GetDiffuseColor(), 150.0f, 400.0f);
-				DrawColor3("Specular", material.GetSpecularColor(), 150.0f, 400.0f);
-				DrawDragFloat("Shinness", material.GetShininess(), 0.0, 150.0f, 400.0f);
-				DrawDragFloat("Shinness strength", material.GetShininessStrength(), 0.0, 150.0f, 400.0f);
-				mesh.Mesh->GetEntities().each([&](auto entityID)
+				pModel->GetEntities().each([&](auto entityID)
 					{
-						se::Entity entity{ entityID , mesh.Mesh.get() };
-						ShowTextureComponent(entity, isTextureComponentShow);
+						se::Entity entity{ entityID , pModel };
+						DrawComponent<se::MeshComponent>(entity.GetComponent<se::TagComponent>().Tag.c_str(), entity, [&]()
+							{
+								MeshCallback(entity);
+							});
 					});
-				ImGui::TreePop();
-			}
-		}
+			});
 	}
 }
 
-void EditorLayer::ShowTextureComponent(se::Entity& entity, const bool& show)
+void EditorLayer::MeshCallback(se::Entity& entity)
 {
-	if (show)
-	{
-		if (entity.HasComponent<se::TextureComponent>())
+	DrawComponent<se::TagComponent>("Tag", entity, [&]()
 		{
-			const float width = 100.0f, height = 100.0f;
-			auto texture = entity.GetComponent<se::TextureComponent>().Texture;
-			ImTextureID tid = reinterpret_cast<void*>(texture->GetTextureRenderId());
-			uint32_t id = entity;
-			if (ImGui::TreeNode(std::string("##" + std::to_string(id)).c_str(), "Texture: %s", texture->GetAssetData()._Name.c_str()))
-			{
-				switch (texture->GetAssetData()._SubType)
+			TagCallback(entity);
+		});
+	DrawComponent<se::MaterialComponent>("Material", entity, [&]()
+		{
+			MaterialCallback(entity);
+		});
+}
+
+void EditorLayer::TextureCallback(se::Entity& entity)
+{
+	const float width = 100.0f, height = 100.0f;
+	auto texture = entity.GetComponent<se::TextureComponent>().Texture;
+	ImTextureID tid = reinterpret_cast<void*>(texture->GetTextureRenderId());
+	uint32_t id = entity;
+
+	switch (texture->GetAssetData()._SubType)
+	{
+	case se::AssetDataSubType::Diffuse:
+		ImGui::BulletText("Type: Diffuse");
+		break;
+	case se::AssetDataSubType::Specular:
+		ImGui::BulletText("Type: Specular");
+		break;
+	case se::AssetDataSubType::NormalMap:
+		ImGui::BulletText("Type: NormalMap");
+		break;
+	}
+
+	ImGui::Image(tid, ImVec2{ width, height }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+}
+
+void EditorLayer::MaterialCallback(se::Entity& entity)
+{
+	auto& material = entity.GetComponent<se::MaterialComponent>().Material;
+	float tab_width = 145.0f;
+	DrawColor3("Ambient", glm::value_ptr(material.GetAmbientColor()), tab_width);
+	DrawColor3("Diffuse", glm::value_ptr(material.GetDiffuseColor()), tab_width);
+	DrawColor3("Scpecular", glm::value_ptr(material.GetSpecularColor()), tab_width);
+	DrawFloat("Shininess", &material.GetShininess(), 0.0f, -FLT_MAX, FLT_MAX, tab_width);
+	DrawFloat("Shininess strength", &material.GetShininessStrength(), 0.0f, -FLT_MAX, FLT_MAX, tab_width);
+
+	auto& mesh = entity.GetComponent<se::MeshComponent>().Mesh;
+
+	DrawComponent<se::TagComponent>("Textures", entity, [&]
+		{
+			mesh->GetEntities().each([&](auto entityID)
 				{
-				case se::AssetDataSubType::Diffuse:
-					ImGui::Text("Type: Diffuse");
-					break;
-				case se::AssetDataSubType::Specular:
-					ImGui::Text("Type: Specular");
-					break;
-				case se::AssetDataSubType::NormalMap:
-					ImGui::Text("Type: NormalMap");
-					break;
+					se::Entity entity{ entityID , mesh.get() };
+					std::string name = entity.GetComponent<se::TagComponent>().Tag + "##" + entity;
+
+					DrawComponent<se::TagComponent>(name.c_str(), entity, [&]
+						{
+							TextureCallback(entity);
+						});
+				});
+		});
+	
+}
+
+void EditorLayer::EnvironmentCallback(se::Entity& entity)
+{
+	auto& env = entity.GetComponent<se::EnvironmentComponent>().Environment;
+	switch (env->GetType())
+	{
+	case se::Environment::Type::GeneralLight:
+	{
+		m_GuizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		auto pLight = static_cast<se::GeneralLight*>(env.get());
+		ImGui::BulletText("Type: %s", "General light");
+		this->DrawFloatVec3("Direction", glm::value_ptr(pLight->GetDirection()), 0.0, -1.0f, 1.0f);
+		this->DrawColor3("Ambient", glm::value_ptr(pLight->GetAmbientColor()));
+		this->DrawColor3("Diffuse", glm::value_ptr(pLight->GetDiffuseColor()));
+		this->DrawColor3("Specular", glm::value_ptr(pLight->GetSpecularColor()));
+		break;
+	}
+	case se::Environment::Type::PointLight:
+	{
+		m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+		auto pLight = static_cast<se::PointLight*>(env.get());
+		ImGui::BulletText("Type: %s", "Point light");
+		this->DrawFloatVec3("Position", glm::value_ptr(pLight->GetPosition()), 0.0);
+		this->DrawColor3("Ambient", glm::value_ptr(pLight->GetAmbientColor()));
+		this->DrawColor3("Diffuse", glm::value_ptr(pLight->GetDiffuseColor()));
+		this->DrawColor3("Specular", glm::value_ptr(pLight->GetSpecularColor()));
+		this->DrawFloat("Constant", &pLight->GetConstant(), 1.0f);
+		this->DrawFloat("Linear", &pLight->GetLinear(), 0.0f);
+		this->DrawFloat("Qaudratic", &pLight->GetQaudratic(), 0.0f);
+		break;
+	}
+	case se::Environment::Type::SpotLight:
+	{
+
+		break;
+	}
+	default:
+
+		break;
+	}
+}
+
+void EditorLayer::CameraCallback(se::Entity& entity)
+{
+	auto& camera = entity.GetComponent<se::CameraComponent>().Camera;
+	DrawFloatVec3("Position", glm::value_ptr(camera->GetPosition()));
+	DrawFloatVec3("Dirrection", glm::value_ptr(camera->GetForwardDirrection()), -1.0, 1, 0);
+	if (DrawFloat("Fov", &camera->GetFov(), 45.0))
+		camera->Resize();
+
+	if (entity.HasComponent<se::NativeScriptComponent>())
+	{
+		auto instance = entity.GetComponent<se::NativeScriptComponent>().Instance;
+
+		if (instance)
+		{
+			auto free_camera = dynamic_cast<se::FreeCameraController*>(instance);
+			if (!free_camera)
+			{
+				if (ImGui::Button("Free move"))
+				{
+
 				}
-
-				ImGui::Image(tid, ImVec2{ width, height }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-				ImGui::TreePop();
 			}
 		}
-	}
-}
-
-void EditorLayer::ShowEnvironmentComponent(se::Entity& entity, const bool& show)
-{
-	if (show)
-	{
-		if (m_SelectedEntity.HasComponent<se::EnvironmentComponent>())
+		else
 		{
-			auto environment = m_SelectedEntity.GetComponent<se::EnvironmentComponent>().Environment.get();
-			switch (environment->GetType())
+			if (ImGui::Button("Free move"))
 			{
-			case se::Environment::Type::Environment:
-				break;
-			case se::Environment::Type::GeneralLight:
-			{
-				m_GuizmoOperation = ImGuizmo::OPERATION::ROTATE;
-				auto pLight = static_cast<se::GeneralLight*>(environment);
-				this->DrawVec3("Direction", pLight->GetDirection(), -1.0f, 1.0f, 0.0f, 100.0f, 450.0f);
-				this->DrawColor3("Ambient", pLight->GetAmbientColor(), 100, 400.0f);
-				this->DrawColor3("Diffuse", pLight->GetDiffuseColor(), 100, 400.0f);
-				this->DrawColor3("Specular", pLight->GetSpecularColor(), 100, 400.0f);
-				break;
-			}
-			case se::Environment::Type::PointLight:
-			{
-				m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-				auto pLight = static_cast<se::PointLight*>(environment);
-				this->DrawVec3("Position", pLight->GetPosition(), -FLT_MAX, FLT_MAX, 0.0f, 100.0f, 450.0f);
-				this->DrawColor3("Ambient", pLight->GetAmbientColor(), 100.0f, 400.0f);
-				this->DrawColor3("Diffuse", pLight->GetDiffuseColor(), 100.0f, 400.0f);
-				this->DrawColor3("Specular", pLight->GetSpecularColor(), 100.0f, 400.0f);
-				this->DrawDragFloat("Constant", pLight->GetConstant(), 1.0f, 100.0f, 400.0f);
-				this->DrawDragFloat("Linear", pLight->GetLinear(), 0.7f, 100.0f, 400.0f);
-				this->DrawDragFloat("Qaudratic", pLight->GetQaudratic(), 1.8f, 100.0f, 400.0f);
-				break;
-			}
-			case se::Environment::Type::SpotLight:
-				auto pLight = static_cast<se::SpotLight*>(environment);
-				this->DrawVec3("Position", pLight->GetPosition(), -FLT_MAX, FLT_MAX, 0.0f, 100.0f, 450.0f);
-				this->DrawVec3("Dirrection", pLight->GetDirection(), -1.0, 1.0, 0.0f, 100.0f, 450.0f);
-				this->DrawColor3("Ambient", pLight->GetAmbientColor(), 100.0f, 400.0f);
-				this->DrawColor3("Diffuse", pLight->GetDiffuseColor(), 100.0f, 400.0f);
-				this->DrawColor3("Specular", pLight->GetSpecularColor(), 100.0f, 400.0f);
-				this->DrawDragFloat("Min angle", pLight->GetMinAngle(), 0.5f, 100.0f, 400.0f);
-				this->DrawDragFloat("Max angle", pLight->GetMaxAngle(), 0.7f, 100.0f, 400.0f);
-				this->DrawDragFloat("Constant", pLight->GetConstant(), 1.0f, 100.0f, 400.0f);
-				this->DrawDragFloat("Linear", pLight->GetLinear(), 0.7f, 100.0f, 400.0f);
-				this->DrawDragFloat("Qaudratic", pLight->GetQaudratic(), 1.8f, 100.0f, 400.0f);
-				break;
+
 			}
 		}
 	}
-}
-
-void EditorLayer::ShowCameraComponent(se::Entity& entity, const bool& show)
-{
-	if (show)
-	{
-		if (entity.HasComponent<se::CameraComponent>())
-		{
-			std::string name = "CameraComponent##" + std::string(entity);
-
-			if (ImGui::TreeNode(name.c_str()))
-			{
-				auto& camera = entity.GetComponent<se::CameraComponent>().Camera;
-				DrawVec3("Position", camera->GetPosition());
-				DrawVec3("Dirrection", camera->GetForwardDirrection(), -1.0, 1, 0, 100.0f, 400.0f);
-				if (DrawDragFloat("Fov", camera->GetFov(), 45.0, 100.0f, 350.0f))
-					camera->Resize();
-
-				ImGui::TreePop();
-			}
-		}
-
-	}
-}
-
-bool EditorLayer::ShowImGuizmo(glm::mat4& transform, const bool& show, const float& x, const float& y, const float& w, const float& h)
-{
-	ImGuizmo::SetOrthographic(false);
-	ImGuizmo::SetDrawlist();
-	ImGuizmo::SetRect(x, y, w, h);
-
-	auto cameraView = GetScene()->GetActiveCamera()->GetView();
-	auto cameraProjection = GetScene()->GetActiveCamera()->GetProjection();
-
-	ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), m_GuizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(transform));
-
-	if (ImGuizmo::IsUsing())
-		return true;
 	else
-		return false;
+	{
+		if (ImGui::Button("Free move"))
+		{
+
+		}
+	}
+
+
+	
 }
 
-void EditorLayer::ShowFpsOverlay(ImGuiViewport* viewport, const bool& show, const float& x, const float& y)
+void EditorLayer::AddCameraComponentCallback(se::CameraComponent& component)
 {
-	ShowDemoWindow();
-	if (show)
-	{
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuiWindowFlags window_flags =
-			ImGuiWindowFlags_NoDecoration |
-			ImGuiWindowFlags_NoDocking |
-			ImGuiWindowFlags_AlwaysAutoResize |
-			ImGuiWindowFlags_NoSavedSettings |
-			ImGuiWindowFlags_NoFocusOnAppearing |
-			ImGuiWindowFlags_NoNav;
+	auto pCamera = new se::Camera();
+	auto aspect = m_MainSceneVeiwPort.GetComponent<glm::vec2>();
+	pCamera->Resize( aspect.x / aspect.y);
+	component.IsPrimary = true;
+	component.Camera = se::ShadeShared<se::Camera>(pCamera);
+}
 
-		ImGui::SetNextWindowViewport(viewport->ID);
-		ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-		ImGui::SetNextWindowPos(ImVec2{ ImGui::GetWindowPos().x + 12, ImGui::GetWindowPos().y + 32 }, ImGuiCond_Always);
-		ImGui::Begin("Example: Simple overlay", nullptr, window_flags);
+bool EditorLayer::DrawColor3(const char* lable, float* data, const float& cw1, const float& cw2)
+{
+	ImGui::PushID(lable);
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, cw1);
+	if (cw2 > 0.0f)
+		ImGui::SetColumnWidth(1, cw2);
+
+	ImGui::Text(lable);
+	ImGui::NextColumn();
+	ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
+	bool isUsed = ImGui::ColorEdit3("##color", data);
+	ImGui::PopItemWidth();
+	ImGui::Columns(1);
+	ImGui::PopID();
+
+	return isUsed;
+}
+
+bool EditorLayer::DrawFloatVec3(const char* lable, float* data, const float& reset, const float& min, const float& max, const float& cw1)
+{
+	bool isUsed = false;
+
+	ImGui::PushID(lable);
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, cw1);
+	ImGui::Text(lable);
+	ImGui::NextColumn();
+
+	if (ImGui::Button("X")) { data[0] = reset; isUsed = true; }
+
+	const ImGuiStyle& style = ImGui::GetStyle();
+	ImVec2 label_size = ImGui::CalcTextSize("X", NULL, true);
+	ImVec2 button_size = CalcItemSize(ImVec2(0, 0), label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
+	float width = (ImGui::GetContentRegionAvailWidth() - ((cw1 + style.FramePadding.x * 3) / 2) - ((button_size.x - style.FramePadding.x) * 3)) / 3;
+
+	ImGui::SameLine();
+	ImGui::PushItemWidth(width);
+	if (ImGui::DragFloat("##X", &data[0], 0.01f, min, max, "%.2f"))
+		isUsed = true;
+
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	if (ImGui::Button("Y")) { data[1] = reset; isUsed = true; } ImGui::SameLine();
+	ImGui::PushItemWidth(width);
+	if (ImGui::DragFloat("##Y", &data[1], 0.01f, min, max, "%.2f"))
+		isUsed = true;
+
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	if (ImGui::Button("Z")) { data[2] = reset; isUsed = true; } ImGui::SameLine();
+	ImGui::PushItemWidth(width);
+	if (ImGui::DragFloat("##Z", &data[2], 0.01f, min, max, "%.2f"))
+		isUsed = true;
+
+	ImGui::PopItemWidth();
+	ImGui::Columns(1);
+	ImGui::PopID();
+
+	return isUsed;
+}
+
+bool EditorLayer::DrawFloat(const char* lable, float* data, const float& reset, const float& min, const float& max, const float& cw1, const float& cw2)
+{
+	ImGui::PushID(lable);
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, cw1);
+	if (cw2 > 0.0f)
+		ImGui::SetColumnWidth(1, cw2);
+
+	ImGui::Text(lable);
+	ImGui::NextColumn();
+	ImGui::PushItemWidth(ImGui::GetContentRegionAvailWidth());
+	bool isUsed = ImGui::DragFloat("##value", data, 0.01f, -FLT_MAX, FLT_MAX, "%.4f");
+	ImGui::PopItemWidth();
+	ImGui::Columns(1);
+	ImGui::PopID();
+
+	return isUsed;
+}
+
+void EditorLayer::ShowEnvironmentImGuizmo(se::Entity& entity)
+{
+	auto environment = entity.GetComponent<se::EnvironmentComponent>().Environment.get();
+	switch (environment->GetType())
+	{
+	case se::Environment::Type::Environment:
+		break;
+	case se::Environment::Type::GeneralLight:
+	{
+		auto pLight = static_cast<se::GeneralLight*>(environment);
+		glm::mat4 transform = glm::toMat4(glm::quat((pLight->GetDirection())));
+
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera().get(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
 		{
-			ImGui::Text("Application average %.1f ms/frame (%.0f FPS)", 1000.0f / io.Framerate, io.Framerate);
+			glm::vec3 position, rotation, scale;
+			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
+			pLight->SetDirection(glm::radians(rotation)); // TODO: Normalize
 		}
-		ImGui::End();
+		break;
+	}
+	case se::Environment::Type::PointLight:
+	{
+		auto pLight = static_cast<se::PointLight*>(environment);
+
+		glm::mat4 transform = glm::translate(pLight->GetPosition());
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera().get(),m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		{
+			glm::vec3 position, rotation, scale;
+			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
+			pLight->SetPosition(position);
+		}
+
+		break;
+	}
+	case se::Environment::Type::SpotLight:
+		auto pLight = static_cast<se::SpotLight*>(environment);
+
+		glm::mat4 translate = glm::translate(pLight->GetPosition());
+		glm::mat4 rotate = glm::toMat4(glm::quat(pLight->GetDirection()));
+		glm::mat4 transform = translate * rotate;
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera().get(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		{
+			glm::vec3 position, rotation, scale;
+			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
+			pLight->SetPosition(position);
+			pLight->SetDirection(glm::radians(rotation));
+		}
+		break;
 	}
 }
 
-void EditorLayer::NewEntityModal(se::EntitiesDocker& docker)
+void EditorLayer::CreateEntityModal(const char* modalName, se::EntitiesDocker& docker)
 {
-
 	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-	if (ImGui::BeginPopupModal("New entity##create_new_entity", NULL, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize))
+	if (ImGui::BeginPopupModal(modalName, NULL, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize))
 	{
 
 		static char buffer[256] = "";
@@ -614,88 +739,19 @@ void EditorLayer::NewEntityModal(se::EntitiesDocker& docker)
 
 		if (ImGui::Button("Create"))
 		{
-			CreateEntity(docker, buffer);
-			memset(buffer, 0, sizeof(buffer));
-			ImGui::CloseCurrentPopup();
-		}
-
-
-		ImGui::SameLine();
-		if (ImGui::Button("Close"))
-			ImGui::CloseCurrentPopup();
-		ImGui::EndPopup();
-	}
-}
-
-void EditorLayer::CreateEntity(se::EntitiesDocker& docker, const std::string& name)
-{
-	if (name.size())
-		docker.CreateEntity(name);
-}
-
-void EditorLayer::DeletEntity(se::EntitiesDocker& docker, se::Entity& entity)
-{
-	if (entity.IsValid())
-		docker.DestroyEntity(entity);
-}
-
-void EditorLayer::AddComponentModal(se::Entity& entity)
-{
-
-
-	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-	if (ImGui::BeginPopupModal("Add component##add_component", NULL, ImGuiWindowFlags_MenuBar))
-	{
-		static int item_current = 0;
-		std::vector<const char*> components;
-
-		if (!entity.HasComponent<se::Transform3DComponent>())
-			components.push_back("Transform3DComponent");
-
-		if (!entity.HasComponent<se::Model3DComponent>())
-			components.push_back("Model3DComponent");
-
-		if (!entity.HasComponent<se::EnvironmentComponent>())
-			components.push_back("EnvironmentComponent");
-
-		if (!entity.HasComponent<se::CameraComponent>())
-			components.push_back("CameraComponent");
-
-		if (components.size())
-		{
-			ImGui::Combo("##componnents", &item_current, components.data(), components.size());
-
-			if (ImGui::Button("Add"))
+			if (strcmp(buffer, "") == 1)
 			{
-				if (components[item_current] == "Transform3DComponent")
-					AddComponent<se::Transform3DComponent>(entity);
-
-				if (components[item_current] == "Model3DComponent")
-				{
-					AddComponent<se::Model3DComponent>(entity);
-				}
-
-				if (components[item_current] == "EnvironmentComponent")
-					AddComponent<se::EnvironmentComponent>(entity);
-
-				if (components[item_current] == "CameraComponent")
-				{
-					auto& component = AddComponent<se::CameraComponent>(entity);
-					component.Camera = se::ShadeShared<se::Camera>(new se::Camera());
-				}
-
-
+				docker.CreateEntity(buffer);
+				memset(buffer, 0, sizeof(buffer));
 				ImGui::CloseCurrentPopup();
 			}
 		}
 
+
 		ImGui::SameLine();
 		if (ImGui::Button("Close"))
-		{
 			ImGui::CloseCurrentPopup();
-		}
-
 		ImGui::EndPopup();
 	}
 }
+

@@ -122,13 +122,6 @@ ShadeEditor::~ShadeEditor()
 void ShadeEditor::OnInit()
 {
 	se::AssetManager::ReadRoadMap();
-	//Events call back an other stuff 
-	se::EventManager::RegAppEventCallback(se::EventType::SDL_QUIT,
-		[&](se::Event const& event) {
-			this->Quit();
-			return true;
-		});
-	
 	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
 	se::WindowManager::Create(se::Window());
 
@@ -148,6 +141,20 @@ void ShadeEditor::OnInit()
 void ShadeEditor::OnUpdate(const se::Timer& deltaTime)
 {
 	return;
+}
+
+void ShadeEditor::OnEvent(const se::Event& event)
+{
+	if (event.GetType() == se::Event::Type::Quit)
+		this->Quit();
+
+	if (event.GetType() == se::Event::Type::Window)
+	{
+		if (event.GetWindow() == se::Event::Window::Resized)
+		{
+			se::WindowManager::Resize();
+		}
+	}
 }
 
 se::Application* se::CreateApplication()

@@ -20,7 +20,9 @@ namespace se
 		virtual void OnRenderBegin() override;
 		virtual void OnRender() = 0;
 		virtual void OnRenderEnd() override;
-		virtual void OnDelete() = 0;	
+		virtual void OnDelete() = 0;
+		virtual void OnEvent(const se::Event& event) = 0;
+		void OnImGuiEvent(const se::Event& event);
 	protected:
 		int m_WindowFlags;
 		int m_DockSpaceFlags;

@@ -32,6 +32,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\EntitiesDocker.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Environment.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Event.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Font.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\FrameBuffer.h" />
@@ -91,6 +92,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\EntitiesDocker.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Entity.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Environment.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Event.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\EventManager.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Font.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\FrameBuffer.cpp" />
@@ -235,7 +237,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;_CRT_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -258,18 +260,19 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;SE_DLL;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>Full</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x86\</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -282,7 +285,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)SE_DLL;SE_DEBUG;_CRT_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -305,18 +308,19 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SE_DLL;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;SE_DLL;_CRT_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\libraries\include\;$(SolutionDir)$(ProjectName)\libraries\include\Vendors\;$(SolutionDir)$(ProjectName)\vendors\;$(SolutionDir)$(ProjectName)\vendors\Yaml\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>Full</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x64\</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>

@@ -15,8 +15,8 @@ MainScene::~MainScene()
 void MainScene::OnCreate()
 {
 
-	CreateLayer<MainLayer>("Main");	    InitLayer("Main");
-	CreateLayer<TestLayer>("Editor");   InitLayer("Editor");
+	CreateLayer<MainLayer>("Main");	      InitLayer("Main");
+	CreateLayer<EditorLayer>("Editor");   InitLayer("Editor");
 	
 
 	//se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
@@ -37,7 +37,7 @@ void MainScene::OnInit()
 {
 	/*se::Entity grid = this->CreateEntity("Grid"); // TODO move to Aplication entt
 	grid.AddComponent<se::Transform3DComponent>();
-	grid.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 500)));
+	grid.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 500)));/*
 
 
 	// Assets
@@ -80,6 +80,11 @@ void MainScene::OnRender()
 }
 
 void MainScene::OnDelete()
+{
+
+}
+
+void MainScene::OnEvent(const se::Event& event)
 {
 
 }

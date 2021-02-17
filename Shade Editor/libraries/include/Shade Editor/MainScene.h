@@ -1,9 +1,7 @@
 #pragma once
 #include <Shade/Core/Engine/Scene.h>
 #include "MainLayer.h"
-//#include "EditorLayer.h"
 #include "EditorLayer.h"
-#include "TestLayer.h"
 #include "Shade/Core/Engine/Text.h"
 
 class MainScene : public se::Scene
@@ -22,7 +20,7 @@ public:
 	virtual void OnRender() override;
 
 	virtual void OnDelete() override;
-
+	virtual void OnEvent(const se::Event& event) override;
 private:
 	
 };

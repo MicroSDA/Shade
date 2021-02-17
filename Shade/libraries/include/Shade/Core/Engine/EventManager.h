@@ -1,10 +1,7 @@
 #pragma once
-#include "Shade/Core/CoreAPI.h"
-#include <SDL2/SDL.h>
 #include "Shade/Core/Util/Log.h"
 #include "Shade/Core/Engine/Input.h"
-
-#undef main // For SDL
+#include "Shade/Core/Engine/Event.h"
 
 namespace se
 {
@@ -12,25 +9,12 @@ namespace se
 	class Layer;
 	class Scene;
 	//////////////////////
-
-	typedef SDL_Event     Event;
-	typedef SDL_EventType EventType;
-	typedef SDL_KeyCode   KeyCode;
-
-	using EventCallback = std::function<bool(Event const&)>;
-
 	class SE_API EventManager
 	{
 		
 	public:
 		friend class Application;
-
-		static int  RegAppEventCallback(const EventType& type, const EventCallback& callback);
-		static int  RegSceneEventCallback(const EventType& type, const Scene* scene, const EventCallback& callback);
-		static int  RegLayerEventCallback(const EventType& type, const Scene* scene, const Layer* layer, const EventCallback& callback);
-		static void PusEvent(Event& event);
-		static void DeleteEventCallback(const EventType& type, int index);
-		static void DeleteEventCallback(const EventType& type);
+		static void PusEvent(const se::Event& event);
 	private:
 		//Singleton implementation
 		EventManager();
@@ -43,12 +27,6 @@ namespace se
 		/////////////////////////////////
 
 		void Update();
-		void EraseCallbacks();
-
-		se::Event  m_Event;
-		std::unordered_map<EventType, std::vector<EventCallback>> m_CoreCallbacks;
-		std::unordered_map<EventType, std::unordered_map<const Scene*, std::vector<EventCallback>>> m_SceneCallbacks;
-		std::unordered_map<EventType, std::unordered_map<const Scene*, std::unordered_map<const Layer*, std::vector<EventCallback>>>> m_LayerCallbacks;
 	};
 }
 

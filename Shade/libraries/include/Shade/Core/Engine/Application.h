@@ -9,6 +9,7 @@
 #include "Shade/Core/Engine/AssetManager.h"
 #include "Shade/Core/Engine/Timer.h"
 #include "Shade/Core/Engine/EntitiesDocker.h"
+#include "Shade/Core/Engine/Event.h"
 
 namespace se
 {
@@ -22,6 +23,7 @@ namespace se
 		inline se::Scene* GetCurrentScene() const  { return m_pCurrentScene; };
 		se::Scene* GetScene(const std::string& name);
 		virtual void OnInit() = 0;
+		virtual void OnEvent(const se::Event& event) = 0;
 		void   Start();
 		void   Quit();
 	protected:

@@ -32,14 +32,19 @@ void se::Layer::SetUpdate(const bool& isUpdate)
 	m_IsUpdate = isUpdate;
 }
 
+void se::Layer::SetOnEvent(const bool& isEvent)
+{
+	m_IsOnEvent = isEvent;
+}
+
 const bool& se::Layer::IsActive() const
 {
 	return m_IsActive;
 }
 
-const bool& se::Layer::IsEventsUpdate() const
+const bool& se::Layer::IsOnEvent() const
 {
-	return m_IsEventsUpdate;
+	return m_IsOnEvent;
 }
 
 const bool& se::Layer::IsRender() const

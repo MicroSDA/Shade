@@ -30,6 +30,36 @@ se::Scene::~Scene()
 	SE_DEBUG_PRINT(std::string("Scene '" + m_Name + "' has been destroyed").c_str(), se::SLCode::InfoSecondary);
 }
 
+void se::Scene::SetUpdate(const bool& update)
+{
+	m_IsUpdate = update;
+}
+
+void se::Scene::SetRender(const bool& render)
+{
+	m_IsRender = render;
+}
+
+void se::Scene::SetOnEvent(const bool& event)
+{
+	m_IsOnEvent = event;
+}
+
+const bool& se::Scene::IsUpdate() const
+{
+	return m_IsUpdate;
+}
+
+const bool& se::Scene::IsRender() const
+{
+	return m_IsRender;
+}
+
+const bool& se::Scene::IsOnEvent() const
+{
+	return m_IsOnEvent;
+}
+
 void se::Scene::UpdateNativeScripts(const se::Timer& deltaTime)
 {
 	this->GetEntities().view<NativeScriptComponent>().each([=](auto entity, auto& nsc)

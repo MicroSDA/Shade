@@ -10,5 +10,6 @@ public:
 private:
 	virtual void OnInit() override;
 	virtual void OnUpdate(const se::Timer& deltaTime) override;
+	virtual void OnEvent(const se::Event& event) override;
 };
 

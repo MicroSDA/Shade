@@ -14,6 +14,7 @@ public:
 	virtual void OnRenderEnd() override;
 	virtual void OnUpdate(const se::Timer& deltaTime) override;
 	virtual void OnDelete() override;
+	virtual void OnEvent(const se::Event& event) override;
 private:
 };
 

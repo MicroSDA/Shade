@@ -10,6 +10,7 @@
 #include "Shade/Core/Engine/Controllers.h"
 #include "Shade/Core/Engine/Timer.h"
 #include "Shade/Core/Engine/FrameBuffer.h"
+#include "Shade/Core/Engine/Event.h"
 
 namespace se
 {
@@ -30,15 +31,17 @@ namespace se
 		virtual void OnRender() = 0;
 		virtual void OnRenderEnd() = 0;
 		virtual void OnDelete() = 0;
+		virtual void OnEvent(const se::Event& event) = 0;
 		void SetActive(const bool& isActive);
 		void SetEventsUpdate(const bool& isEventUpdate);
 		void SetRender(const bool& isRender);
 		void SetUpdate(const bool& isUpdate);
+		void SetOnEvent(const bool& isEvent);
 
 		const bool& IsActive() const;
-		const bool& IsEventsUpdate() const;
 		const bool& IsRender() const;
-		const bool& IsUpdate() const;
+		const bool& IsUpdate() const;	
+		const bool& IsOnEvent() const;
 
 		se::Scene* GetScene() { return m_pScene; }
 		const std::string& GetName() const { return m_Name; }
@@ -51,6 +54,7 @@ namespace se
 		bool m_IsRender       = true;
 		bool m_IsUpdate       = true;
 		bool m_IsInitalized   = false;
+		bool m_IsOnEvent	  = true;
 	};
 
 }

@@ -13,15 +13,6 @@ se::Application::Application()
 	m_pInstance = this;
 	SE_DEBUG_PRINT("Application has been created.", se::SLCode::InfoSecondary);
 
-	se::EventManager::RegAppEventCallback(se::EventType::SDL_WINDOWEVENT,
-		[](se::Event const& event) {
-			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
-			{
-				se::WindowManager::Resize();
-			}
-
-			return false;
-		});
 }
 
 se::Application::~Application()
@@ -48,7 +39,6 @@ void se::Application::Start()
 	while (!m_IsQuitRequested)
 	{
 		_DeltaTime.Update(); // TODO Check
-
 		try
 		{
 			se::EventManager::Get().Update(); // TODO need refactor, fps drops

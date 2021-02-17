@@ -14,7 +14,7 @@ MainLayer::~MainLayer()
 
 void MainLayer::OnCreate()
 {
-	se::EventManager::RegLayerEventCallback(se::EventType::SDL_WINDOWEVENT, GetScene(), this,
+	/*se::EventManager::RegLayerEventCallback(se::EventType::SDL_WINDOWEVENT, GetScene(), this,
 		[&](se::Event const& event) {
 		
 			if (event.window.event == SDL_WINDOWEVENT_RESIZED)
@@ -41,7 +41,7 @@ void MainLayer::OnCreate()
 			}
 			
 			return false;
-		});
+		});*/
 }
 
 void MainLayer::OnInit()
@@ -148,6 +148,35 @@ void MainLayer::OnRender()
 
 void MainLayer::OnDelete()
 {
+}
+
+void MainLayer::OnEvent(const se::Event& event)
+{
+
+	if (event.GetType() == se::Event::Type::Window)
+	{
+		if (event.GetWindow() == se::Event::Window::Resized)
+		{
+			auto entites = se::Application::GetApplication().GetEntities().view<glm::vec2, se::TagComponent>();
+
+			for (auto& viewPort : entites)
+			{
+				if (entites.get<se::TagComponent>(viewPort).Tag == "SceneViewPort")
+				{
+					auto size = entites.get<glm::vec2>(viewPort);
+
+					auto activeCamera = se::Application::GetApplication().GetCurrentScene()->GetActiveCamera();
+					if (activeCamera != nullptr)
+						activeCamera->Resize(size.x / size.y);
+
+					auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
+
+					if (frameBuffer)
+						frameBuffer->Resize(size.x, size.y);
+				}
+			}
+		}
+	}
 }
 
 void MainLayer::OnRenderBegin()
