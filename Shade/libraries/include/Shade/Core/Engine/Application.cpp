@@ -19,7 +19,6 @@ se::Application::Application()
 			{
 				se::WindowManager::Resize();
 			}
-		
 
 			return false;
 		});
@@ -52,7 +51,7 @@ void se::Application::Start()
 
 		try
 		{
-			se::EventManager::Get().Update();
+			se::EventManager::Get().Update(); // TODO need refactor, fps drops
 			OnUpdate(_DeltaTime);
 			if (m_pCurrentScene)
 			{
