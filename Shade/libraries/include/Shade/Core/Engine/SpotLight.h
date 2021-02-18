@@ -38,14 +38,15 @@ namespace se
 		virtual void OnUpdate(const se::Timer& deltaTime) override;
 		virtual void Process(const se::Shader* shader) override;
 	private:
-		glm::fvec3 m_Direction;
-		glm::fvec3 m_Position;
-		float      m_Constant;
-		float      m_Linear;
-		float      m_Qaudratic;
-		float      m_MinAngle;
-		float      m_MaxAngle;
-		int        m_Id;
+		glm::fvec3	m_Direction;
+		glm::fvec3	m_Position;
+		float		m_Constant;
+		float		m_Linear;
+		float		m_Qaudratic;
+		float		m_MinAngle;
+		float		m_MaxAngle;
+		static int  m_Id;
+		static int  m_Count;
 	};
 
 }

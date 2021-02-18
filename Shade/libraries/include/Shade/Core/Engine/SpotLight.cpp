@@ -26,6 +26,8 @@
 
 	7,    1.0,     0.7,    1.8
 */
+int  se::SpotLight::m_Id = 0;
+int  se::SpotLight::m_Count = 0;
 se::SpotLight::SpotLight() : se::Light(se::Environment::Type::SpotLight),
 	m_Direction(0.0, 0.0f, 1.0f),
 	m_Position(0.0f, 0.0f, 0.0f),
@@ -33,13 +35,14 @@ se::SpotLight::SpotLight() : se::Light(se::Environment::Type::SpotLight),
 	m_Linear(0.007f),
 	m_Qaudratic(0.00007f),
 	m_MinAngle(glm::cos(glm::radians(5.5f))),
-	m_MaxAngle(glm::cos(glm::radians(7.5f))),
-	m_Id(0)
+	m_MaxAngle(glm::cos(glm::radians(7.5f)))
 {
+	m_Count++;
 }
 
 se::SpotLight::~SpotLight()
 {
+	m_Count--;
 }
 
  void se::SpotLight::SetPosition(const float& x, const float& y, const float& z)
@@ -163,14 +166,22 @@ void se::SpotLight::OnUpdate(const se::Timer& deltaTime)
 
 void se::SpotLight::Process(const se::Shader* shader) 
 {
-	shader->SendUniform3Float("spotL.Light.Light.ColorAmbient",	    m_AmbientColor);
-	shader->SendUniform3Float("spotL.Light.Light.ColorDiffuse",	    m_DiffuseColor);
-	shader->SendUniform3Float("spotL.Light.Light.ColorSpecular",    m_SpecularColor);
-	shader->SendUniform3Float("spotL.Light.Light.Direction",        m_Direction);
-	shader->SendUniform3Float("spotL.Light.Position",               m_Position);
-	shader->SendUniform1Float("spotL.Light.Constant",               m_Constant);
-	shader->SendUniform1Float("spotL.Light.Linear",                 m_Linear);
-	shader->SendUniform1Float("spotL.Light.Qaudratic",              m_Qaudratic);
-	shader->SendUniform1Float("spotL.MinAngle",                     m_MinAngle);
-	shader->SendUniform1Float("spotL.MaxAngle",                     m_MaxAngle);
+	std::string id = std::to_string(m_Id);
+
+	shader->SendUniform1Int("SPOT_LIGHTS_COUNT", m_Count);
+	shader->SendUniform3Float("spotL[" + id + "].Light.Light.ColorAmbient",	    m_AmbientColor);
+	shader->SendUniform3Float("spotL[" + id + "].Light.Light.ColorDiffuse",	    m_DiffuseColor);
+	shader->SendUniform3Float("spotL[" + id + "].Light.Light.ColorSpecular",    m_SpecularColor);
+	shader->SendUniform3Float("spotL[" + id + "].Light.Light.Direction",        m_Direction);
+	shader->SendUniform3Float("spotL[" + id + "].Light.Position",               m_Position);
+	shader->SendUniform1Float("spotL[" + id + "].Light.Constant",               m_Constant);
+	shader->SendUniform1Float("spotL[" + id + "].Light.Linear",                 m_Linear);
+	shader->SendUniform1Float("spotL[" + id + "].Light.Qaudratic",              m_Qaudratic);
+	shader->SendUniform1Float("spotL[" + id + "].MinAngle",                     m_MinAngle);
+	shader->SendUniform1Float("spotL[" + id + "].MaxAngle",                     m_MaxAngle);
+
+	if (m_Id == m_Count - 1)
+		m_Id = 0;
+	else
+		m_Id++;
 }

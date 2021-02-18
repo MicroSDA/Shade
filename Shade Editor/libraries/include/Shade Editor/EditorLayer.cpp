@@ -16,32 +16,6 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnCreate()
 {
-	/*se::EventManager::RegLayerEventCallback(se::EventType::SDL_KEYDOWN, GetScene(), this,
-		[&](se::Event const& event) {
-
-			if (event.key.keysym.scancode == SDL_SCANCODE_F)
-			{
-				switch (m_GuizmoOperation)
-				{
-				case ImGuizmo::OPERATION::TRANSLATE:
-					m_GuizmoOperation = ImGuizmo::OPERATION::ROTATE;
-					break;
-				case ImGuizmo::OPERATION::ROTATE:
-					m_GuizmoOperation = ImGuizmo::OPERATION::SCALE;
-					break;
-				case ImGuizmo::OPERATION::SCALE:
-					m_GuizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-					break;
-				}
-
-			}
-			else if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-			{
-				m_SelectedEntity = se::Entity();
-			}
-
-			return false;
-		});*/
 }
 
 void EditorLayer::OnInit()
@@ -167,7 +141,8 @@ void EditorLayer::ShowMainMenu(const bool& show)
 						if (se::Serializer::DeserializeScene(filePath, *this->GetScene()))
 							m_IsScenePlay = false;
 
-						//GetScene()->CreateEntity("Point light2").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::PointLight()));
+						//GetScene()->CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::SpotLight()));
+						//GetScene()->CreateEntity("Spot light 2").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::SpotLight()));
 					}
 				}
 
