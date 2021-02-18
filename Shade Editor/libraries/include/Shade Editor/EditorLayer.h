@@ -80,5 +80,7 @@ private:
 
 	se::Entity  m_SelectedEntity;
 	se::Entity  m_MainSceneVeiwPort;
+
+	bool m_IsScenePlay		= false;
 };
 

@@ -46,10 +46,19 @@ void se::EventManager::Update()
 void se::EventManager::PusEvent(const se::Event& event)
 {
 	SDL_Event sdl_event;
+
+	/*sdl_event.type					= static_cast<uint32_t>(event.GetType());
+	sdl_event.window.event			= static_cast<uint8_t>(event.GetWindow());
+	sdl_event.key.keysym.scancode	= static_cast<SDL_Scancode>(event.GetKeyboard().ScanCode);*/
 	
 	sdl_event.type = static_cast<uint32_t>(event.GetType());
 	sdl_event.window.event = static_cast<uint8_t>(event.GetWindow());
 	sdl_event.key.keysym.scancode = static_cast<SDL_Scancode>(event.GetKeyboard().ScanCode);
+
+	sdl_event.motion.x = event.GetMouse().Motion.x;
+	sdl_event.motion.y = event.GetMouse().Motion.y;
+	sdl_event.button.state = static_cast<uint8_t>(event.GetMouse().Button.State);
+	sdl_event.button.button = static_cast<uint8_t>(event.GetMouse().Button.Code);
 	
 	SDL_PushEvent(&sdl_event);
 }

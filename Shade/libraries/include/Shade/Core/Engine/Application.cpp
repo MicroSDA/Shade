@@ -42,11 +42,16 @@ void se::Application::Start()
 		try
 		{
 			se::EventManager::Get().Update(); // TODO need refactor, fps drops
-			OnUpdate(_DeltaTime);
+			this->OnUpdate(_DeltaTime);
+			this->UpdateNativeScripts(_DeltaTime);
 			if (m_pCurrentScene)
 			{
-				m_pCurrentScene->OnUpdate(_DeltaTime);
-				m_pCurrentScene->UpdateNativeScripts(_DeltaTime);
+				if (m_pCurrentScene->IsUpdate())
+				{
+					m_pCurrentScene->OnUpdate(_DeltaTime);
+					m_pCurrentScene->UpdateNativeScripts(_DeltaTime);
+				}
+
 				m_pCurrentScene->OnRender();
 				for (auto _Layer : m_pCurrentScene->GetLayers())
 				{
@@ -181,4 +186,21 @@ void se::Application::DeleteScene(const std::string& name)
 		std::string _Msg("Scene '" + name + "' has not been found!");
 		throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
 	}
+}
+
+void se::Application::UpdateNativeScripts(const se::Timer& deltaTime)
+{
+	this->GetEntities().view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+		{
+			// TODO: Move to Scene::OnScenePlay
+			if (!nsc.Instance)
+			{
+				nsc.Instance = nsc.InstantiateScript();
+				nsc.Instance->m_Entity = Entity{ entity, this };
+				nsc.Instance->OnCreate();
+			}
+
+			if (nsc.Instance->IsUpdate())
+				nsc.Instance->OnUpdate(deltaTime);
+		});
 }

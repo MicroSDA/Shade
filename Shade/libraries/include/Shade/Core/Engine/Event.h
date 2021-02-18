@@ -327,10 +327,10 @@ namespace se
 
 			} ScanCode = Event::Keyboard::SCode::Unknown;
 			// TODO
-			enum class KCode : uint32_t
+			/*enum class KCode : uint32_t
 			{
 
-			} KeyCode;
+			} KeyCode;*/
 		};
 		struct Mouse
 		{
@@ -385,6 +385,7 @@ namespace se
 
 		void operator = (const SDL_Event& event);
 		operator SDL_Event ();
+		operator SDL_Event () const;
 	private:
 		se::Event::Type			m_Type = se::Event::Type::FirstEvent;
 		se::Event::Window		m_Window = se::Event::Window::None;

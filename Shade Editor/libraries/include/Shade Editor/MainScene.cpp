@@ -60,23 +60,30 @@ void MainScene::OnInit()
 
 void MainScene::OnUpdate(const se::Timer& deltaTime)
 {
-	// TODO Change calculatin model matrix, get new matrix every set pos, scale or rotate; and add z rotation to 2dmatrix
+	auto ñameras = this->GetEntities().view<se::CameraComponent>();
+	for (auto& camera : ñameras)
+	{
+		auto& camera_component = ñameras.get<se::CameraComponent>(camera);
+		if (camera_component.IsPrimary)
+		{
+			this->SetActiveCamera(camera_component.Camera);
+			break;
+		}
+	}
 
-	if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_Q))
+	/*if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_Q))
 	{
 		se::Renderer::PolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
 	else
 	{
 		se::Renderer::PolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-
+	}*/
 
 }
 
 void MainScene::OnRender()
 {
-
 }
 
 void MainScene::OnDelete()

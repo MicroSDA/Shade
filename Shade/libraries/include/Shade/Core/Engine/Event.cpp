@@ -26,7 +26,11 @@ se::Event::operator SDL_Event()
 	event.button.state  = static_cast<uint8_t>(this->GetMouse().Button.State);
 	event.button.button = static_cast<uint8_t>(this->GetMouse().Button.Code);
 	std::strncpy(event.text.text, m_Text.Text, sizeof(event.text.text));*/
+	return this->m_SdlEvent;
+}
 
+se::Event::operator SDL_Event() const
+{
 	return this->m_SdlEvent;
 }
 

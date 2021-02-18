@@ -9,7 +9,8 @@ namespace se
 	{
 	public:
 
-		friend class Scene;
+		friend class  Scene;
+		friend class  Application;
 		friend struct NativeScriptComponent;
 
 		virtual ~ScriptableEntity();

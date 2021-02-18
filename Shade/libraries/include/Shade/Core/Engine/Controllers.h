@@ -11,7 +11,7 @@ namespace se
 
 		void OnCreate()
 		{
-		
+
 		}
 		void OnDestroy()
 		{
@@ -32,8 +32,8 @@ namespace se
 		void OnCreate()
 		{
 			m_GeneralLight = dynamic_cast<se::GeneralLight*>(this->GetComponent<se::EnvironmentComponent>().Environment.get());
-			m_PointLight   = dynamic_cast<se::PointLight*>(this->GetComponent<se::EnvironmentComponent>().Environment.get());
-			m_SpotLight    = dynamic_cast<se::SpotLight*>(this->GetComponent<se::EnvironmentComponent>().Environment.get());
+			m_PointLight = dynamic_cast<se::PointLight*>(this->GetComponent<se::EnvironmentComponent>().Environment.get());
+			m_SpotLight = dynamic_cast<se::SpotLight*>(this->GetComponent<se::EnvironmentComponent>().Environment.get());
 		}
 		void OnDestroy()
 		{
@@ -45,7 +45,7 @@ namespace se
 			if (m_GeneralLight)
 			{
 				auto camera = se::Application::GetApplication().GetCurrentScene()->GetActiveCamera();
-				if(se::Input::IsKeyboardBPressed(SDL_SCANCODE_LALT))
+				if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_LALT))
 					m_GeneralLight->SetDirection(camera->GetForwardDirrection());
 			}
 			else if (m_PointLight)
@@ -67,12 +67,12 @@ namespace se
 				{
 					glm::fvec3 _Position = m_PointLight->GetPosition();
 					if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_KP_PLUS))
-						m_PointLight->SetPosition(_Position.x , _Position.y + (m_MovementSpeed * deltaTime), _Position.z);
+						m_PointLight->SetPosition(_Position.x, _Position.y + (m_MovementSpeed * deltaTime), _Position.z);
 					if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_KP_MINUS))
-						m_PointLight->SetPosition(_Position.x , _Position.y - (m_MovementSpeed * deltaTime), _Position.z);
+						m_PointLight->SetPosition(_Position.x, _Position.y - (m_MovementSpeed * deltaTime), _Position.z);
 				}
 			}
-			else if(m_SpotLight)
+			else if (m_SpotLight)
 			{
 				auto camera = se::Application::GetApplication().GetCurrentScene()->GetActiveCamera();
 				m_SpotLight->SetPosition(camera->GetPosition());
@@ -82,9 +82,9 @@ namespace se
 
 	private:
 		float             m_MovementSpeed = 7.0f;
-		se::GeneralLight* m_GeneralLight  = nullptr;
-		se::PointLight*   m_PointLight    = nullptr;
-		se::SpotLight*    m_SpotLight     = nullptr;
+		se::GeneralLight* m_GeneralLight = nullptr;
+		se::PointLight* m_PointLight = nullptr;
+		se::SpotLight* m_SpotLight = nullptr;
 	};
 
 
@@ -98,7 +98,7 @@ namespace se
 		}
 		void OnDestroy()
 		{
-			
+
 		}
 		void OnUpdate(const se::Timer& deltaTime)
 		{
@@ -115,14 +115,14 @@ namespace se
 					_Camera->MoveRight(m_MovementSpeed * deltaTime);
 			}
 			{
-				if (se::Input::IsKeyboardBPressed(SDL_SCANCODE_LCTRL))
+				if (se::Input::IsMouseBPressed(1) && se::Input::IsMouseBPressed(3))
 				{
 					se::Input::ShowCursor(false);
 					glm::ivec2 _DeltaPos = se::Input::GetMousePosition();
 					_DeltaPos = _DeltaPos - glm::ivec2(se::WindowManager::GetWindow().Width / 2,
 						se::WindowManager::GetWindow().Height / 2);
 
-					_Camera->RotateYaw(  -(_DeltaPos.x * m_RotationSpeed) / 100); // No deltaTime here 
+					_Camera->RotateYaw(-(_DeltaPos.x * m_RotationSpeed) / 100); // No deltaTime here 
 					_Camera->RotatePitch(-(_DeltaPos.y * m_RotationSpeed) / 100);
 
 					se::Input::SetMousePosition(
@@ -130,10 +130,7 @@ namespace se
 						se::WindowManager::GetWindow().Height / 2);
 				}
 				else
-				{
 					se::Input::ShowCursor(true);
-				}
-				
 			}
 		}
 

@@ -101,6 +101,7 @@ namespace se
 	struct NativeScriptComponent : ComponentBase
 	{
 		friend class se::Scene;
+		friend class se::Application;
 
 		se::ScriptableEntity* Instance = nullptr;
 		// Copy constructor and assigment were deleted 
@@ -138,7 +139,7 @@ namespace se
 			}
 			return *this;
 		};
-		// Calls only when entity is destructing by GetEntites()->destroy or GetEntites()->remove
+		// Call only when entity is destructing by GetEntites()->destroy or GetEntites()->remove
 		~NativeScriptComponent()
 		{
 			if (Instance != nullptr)

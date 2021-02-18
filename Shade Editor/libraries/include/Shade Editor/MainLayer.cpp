@@ -55,20 +55,12 @@ void MainLayer::OnInit()
 
 void MainLayer::OnUpdate(const se::Timer& deltaTime)
 {
-	auto ñameras = GetScene()->GetEntities().view<se::CameraComponent>();
-	for (auto& camera : ñameras)
-	{
-		auto& camera_component = ñameras.get<se::CameraComponent>(camera);
-		if (camera_component.IsPrimary)
-		{
-			GetScene()->SetActiveCamera(camera_component.Camera);
-			break;
-		}	
-	}
+	
 }
 
 void MainLayer::OnRender()
 {
+
 	auto activeCamera = GetScene()->GetActiveCamera();
 	if(activeCamera != nullptr)
 	{
@@ -111,17 +103,15 @@ void MainLayer::OnRender()
 			}
 		}
 		{
-			//Grid// TODO move to another layer i guess
-			auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Grid", true);
-			_Shader->Bind();
-			_Shader->SendUniformMatrix4Float("ViewMatrix", GL_FALSE, GetScene()->GetActiveCamera()->GetView());
-			_Shader->SendUniformMatrix4Float("ProjectionMatrix", GL_FALSE, GetScene()->GetActiveCamera()->GetProjection());
-			_Shader->SendUniform3Float("CameraPosition", GetScene()->GetActiveCamera()->GetPosition());
-
-			auto _Entities = GetScene()->GetEntities().view<se::DrawableComponent, se::Transform3DComponent>();
+			auto shader = se::AssetManager::Hold<se::Shader>("Shaders.Grid", true);
+			shader->Bind();
+			shader->SendUniformMatrix4Float("ViewMatrix", GL_FALSE, activeCamera->GetView());
+			shader->SendUniformMatrix4Float("ProjectionMatrix", GL_FALSE, activeCamera->GetProjection());
+			shader->SendUniform3Float("CameraPosition", activeCamera->GetPosition());
+			auto _Entities = se::Application::GetApplication().GetEntities().view<se::DrawableComponent, se::Transform3DComponent>();
 			for (auto& _Entity : _Entities) {
-				_Shader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModelMatrix());
-			
+				shader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModelMatrix());
+
 				se::Renderer::DrawIndexed(*_Entities.get<se::DrawableComponent>(_Entity).Drawable);
 			}
 		}

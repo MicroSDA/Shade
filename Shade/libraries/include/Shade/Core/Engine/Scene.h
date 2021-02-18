@@ -30,12 +30,18 @@ namespace se
 		virtual ~Scene();
 		const std::string& const GetName() { return m_Name; }
 
-		se::ShadeShared<se::Camera> GetActiveCamera();
+		se::Camera* GetActiveCamera();
 		void SetActiveCamera(const se::ShadeShared<se::Camera>& camera);
+		void SetActiveCamera(se::Camera* camera);
 		inline       std::vector<se::Layer*>& GetLayers() { return m_Layers; };
 		inline       se::Layer* GetLayer(const std::string& name);
 		se::ShadeShared<se::FrameBuffer> GetFrameBuffer(const std::string& name);
 		void CreateFrameBuffer(const std::string& name, const se::FramebufferSpec& spec);
+
+		void SetUpdate(const bool& update);
+		void SetRender(const bool& render);
+		void SetOnEvent(const bool& event);
+
 	protected:
 		virtual void OnCreate() = 0;
 		virtual void OnInit() = 0;
@@ -56,9 +62,6 @@ namespace se
 		}
 		std::string    m_Name;
 
-		void SetUpdate(const bool&  update);
-		void SetRender(const bool&  render);
-		void SetOnEvent(const bool& event);
 
 		const bool& IsUpdate()  const;
 		const bool& IsRender()  const;
@@ -69,7 +72,7 @@ namespace se
 		virtual void OnUpdate(const se::Timer& deltaTime) = 0;
 		virtual void OnRender() = 0;
 		virtual void OnDelete() = 0;
-		se::ShadeShared<se::Camera> m_pMainCamera;
+		se::Camera*					m_pMainCamera;
 		bool						m_IsInitalized;
         std::unordered_map<std::string, se::ShadeShared<se::FrameBuffer>> m_FrameBuffers;
 		bool m_IsUpdate  = true;

@@ -66,6 +66,28 @@ void EditorLayer::OnUpdate(const se::Timer& deltaTime)
 			}
 		}
 	}
+
+	auto cameras = se::Application::GetApplication().GetEntities().view<se::CameraComponent, se::NativeScriptComponent>();
+
+	if (m_IsScenePlay)
+	{
+		GetScene()->SetUpdate(true);
+
+		for (auto& camera : cameras)
+		{
+			cameras.get<se::NativeScriptComponent>(camera).Instance->SetUpdate(false);
+		}
+	}
+	else
+	{
+		GetScene()->SetUpdate(false);
+
+		for (auto& camera : cameras)
+		{
+			GetScene()->SetActiveCamera(cameras.get<se::CameraComponent>(camera).Camera.get());
+			cameras.get<se::NativeScriptComponent>(camera).Instance->SetUpdate(true);
+		}		
+	}
 }
 
 void EditorLayer::OnRender()
@@ -127,6 +149,7 @@ void EditorLayer::ShowMainMenu(const bool& show)
 	{
 		if (ImGui::BeginMenuBar())
 		{
+			
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("New")) {}
@@ -137,7 +160,8 @@ void EditorLayer::ShowMainMenu(const bool& show)
 					if (filePath.size())
 					{
 						this->GetScene()->DestroyEntities();
-						se::Serializer::DeserializeScene(filePath, *this->GetScene());
+						if (se::Serializer::DeserializeScene(filePath, *this->GetScene()))
+							m_IsScenePlay = false;
 					}
 				}
 
@@ -161,10 +185,24 @@ void EditorLayer::ShowMainMenu(const bool& show)
 				ImGui::MenuItem("Scene", "", &m_IsSceneWindow);
 				ImGui::MenuItem("ImGuizmo", "", &m_IsImGuizmoShow);
 				ImGui::MenuItem("FPS", "", &m_IsFpsShow);
-
 				ImGui::EndMenu();
 			}
 
+			if (!m_IsScenePlay)
+			{
+				if (ImGui::Button("Play"))
+				{
+					m_IsScenePlay = true;
+				}
+			}
+			else
+			{
+				if (ImGui::Button("Stop"))
+				{
+					m_IsScenePlay = false;
+				}
+			}
+			
 		} ImGui::EndMenuBar();
 	}
 }
@@ -194,6 +232,15 @@ void EditorLayer::ShowSceneWindow(const bool& show)
 	{
 		if (ImGui::Begin("Scene"))
 		{
+			auto entities = se::Application::GetApplication().GetEntities().view<se::CameraComponent, se::NativeScriptComponent>();
+			for (auto& entity : entities)
+			{
+				if (ImGui::IsWindowFocused() && !m_IsScenePlay)
+					entities.get<se::NativeScriptComponent>(entity).Instance->SetUpdate(true);
+				else
+					entities.get<se::NativeScriptComponent>(entity).Instance->SetUpdate(false);
+			}
+
 			auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
 			if (frameBuffer != nullptr)
 			{
@@ -221,7 +268,7 @@ void EditorLayer::ShowSceneWindow(const bool& show)
 					{
 						auto transform_tmp = m_SelectedEntity.GetComponent<se::Transform3DComponent>().Transform.GetModelMatrix();
 
-						if (this->ShowImGuizmo(transform_tmp, GetScene()->GetActiveCamera().get(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+						if (this->ShowImGuizmo(transform_tmp, GetScene()->GetActiveCamera(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
 						{
 							glm::vec3 position, rotation, scale;
 							ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform_tmp), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
@@ -542,10 +589,15 @@ void EditorLayer::CameraCallback(se::Entity& entity)
 	auto& camera = entity.GetComponent<se::CameraComponent>().Camera;
 	DrawFloatVec3("Position", glm::value_ptr(camera->GetPosition()));
 	DrawFloatVec3("Dirrection", glm::value_ptr(camera->GetForwardDirrection()), -1.0, 1, 0);
-	if (DrawFloat("Fov", &camera->GetFov(), 45.0))
+
+	if(DrawFloat("Near", &camera->GetNear(), 0.1f))
+		camera->Resize();
+	if(DrawFloat("Far", &camera->GetFar(), 0.1f)) 
+		camera->Resize();
+	if(DrawFloat("Fov", &camera->GetFov(), 45.0))
 		camera->Resize();
 
-	if (entity.HasComponent<se::NativeScriptComponent>())
+	/*if (entity.HasComponent<se::NativeScriptComponent>())
 	{
 		auto instance = entity.GetComponent<se::NativeScriptComponent>().Instance;
 
@@ -574,7 +626,7 @@ void EditorLayer::CameraCallback(se::Entity& entity)
 		{
 
 		}
-	}
+	}*/
 
 
 	
@@ -684,7 +736,7 @@ void EditorLayer::ShowEnvironmentImGuizmo(se::Entity& entity)
 		auto pLight = static_cast<se::GeneralLight*>(environment);
 		glm::mat4 transform = glm::toMat4(glm::quat((pLight->GetDirection())));
 
-		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera().get(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
 		{
 			glm::vec3 position, rotation, scale;
 			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
@@ -697,7 +749,7 @@ void EditorLayer::ShowEnvironmentImGuizmo(se::Entity& entity)
 		auto pLight = static_cast<se::PointLight*>(environment);
 
 		glm::mat4 transform = glm::translate(pLight->GetPosition());
-		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera().get(),m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera(),m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
 		{
 			glm::vec3 position, rotation, scale;
 			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
@@ -712,7 +764,7 @@ void EditorLayer::ShowEnvironmentImGuizmo(se::Entity& entity)
 		glm::mat4 translate = glm::translate(pLight->GetPosition());
 		glm::mat4 rotate = glm::toMat4(glm::quat(pLight->GetDirection()));
 		glm::mat4 transform = translate * rotate;
-		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera().get(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
 		{
 			glm::vec3 position, rotation, scale;
 			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));

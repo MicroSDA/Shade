@@ -95,7 +95,7 @@ namespace se
 	void ImGuiLayer::OnImGuiEvent(const se::Event& event)
 	{
 		SDL_Event sdl_event;
-		sdl_event = const_cast<se::Event&>(event);
+		sdl_event = event;
 
 		switch (event.GetType())
 		{

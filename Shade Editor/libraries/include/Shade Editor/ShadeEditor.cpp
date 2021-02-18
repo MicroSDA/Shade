@@ -125,9 +125,7 @@ void ShadeEditor::OnInit()
 	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
 	se::WindowManager::Create(se::Window());
 
-	this->CreateEntity("SceneViewPort").AddComponent<glm::vec2>();
-
-	CreateScene<MainScene>("MainScene");
+	auto scene = CreateScene<MainScene>("MainScene");
 
 	for (auto const& [name, scene] : GetScenes())
 	{
@@ -136,6 +134,15 @@ void ShadeEditor::OnInit()
 
 	SetCurentScene("MainScene");
 
+	auto grid = this->CreateEntity("Grid");
+	grid.AddComponent<se::Transform3DComponent>();
+	grid.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 500)));
+
+	this->CreateEntity("SceneViewPort").AddComponent<glm::vec2>();
+	auto camera = this->CreateEntity("EditorCamera");
+	auto camera_copm = camera.AddComponent<se::CameraComponent>(new se::Camera(glm::vec3(0.0f, 5.0f, 0.0f), 45.0f, 1.0f, 0.01f, 3000.0f));
+	camera.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
+	scene->SetActiveCamera(camera_copm.Camera);
 }
 
 void ShadeEditor::OnUpdate(const se::Timer& deltaTime)
@@ -145,6 +152,7 @@ void ShadeEditor::OnUpdate(const se::Timer& deltaTime)
 
 void ShadeEditor::OnEvent(const se::Event& event)
 {
+
 	if (event.GetType() == se::Event::Type::Quit)
 		this->Quit();
 
