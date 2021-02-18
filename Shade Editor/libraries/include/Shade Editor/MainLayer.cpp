@@ -76,7 +76,9 @@ void MainLayer::OnRender()
 			for (auto& _Enviroment : _Enviroments)
 			{
 				_Enviroments.get<se::EnvironmentComponent>(_Enviroment).Environment->Process(_Shader.get());
+			
 			}
+			//se::PointLight::ResetId();
 		}
 		{
 			auto _Entities = GetScene()->GetEntities().view<se::Model3DComponent, se::Transform3DComponent>();

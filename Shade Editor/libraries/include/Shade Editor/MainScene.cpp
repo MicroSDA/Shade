@@ -28,9 +28,9 @@ void MainScene::OnCreate()
 	SetActiveCamera(mainCamera.GetComponent<se::CameraComponent>().Camera);/*
 	//Lights
 
-	CreateEntity("General light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::GeneralLight()));
-	CreateEntity("Point light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::PointLight()));*/
-	//CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::SpotLight()));
+	CreateEntity("General light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::GeneralLight()));*/
+	/*CreateEntity("Point light2").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::PointLight()));/*
+	//CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::SpotLight()));*/
 }
 
 void MainScene::OnInit()

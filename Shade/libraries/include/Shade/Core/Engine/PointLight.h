@@ -25,12 +25,14 @@ namespace se
 
 		virtual void OnUpdate(const se::Timer& deltaTime) override;
 		virtual void Process(const se::Shader* shader) override;
+		static void  ResetId();
 	protected:
-		glm::vec3 m_Position;
-		float     m_Constant;
-		float     m_Linear;
-		float     m_Qaudratic;
-		int       m_Id;
+		glm::vec3	m_Position;
+		float		m_Constant;
+		float		m_Linear;
+		float		m_Qaudratic;
+		static int  m_Id;
+		static int  m_Count;
 	};
 }
 

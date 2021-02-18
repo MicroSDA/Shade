@@ -26,17 +26,21 @@
 
 	7,    1.0,     0.7,    1.8
 */
+
+int  se::PointLight::m_Id      = 0;
+int  se::PointLight::m_Count   = 0;
 se::PointLight::PointLight() : se::Light(se::Environment::Type::PointLight),
 	m_Position(0.0f, 0.0f, 0.0f),
 	m_Constant(1.0f),
 	m_Linear(0.7f),
-	m_Qaudratic(1.8f),
-	m_Id(0) // Missing id for now
+	m_Qaudratic(1.8f)
 {
+	m_Count++;
 }
 
 se::PointLight::~PointLight()
 {
+	m_Count--;
 }
 
  void se::PointLight::SetPosition(const float& x, const float& y, const float& z)
@@ -110,11 +114,23 @@ void se::PointLight::OnUpdate(const se::Timer& deltaTime)
 
 void se::PointLight::Process(const se::Shader* shader)
 {
-	shader->SendUniform3Float("pointL.Light.ColorAmbient",     m_AmbientColor);
-	shader->SendUniform3Float("pointL.Light.ColorDiffuse",     m_DiffuseColor);
-	shader->SendUniform3Float("pointL.Light.ColorSpecular",    m_SpecularColor);
-	shader->SendUniform3Float("pointL.Position",			   m_Position);
-	shader->SendUniform1Float("pointL.Constant",			   m_Constant);
-	shader->SendUniform1Float("pointL.Linear",				   m_Linear);
-	shader->SendUniform1Float("pointL.Qaudratic",			   m_Qaudratic);
+	std::string id = std::to_string(m_Id);
+
+	shader->SendUniform1Int("PONT_LIGHTS_COUNT", m_Count);
+	shader->SendUniform3Float("pointL[" + id + "].Light.ColorAmbient",     m_AmbientColor);
+	shader->SendUniform3Float("pointL[" + id + "].Light.ColorDiffuse",     m_DiffuseColor);
+	shader->SendUniform3Float("pointL[" + id + "].Light.ColorSpecular",    m_SpecularColor);
+	shader->SendUniform3Float("pointL[" + id + "].Position",			   m_Position);
+	shader->SendUniform1Float("pointL[" + id + "].Constant",			   m_Constant);
+	shader->SendUniform1Float("pointL[" + id + "].Linear",				   m_Linear);
+	shader->SendUniform1Float("pointL[" + id + "].Qaudratic",			   m_Qaudratic);
+	if (m_Id == m_Count - 1)
+		m_Id = 0;
+	else
+		m_Id++;
+}
+
+void se::PointLight::ResetId()
+{
+	m_Id = 0;
 }

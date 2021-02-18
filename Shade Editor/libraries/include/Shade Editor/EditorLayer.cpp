@@ -77,6 +77,8 @@ void EditorLayer::OnUpdate(const se::Timer& deltaTime)
 		{
 			cameras.get<se::NativeScriptComponent>(camera).Instance->SetUpdate(false);
 		}
+
+		m_IsProjectBar = false;
 	}
 	else
 	{
@@ -86,7 +88,9 @@ void EditorLayer::OnUpdate(const se::Timer& deltaTime)
 		{
 			GetScene()->SetActiveCamera(cameras.get<se::CameraComponent>(camera).Camera.get());
 			cameras.get<se::NativeScriptComponent>(camera).Instance->SetUpdate(true);
-		}		
+		}	
+
+		m_IsProjectBar = true;
 	}
 }
 
@@ -162,6 +166,8 @@ void EditorLayer::ShowMainMenu(const bool& show)
 						this->GetScene()->DestroyEntities();
 						if (se::Serializer::DeserializeScene(filePath, *this->GetScene()))
 							m_IsScenePlay = false;
+
+						//GetScene()->CreateEntity("Point light2").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::PointLight()));
 					}
 				}
 
