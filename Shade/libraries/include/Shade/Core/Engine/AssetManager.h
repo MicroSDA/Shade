@@ -25,7 +25,7 @@ namespace se
 		// use tru as second parametr or false if you don't want to keep it in memeory.
 		// All assets that were held with the false flag will be removed automatically !
 		template<typename T>
-		static se::AssetPointer<T> Hold(const ClassName& className, bool keepAlive = false)
+		static se::AssetPointer<T> Hold(const ClassName& className, const se::Asset::Flag& flag = se::Asset::Flag::None)
 		{
 			auto& _Instance = GetInstance();
 			// Trying to find in Assets map
@@ -93,7 +93,7 @@ namespace se
 						_Asset->LoadFromAssetData(_RElement->first, const_cast<se::AssetData&>(*_RElement->second));
 						_Asset->Init(); // Temporary here 
 						se::AssetPointer<se::Asset> _Out(_Asset);
-						if (keepAlive)
+						if (flag == se::Asset::Flag::KeepAlive)
 						{
 							// Can be placed as usually
 							_Instance.m_Assets.emplace(std::pair<ClassName, AssetReferences>(className, AssetReferences{ _Out }));

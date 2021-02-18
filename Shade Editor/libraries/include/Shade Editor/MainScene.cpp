@@ -31,6 +31,7 @@ void MainScene::OnCreate()
 	CreateEntity("General light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::GeneralLight()));*/
 	/*CreateEntity("Point light2").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::PointLight()));/*
 	//CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::SpotLight()));*/
+
 }
 
 void MainScene::OnInit()

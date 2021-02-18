@@ -11,10 +11,14 @@ namespace se
 	// Based on std::weak_ptr, using for asstes and AssetManager
 	template<typename T>
 	using AssetPointerWeak = std::weak_ptr<T>;
-
 	class SE_API Asset
 	{
 	public:
+		enum class Flag
+		{
+			None,
+			KeepAlive
+		};
 		Asset(); // ??
 		virtual ~Asset();
 		virtual void LoadFromAssetData(const std::string& assetId, se::AssetData& data) = 0;

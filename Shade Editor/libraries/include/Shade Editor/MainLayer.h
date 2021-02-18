@@ -16,5 +16,8 @@ public:
 	virtual void OnDelete() override;
 	virtual void OnEvent(const se::Event& event) override;
 private:
+	//se::ShadeShared<se::FrameBuffer>	m_FrameBuffer;
+	se::AssetPointer<se::Shader>		m_BasicModelShader;
+	se::AssetPointer<se::Shader>		m_GridShader;
 };
 

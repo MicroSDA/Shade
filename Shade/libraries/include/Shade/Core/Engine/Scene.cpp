@@ -158,7 +158,9 @@ inline se::Layer* se::Scene::GetLayer(const std::string& name)
 
 se::ShadeShared<se::FrameBuffer> se::Scene::GetFrameBuffer(const std::string& name)
 {
-	if (m_FrameBuffers.find(name) != m_FrameBuffers.end())
+	return m_FrameBuffers[name];
+
+	/*if (m_FrameBuffers.find(name) != m_FrameBuffers.end())
 	{
 		return m_FrameBuffers[name];
 	}
@@ -166,7 +168,7 @@ se::ShadeShared<se::FrameBuffer> se::Scene::GetFrameBuffer(const std::string& na
 	{
 		SE_DEBUG_PRINT(std::string("Frame buffer '"+ name +"' doesn't exist!").c_str(), se::SLCode::Warning);
 		return se::ShadeShared<se::FrameBuffer>(nullptr); // nullptr or need to thorw 
-	}
+	}*/
 }
 
 void se::Scene::CreateFrameBuffer(const std::string& name, const se::FramebufferSpec& spec)

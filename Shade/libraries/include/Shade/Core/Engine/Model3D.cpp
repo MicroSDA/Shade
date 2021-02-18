@@ -135,7 +135,7 @@ void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 			_Indices.push_back(se::Binarizer::ReadNext<unsigned int>(_File));
 		
 		// Creating otside of AssetManager
-		auto _pMesh = se::AssetManager::Hold<se::Mesh>(m_AssetId + "." + m_AssetData->_Dependency[m]._Name, false);
+		auto _pMesh = se::AssetManager::Hold<se::Mesh>(m_AssetId + "." + m_AssetData->_Dependency[m]._Name);
 		_pMesh->SetVertices(_Vertices);
 		_pMesh->SetIndices(_Indices);
 		se::MeshComponent& _MeshComponent = _MeshEntity.AddComponent<se::MeshComponent>(_pMesh);
@@ -148,7 +148,7 @@ void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 				if (_Asset._Type == se::AssetDataType::Texture)
 				{
 					auto _TextureEntity = _MeshComponent.Mesh->CreateEntity(_Asset._Name);
-					_TextureEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>(m_AssetId + "." + m_AssetData->_Dependency[m]._Name + "." + _Asset._Name, false));
+					_TextureEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>(m_AssetId + "." + m_AssetData->_Dependency[m]._Name + "." + _Asset._Name));
 				}
 			}
 		}

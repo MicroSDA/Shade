@@ -556,7 +556,19 @@ void EditorLayer::EnvironmentCallback(se::Entity& entity)
 	}
 	case se::Environment::Type::SpotLight:
 	{
-
+		auto pLight = static_cast<se::SpotLight*>(env.get());
+		ImGui::BulletText("Type: %s", "Spot light");
+		this->DrawFloatVec3("Position", glm::value_ptr(pLight->GetPosition()), 0.0);
+		this->DrawFloatVec3("Direction", glm::value_ptr(pLight->GetDirection()), 0.0);
+		this->DrawColor3("Ambient", glm::value_ptr(pLight->GetAmbientColor()));
+		this->DrawColor3("Diffuse", glm::value_ptr(pLight->GetDiffuseColor()));
+		this->DrawColor3("Specular", glm::value_ptr(pLight->GetSpecularColor()));
+		this->DrawFloat("Constant", &pLight->GetConstant(), 1.0f);
+		this->DrawFloat("Linear", &pLight->GetLinear(), 0.0f);
+		this->DrawFloat("Qaudratic", &pLight->GetQaudratic(), 0.0f);
+		this->DrawFloat("MinAngle", &pLight->GetMinAngle(), 0.0f);
+		this->DrawFloat("MaxAngle", &pLight->GetMaxAngle(), 0.0f);
+		break;
 		break;
 	}
 	default:
