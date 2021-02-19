@@ -333,7 +333,7 @@ namespace se
 			auto cameraView = camera->GetView();
 			auto cameraProjection = camera->GetProjection();
 
-			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), m_GuizmoOperation, ImGuizmo::LOCAL, glm::value_ptr(transform));
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), m_GuizmoOperation, ImGuizmo::WORLD, glm::value_ptr(transform));
 
 			if (ImGuizmo::IsUsing())
 				return true;

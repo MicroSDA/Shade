@@ -97,11 +97,11 @@ ShadeEditor::ShadeEditor()
 	_Texture._Path = "./resources/textures/font.bin"; // if serialize like that need to specify full path and name
 	Serrializer::SerrializeTexture("./project/resources/fonts/candara/candara.png", &_Texture);*/
 
-	se::AssetData _Font;
+	/*se::AssetData _Font;
 	_Font._Name = "FontFile";
 	_Font._Type = se::AssetDataType::Font;
 	_Font._Path = "./resources/fonts/candara/candara.bin"; // if serialize like that need to specify full path and name
-	Serrializer::SerrializeFont("./project/resources/fonts/candara/candara.fnt", &_Font);
+	Serrializer::SerrializeFont("./project/resources/fonts/candara/candara.fnt", &_Font);*/
 
 	/*_Container._Dependency.push_back(_ShaderPacket);
 	_Container._Dependency.push_back(_ModelsPacket);
@@ -136,7 +136,7 @@ void ShadeEditor::OnInit()
 
 	auto grid = this->CreateEntity("Grid");
 	grid.AddComponent<se::Transform3DComponent>();
-	grid.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 500)));
+	grid.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 250)));
 
 	this->CreateEntity("SceneViewPort").AddComponent<glm::vec2>();
 	auto camera = this->CreateEntity("EditorCamera");

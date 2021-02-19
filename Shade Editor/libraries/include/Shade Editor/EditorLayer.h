@@ -33,7 +33,16 @@ private:
 	void MaterialCallback(se::Entity& entity);
 	void EnvironmentCallback(se::Entity& entity);
 	void CameraCallback(se::Entity& entity);
+
+	void AddTransform3DComponentCallback(se::Transform3DComponent& component);
 	void AddCameraComponentCallback(se::CameraComponent& component);
+	void AddModel3DComponentCallback(se::Model3DComponent& component);
+
+	template<typename T>
+	void AddLightComponentCallback(se::EnvironmentComponent& component)
+	{
+		component.Environment = se::ShadeShared<T>(new T());
+	}
 
 
 	bool DrawColor3(const char* lable, float* data, const float& cw1 = 80.0f, const float& cw2 = 0);
@@ -42,6 +51,7 @@ private:
 	void ShowEnvironmentImGuizmo(se::Entity& entity);
 
 	void CreateEntityModal(const char* modalName, se::EntitiesDocker& docker);
+	void AddModle3DModal(const char* modalName, se::Entity& entity);
 
 	template<typename T, typename Callback>
 	void DrawComponent(const char* name, se::Entity& entity, Callback callback, const bool& isShow = true)

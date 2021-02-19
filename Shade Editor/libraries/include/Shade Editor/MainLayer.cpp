@@ -57,22 +57,26 @@ void MainLayer::OnRender()
 			for (auto& _Entity : _Entities) {
 
 				auto _Model = _Entities.get<se::Model3DComponent>(_Entity).Model3D;
-				m_BasicModelShader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModelMatrix());
-
-				auto _MesheEntities = _Model->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
-				for (auto& _MeshEnity : _MesheEntities)
+				if (_Model != nullptr)
 				{
-					auto _Mesh     = _MesheEntities.get<se::MeshComponent>(_MeshEnity).Mesh;
-					auto& _Material = _MesheEntities.get<se::MaterialComponent>(_MeshEnity).Material;
-					_Material.Process(m_BasicModelShader.get());
+					m_BasicModelShader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, _Entities.get<se::Transform3DComponent>(_Entity).Transform.GetModelMatrix());
 
-					auto _TexturesEntities = _Mesh->GetEntities().view<se::TextureComponent>();
-					for (auto& _TextureEnity : _TexturesEntities)
+					auto _MesheEntities = _Model->GetEntities().view<se::MeshComponent, se::MaterialComponent>();
+					for (auto& _MeshEnity : _MesheEntities)
 					{
-						_TexturesEntities.get<se::TextureComponent>(_TextureEnity).Texture->Bind(static_cast<GLuint>(_TextureEnity));
-					}
+						auto _Mesh = _MesheEntities.get<se::MeshComponent>(_MeshEnity).Mesh;
+						auto& _Material = _MesheEntities.get<se::MaterialComponent>(_MeshEnity).Material;
+						_Material.Process(m_BasicModelShader.get());
 
-					se::Renderer::DrawIndexed(*_Mesh);
+						auto _TexturesEntities = _Mesh->GetEntities().view<se::TextureComponent>();
+
+						for (auto& _TextureEnity : _TexturesEntities)
+						{
+							_TexturesEntities.get<se::TextureComponent>(_TextureEnity).Texture->Bind(static_cast<GLuint>(_TextureEnity));
+						}
+
+						se::Renderer::DrawIndexed(*_Mesh);
+					}
 				}
 			}
 		}
@@ -90,7 +94,7 @@ void MainLayer::OnRender()
 		}
 	}
 
-	auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text");
+	/*auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text");
 	auto texts = GetScene()->GetEntities().view<se::DrawableTextComponent>();
 	se::Transform2D transform;
 	transform.SetPostition(0.0f, (float)se::WindowManager::GetWindow().Height);
@@ -105,7 +109,7 @@ void MainLayer::OnRender()
 		auto& t = texts.get<se::DrawableTextComponent>(text).Text;
 		se::Renderer::BindTexture(t->GetFont()->GetAtlas());
 		se::Renderer::DrawIndexed(*t);
-	}
+	}*/
 
 	se::Renderer::Disable(GL_BLEND);
 }

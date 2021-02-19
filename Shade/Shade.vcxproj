@@ -249,6 +249,7 @@
       <AdditionalDependencies>OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x86\</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)bin\$(Platform)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(Platform)\$(Configuration)\Shade Editor\"</Command>
@@ -267,6 +268,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -297,6 +299,7 @@
       <AdditionalDependencies>OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(ProjectName)\libraries\lib\x64\</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\$(ProjectName)\*.dll" "$(SolutionDir)bin\$(PlatformTarget)\$(Configuration)\Shade Editor\"</Command>
@@ -315,6 +318,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

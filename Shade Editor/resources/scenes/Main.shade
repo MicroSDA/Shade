@@ -1,60 +1,102 @@
 Scene: MainScene
 Entities:
-  - Entity: 5
+  - Entity: 8
+    TagComponent:
+      Tag: Point light 2
+    EnvironmentComponent:
+      Type: 2
+      Position: [4.28846169, 3.38000011, -3.49270177]
+      Ambient: [0.100000001, 0.100000001, 0.100000001]
+      Diffuse: [1, 0, 0]
+      Specular: [1, 0, 0]
+      Constant: 1
+      Linear: 0.0799999982
+      Qaudratic: 0.00999999978
+  - Entity: 7
     TagComponent:
       Tag: Skull
     Transform3DComponent:
-      Position: [0.149292961, 1.02031529, -3.13650322]
-      Rotation: [2.71899509, -0.018043112, -3.11207557]
-      Scale: [1, 1, 1]
+      Position: [-0.00764543377, 2.51426578, -3.2803843]
+      Rotation: [2.44378161, -0.0180442184, -3.11207557]
+      Scale: [0.999976754, 1, 1.00000143]
     Model3DComponent:
       Asset: Models.Skull
-  - Entity: 4
+  - Entity: 6
     TagComponent:
       Tag: Cube
     Transform3DComponent:
-      Position: [5.41153145, 1.14637291, -3.50018716]
-      Rotation: [0.387061357, -0, 0]
-      Scale: [2.09000015, 2.08999968, 2.08999968]
+      Position: [0.0115407705, 0.997826457, -3.50018716]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
     Model3DComponent:
       Asset: Models.Cube
-  - Entity: 3
+  - Entity: 5
     TagComponent:
       Tag: Floor
     Transform3DComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
+      Position: [0, 0.0200703144, 0]
+      Rotation: [0, -0, 0]
       Scale: [1, 1, 1]
     Model3DComponent:
       Asset: Models.Floor
-  - Entity: 2
+  - Entity: 4
     TagComponent:
       Tag: Point light
     EnvironmentComponent:
       Type: 2
-      Position: [0, 0.4576056, 0]
+      Position: [-2.70948935, 3.37880611, -3.50343895]
       Ambient: [0.100000001, 0.100000001, 0.100000001]
-      Diffuse: [1, 1, 1]
-      Specular: [1, 1, 1]
+      Diffuse: [0, 0.264831126, 0.947598279]
+      Specular: [0, 0.174672604, 1]
       Constant: 1
-      Linear: 0.699999988
-      Qaudratic: 1.79999995
-  - Entity: 1
+      Linear: 0.0799999982
+      Qaudratic: 0.00999999978
+  - Entity: 3
     TagComponent:
       Tag: General light
     EnvironmentComponent:
       Type: 1
-      Direction: [-0.178525954, -1.06806076, 0.557253778]
+      Direction: [1.18844604, 0.756119251, 1.24979341]
       Ambient: [0.100000001, 0.100000001, 0.100000001]
-      Diffuse: [1, 0.999989986, 0.999989986]
-      Specular: [0.98253274, 0.982522905, 0.982522905]
-  - Entity: 0
+      Diffuse: [0.729257643, 0.729250312, 0.729250312]
+      Specular: [9.99999997e-07, 9.99989993e-07, 9.99989993e-07]
+  - Entity: 2
     TagComponent:
       Tag: Camera
     CameraComponent:
       IsPrimary: true
-      Position: [0.629999995, 6.21000004, -17.1800003]
-      Direction: [0, -0.310000002, 1]
+      Position: [0.300000012, 8.28999996, -16.4400005]
+      Direction: [0, -0.340000004, 0.589999974]
       Fov: 45
       Near: 0.100000001
       Far: 3000
+  - Entity: 1
+    TagComponent:
+      Tag: Spot light
+    EnvironmentComponent:
+      Type: 3
+      Position: [-7.86909962, 3.86457658, -3.03799129]
+      Direction: [0.38259089, -0.999992669, 1.37894929e-07]
+      Ambient: [0.100000001, 0.100000001, 0.100000001]
+      Diffuse: [0, 1, 0.069868803]
+      Specular: [1, 1, 1]
+      Constant: 1
+      Linear: 0.00700000022
+      Qaudratic: 7.00000019e-05
+      MinAngle: 0.785399973
+      MaxAngle: 0.701399982
+  - Entity: 0
+    TagComponent:
+      Tag: Spot light 2
+    EnvironmentComponent:
+      Type: 3
+      Position: [8.81940651, 2.63849473, -3.16150904]
+      Direction: [-0.604689896, -0.999996126, -1.18590287e-06]
+      Ambient: [0.100000001, 0.100000001, 0.100000001]
+      Diffuse: [0.469098598, 0.537117898, 0]
+      Specular: [1, 1, 1]
+      Constant: 1
+      Linear: 0.00700000022
+      Qaudratic: 7.00000019e-05
+      MinAngle: 0.785399973
+      MaxAngle: 0.701399982

@@ -20,7 +20,7 @@ void MainScene::OnCreate()
 	
 
 	//se::Renderer::SetClearColor(0.5444f, 0.62f, 0.69f, 1.0f);
-	se::Renderer::SetClearColor(0.46f, 0.61f, 0.66f, 1.0f);
+	se::Renderer::SetClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	//Camera
 	/*se::Entity   mainCamera = this->CreateEntity("Camera");
 	mainCamera.AddComponent<se::CameraComponent>(new se::Camera()).IsPrimary = true;
@@ -57,6 +57,23 @@ void MainScene::OnInit()
 	se::Entity skullEntity = CreateEntity("Skull");
 	skullEntity.AddComponent<se::Model3DComponent>(skull);
 	skullEntity.AddComponent<se::Transform3DComponent>();*/
+
+	/*auto skull = se::AssetManager::Hold<se::Model3D>("Models.Skull", se::Asset::Flag::KeepAlive);
+
+	for (unsigned int i = 0; i < 10; i++)
+	{
+		float x = 0 + rand() % 50;
+		float y = 1 + rand() % 20;
+		float z = 0 + rand() % 50;
+		se::Entity skullEntity = CreateEntity("Skull");
+		skullEntity.AddComponent<se::Model3DComponent>(skull);
+		skullEntity.AddComponent<se::Transform3DComponent>().Transform.SetPostition(x, y, z);
+
+		se::PointLight* p = new se::PointLight();
+		p->SetPosition(x, y + 1, z);
+		p->SetConstant(-1.0);
+		CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(p));
+	}*/
 }
 
 void MainScene::OnUpdate(const se::Timer& deltaTime)

@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "Shade/Core/Util/FileDialog.h"
 #include "EditorLayer.h"
+#include "Editor.h"
 
 EditorLayer::EditorLayer(const std::string& name, se::Scene* scene) : se::ImGuiLayer(name, scene)
 {
@@ -130,7 +131,10 @@ void EditorLayer::ShowMainMenu(const bool& show)
 			
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New")) {}
+				if (ImGui::MenuItem("New")) 
+				{
+					Editor::Import(Editor::ImportType::Model3D, se::FileDialog::OpenFile(""));
+				}
 
 				if (ImGui::MenuItem("Open"))
 				{
@@ -343,11 +347,23 @@ void EditorLayer::DrawEntity(se::Entity& entity, se::Entity& selectedEntity, con
 
 	if (ImGui::BeginPopupContextItem())
 	{
-		//AddComponent<se::Transform3DComponent>("Transform3DComponent", entity);
-		//AddComponent<se::Model3DComponent>("Model3DComponent", entity);
-		//AddComponent<se::EnvironmentComponent>("EnvironmentComponent", entity);
-		AddComponent<se::CameraComponent>("CameraComponent", entity, [&](se::CameraComponent& component) {
-				AddCameraComponentCallback(component); 
+		AddComponent<se::Transform3DComponent>("Transform3D", entity, [&](se::Transform3DComponent& component) {
+			AddTransform3DComponentCallback(component);
+			});
+		AddComponent<se::Model3DComponent>("Model3D", entity, [&](se::Model3DComponent& componenty) {
+			AddModel3DComponentCallback(componenty);
+			});
+		AddComponent<se::CameraComponent>("Camera", entity, [&](se::CameraComponent& component) {
+				AddCameraComponentCallback(component);
+			});
+		AddComponent<se::EnvironmentComponent>("Dirrect light", entity, [&](se::EnvironmentComponent& component) {
+			AddLightComponentCallback<se::GeneralLight>(component);
+			});
+		AddComponent<se::EnvironmentComponent>("Point light", entity, [&](se::EnvironmentComponent& component) {
+			AddLightComponentCallback<se::PointLight>(component);
+			});
+		AddComponent<se::EnvironmentComponent>("Spot light", entity, [&](se::EnvironmentComponent& component) {
+			AddLightComponentCallback<se::SpotLight>(component);
 			});
 
 
@@ -444,6 +460,7 @@ void EditorLayer::Transform3DCallback(se::Entity& entity)
 void EditorLayer::Model3DCallback(se::Entity& entity)
 {
 	auto* pModel = entity.GetComponent<se::Model3DComponent>().Model3D.get();
+
 	if (pModel != nullptr)
 	{
 		// Drwaing tag agin it's only for nice TreeNode
@@ -459,6 +476,16 @@ void EditorLayer::Model3DCallback(se::Entity& entity)
 					});
 			});
 	}
+	else
+	{
+		ImGui::Text("Asset id: %s");
+		ImGui::SameLine();
+		if (ImGui::Button("Set", ImVec2{ImGui::GetContentRegionAvailWidth(), 0} ))
+			ImGui::OpenPopup("Asset list##model3d");
+		
+	}
+
+	AddModle3DModal("Asset list##model3d", entity);
 }
 
 void EditorLayer::MeshCallback(se::Entity& entity)
@@ -625,6 +652,11 @@ void EditorLayer::CameraCallback(se::Entity& entity)
 	
 }
 
+void EditorLayer::AddTransform3DComponentCallback(se::Transform3DComponent& component)
+{
+
+}
+
 void EditorLayer::AddCameraComponentCallback(se::CameraComponent& component)
 {
 	auto pCamera = new se::Camera();
@@ -632,6 +664,11 @@ void EditorLayer::AddCameraComponentCallback(se::CameraComponent& component)
 	pCamera->Resize( aspect.x / aspect.y);
 	component.IsPrimary = true;
 	component.Camera = se::ShadeShared<se::Camera>(pCamera);
+}
+
+void EditorLayer::AddModel3DComponentCallback(se::Model3DComponent& component)
+{
+	
 }
 
 bool EditorLayer::DrawColor3(const char* lable, float* data, const float& cw1, const float& cw2)
@@ -800,3 +837,32 @@ void EditorLayer::CreateEntityModal(const char* modalName, se::EntitiesDocker& d
 	}
 }
 
+void EditorLayer::AddModle3DModal(const char* modalName, se::Entity& entity)
+{
+	ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+	ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+	if (ImGui::BeginPopupModal(modalName, NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		auto list = se::AssetManager::GetAssetDataList();
+		for (auto& node : list._Dependency)
+		{
+			if (node._Name == "Models")
+			{
+				for (auto& model_asset : node._Dependency)
+				{
+					if (ImGui::Selectable(model_asset._Name.c_str()))
+					{
+						entity.GetComponent<se::Model3DComponent>().Model3D = se::AssetManager::Hold<se::Model3D>("Models." + model_asset._Name);
+						ImGui::CloseCurrentPopup();
+					}
+					
+				}
+			}
+		}
+		
+		ImGui::Separator();
+		if (ImGui::Button("Close"))
+			ImGui::CloseCurrentPopup();
+		ImGui::EndPopup();
+	}
+}

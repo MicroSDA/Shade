@@ -1,0 +1,33 @@
+Scene: MainScene
+Entities:
+  - Entity: 2
+    TagComponent:
+      Tag: Camera
+    CameraComponent:
+      IsPrimary: true
+      Position: [0, 3.45000005, -10]
+      Direction: [0, 0, 1]
+      Fov: 45
+      Near: 0.100000001
+      Far: 3000
+  - Entity: 1
+    TagComponent:
+      Tag: l
+    EnvironmentComponent:
+      Type: 2
+      Position: [-0.0157757699, 2.75985622, -3.590446]
+      Ambient: [0.100000001, 0.100000001, 0.100000001]
+      Diffuse: [1, 0, 0]
+      Specular: [1, 1, 1]
+      Constant: 1
+      Linear: 0.119999997
+      Qaudratic: -0.00999999978
+  - Entity: 0
+    TagComponent:
+      Tag: q
+    Transform3DComponent:
+      Position: [0, 2.63707972, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    Model3DComponent:
+      Asset: Models.Cube
