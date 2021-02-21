@@ -9,6 +9,8 @@
 #include <Shade/Core/Engine/Components.h>
 #include <Shade/Core/Engine/DrawableComponents.h>
 #include <Shade/Core/Engine/TransformComponents.h>
+#include <Shade/Core/Util/Util.h>
+#include "AssimpTexture.h"
 
 class AssimpModel3D : public se::Model3D
 {
@@ -17,6 +19,6 @@ public:
 	virtual ~AssimpModel3D() {};
 	bool LoadFromFile(const std::string& filePath);
 private:
-	void ProcessModel3DNode(const aiNode* node, const aiScene* scene);
-	void ProcessModel3DMesh(aiMesh* mesh, const aiScene* scene);
+	void ProcessModel3DNode(const char* filename, const aiNode* node, const aiScene* scene);
+	void ProcessModel3DMesh(const char* filename, aiMesh* mesh, const aiScene* scene);
 };

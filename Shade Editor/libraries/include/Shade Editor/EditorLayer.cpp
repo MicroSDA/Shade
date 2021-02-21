@@ -133,7 +133,9 @@ void EditorLayer::ShowMainMenu(const bool& show)
 			{
 				if (ImGui::MenuItem("New")) 
 				{
-					Editor::Import(Editor::ImportType::Model3D, se::FileDialog::OpenFile(""));
+					std::string file = se::FileDialog::OpenFile("");
+					if(!file.empty())
+						Editor::Import(Editor::ImportType::Model3D, file);
 				}
 
 				if (ImGui::MenuItem("Open"))

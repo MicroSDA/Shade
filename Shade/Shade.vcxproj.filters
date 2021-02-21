@@ -241,6 +241,9 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Event.h">
       <Filter>Core\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Util\Util.h">
+      <Filter>Core\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -381,6 +384,9 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Event.cpp">
       <Filter>Core\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Util\Util.cpp">
+      <Filter>Core\Util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -31,7 +31,7 @@ namespace se
 		// Унаследовано через Asset
 		virtual void LoadFromAssetData(const std::string& assetId, se::AssetData& data) override;
 		virtual void Init() override;
-	private:
+	protected:
 		GLuint m_Texture;
 		se::ImageData m_ImageData;
 

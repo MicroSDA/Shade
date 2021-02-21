@@ -1,5 +1,4 @@
 #include "AssimpModel3D.h"
-#include "Util.h"
 
 bool AssimpModel3D::LoadFromFile(const std::string& filePath)
 {
@@ -18,36 +17,43 @@ bool AssimpModel3D::LoadFromFile(const std::string& filePath)
 	}
 	else
 	{
-		se::AssetPointer<AssimpModel3D> model3D(new AssimpModel3D());
+		//se::AssetPointer<AssimpModel3D> model3D(new AssimpModel3D());
 
-		se::Entity model3DEntity = se::Application::GetApplication().GetCurrentScene()->CreateEntity();
+		//se::Entity model3DEntity = se::Application::GetApplication().GetCurrentScene()->CreateEntity();
 
-		model3DEntity.AddComponent<se::Model3DComponent>(model3D);
+		//model3DEntity.AddComponent<se::Model3DComponent>(model3D);
 
-		ProcessModel3DNode(m_pScene->mRootNode, m_pScene);
+		ProcessModel3DNode(filePath.c_str(), m_pScene->mRootNode, m_pScene);
 		return true;
 	}
 }
 
-void AssimpModel3D::ProcessModel3DNode(const aiNode* node, const aiScene* scene)
+void AssimpModel3D::ProcessModel3DNode(const char* filePath ,const aiNode* node, const aiScene* scene)
 {
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
-		ProcessModel3DMesh(mesh, scene);
+		ProcessModel3DMesh(filePath, mesh, scene);
 	}
 
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		ProcessModel3DNode(node->mChildren[i], scene); // TODO THERE ! how to return if static 
+		ProcessModel3DNode(filePath, node->mChildren[i], scene); // TODO THERE ! how to return if static 
 	}
 }
 
-void AssimpModel3D::ProcessModel3DMesh(aiMesh* mesh, const aiScene* scene)
+void AssimpModel3D::ProcessModel3DMesh(const char* filePath, aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<se::Vertex>   vertices;
-	std::vector<unsigned int> indices; 
+	std::vector<unsigned int> indices;
+	vertices.reserve(mesh->mNumVertices);
+	indices.reserve(mesh->mNumFaces);
+
+	se::AssetPointer<se::Mesh> pMesh(new se::Mesh());
+	auto meshEntity = this->CreateEntity("Mesh");
+	meshEntity.AddComponent<se::MeshComponent>(pMesh);
+
 	//Vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -95,28 +101,35 @@ void AssimpModel3D::ProcessModel3DMesh(aiMesh* mesh, const aiScene* scene)
 		{
 			aiString path;
 			_Assimpmaterial->GetTexture(aiTextureType_DIFFUSE, i, &path);
-			_Image._Name = Util::GetNameFromPath(path.C_Str());
+			_Image._Name = se::Util::GetNameFromPath(path.C_Str());
 			_Image._Type = se::AssetDataType::Texture;
 			_Image._SubType = se::AssetDataSubType::Diffuse;
-			_Image._Path = "AssimpPath";
+			_Image._Path = path.C_Str();
+
+			auto _TextureEntity = pMesh->CreateEntity(_Image._Name);
+			AssimpTexture* pTexture = new AssimpTexture();
+			std::string _path = se::Util::GetPath(filePath) + "/" + path.C_Str();
+			pTexture->LoadFromFile(_path.c_str());
+			pTexture->Init();
+			_TextureEntity.AddComponent<se::TextureComponent>(se::AssetPointer<se::Texture>(static_cast<se::Texture*>(pTexture)));
 		}
 		for (unsigned int i = 0; i < _Assimpmaterial->GetTextureCount(aiTextureType_SPECULAR); i++)
 		{
 			aiString path;
 			_Assimpmaterial->GetTexture(aiTextureType_SPECULAR, i, &path);
-			_Image._Name = Util::GetNameFromPath(path.C_Str());
+			_Image._Name = se::Util::GetNameFromPath(path.C_Str());
 			_Image._Type = se::AssetDataType::Texture;
 			_Image._SubType = se::AssetDataSubType::Specular;
-			_Image._Path = "AssimpPath";
+			_Image._Path = path.C_Str();
 		}
 		for (unsigned int i = 0; i < _Assimpmaterial->GetTextureCount(aiTextureType_HEIGHT); i++)
 		{
 			aiString path;
 			_Assimpmaterial->GetTexture(aiTextureType_HEIGHT, i, &path);
-			_Image._Name = Util::GetNameFromPath(path.C_Str());
+			_Image._Name = se::Util::GetNameFromPath(path.C_Str());
 			_Image._Type = se::AssetDataType::Texture;
 			_Image._SubType = se::AssetDataSubType::NormalMap;
-			_Image._Path = "AssimpPath";
+			_Image._Path = path.C_Str();
 		}
 
 		se::Material material;
@@ -134,12 +147,11 @@ void AssimpModel3D::ProcessModel3DMesh(aiMesh* mesh, const aiScene* scene)
 		_Assimpmaterial->Get(AI_MATKEY_SHININESS, value); // Ns
 		material.SetShininess(value);
 
-		se::AssetPointer<se::Mesh> pMesh(new se::Mesh());
+		
 		pMesh->SetIndices(indices);
 		pMesh->SetVertices(vertices);
 
-		auto meshEntity = this->CreateEntity("Mesh");
-		meshEntity.AddComponent<se::MeshComponent>(pMesh);
+		
 		meshEntity.AddComponent<se::MaterialComponent>(material);
 		//entity.AddComponent<se::MeshComponent>(pMesh);
 	}

@@ -71,6 +71,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Util\Macros.h" />
     <ClInclude Include="libraries\include\Shade\Core\Util\Serializer.h" />
     <ClInclude Include="libraries\include\Shade\Core\Util\ShadeException.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Util\Util.h" />
     <ClInclude Include="libraries\include\Shade\Shade.h" />
     <ClInclude Include="libraries\include\stdafx.h" />
     <ClInclude Include="libraries\include\Vendors\entt\entt.hpp" />
@@ -127,6 +128,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Util\Log.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Util\Serializer.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Util\ShadeException.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Util\Util.cpp" />
     <ClCompile Include="libraries\include\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
