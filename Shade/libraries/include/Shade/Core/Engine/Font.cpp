@@ -15,7 +15,7 @@ void se::Font::LoadFromAssetData(const std::string& assetId, se::AssetData& data
 	m_AssetData = &data;
 
 	std::ifstream _FontFile;
-	_FontFile.open(m_AssetData->_Path, std::ios::binary);
+	_FontFile.open(m_AssetData->Path, std::ios::binary);
 	if (_FontFile.is_open())
 	{
 		std::string _Header = se::Binarizer::ReadNext<std::string>(_FontFile);
@@ -44,17 +44,17 @@ void se::Font::LoadFromAssetData(const std::string& assetId, se::AssetData& data
 
 				m_ImageData.m_Width = se::Binarizer::ReadNext<int>(_FontFile);
 				if (m_ImageData.m_Width < 1 || m_ImageData.m_Width > 10000)
-					throw se::ShadeException(std::string("Wrong image width '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+					throw se::ShadeException(std::string("Wrong image width '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 
 				m_ImageData.m_Height = se::Binarizer::ReadNext<int>(_FontFile);
 				if (m_ImageData.m_Height < 1 || m_ImageData.m_Height > 10000)
-					throw se::ShadeException(std::string("Wrong image height '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+					throw se::ShadeException(std::string("Wrong image height '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 
 				m_ImageData.m_InternalFormat = se::Binarizer::ReadNext<int>(_FontFile);
 				m_ImageData.m_BufferSize = se::Binarizer::ReadNext<unsigned int>(_FontFile);
 
 				if (m_ImageData.m_BufferSize < 1 || m_ImageData.m_BufferSize > 104857600)
-					throw se::ShadeException(std::string("Image size more then 100mb '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+					throw se::ShadeException(std::string("Image size more then 100mb '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 
 				m_ImageData.m_pImageData = new unsigned char[m_ImageData.m_BufferSize];
 				_FontFile.read(reinterpret_cast<char*>(m_ImageData.m_pImageData), m_ImageData.m_BufferSize);
@@ -95,7 +95,7 @@ void se::Font::Init()
 				_InternalFormat = GL_RGBA;
 				break;
 			default:
-				throw se::ShadeException(std::string("Unsupported texture format in '" + m_AssetData->_Path + "'!").c_str(), se::SECode::Warning);
+				throw se::ShadeException(std::string("Unsupported texture format in '" + m_AssetData->Path + "'!").c_str(), se::SECode::Warning);
 				break;
 			}
 
@@ -111,9 +111,9 @@ void se::Font::Init()
 			GLfloat _Anisotropic;
 			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &_Anisotropic);
 			if (_Anisotropic)
-				//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, _Anisotropic);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, _Anisotropic);
 
-				glGenerateMipmap(GL_TEXTURE_2D);
+			glGenerateMipmap(GL_TEXTURE_2D);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
 
@@ -124,13 +124,13 @@ void se::Font::Init()
 		}
 		else
 		{
-			throw se::ShadeException(std::string("Failed to initialize texure '" + m_AssetData->_Path + "' image data is nullptr !").c_str(), se::SECode::Warning);
+			throw se::ShadeException(std::string("Failed to initialize texure '" + m_AssetData->Path + "' image data is nullptr !").c_str(), se::SECode::Warning);
 		}
 
 	}
 	else
 	{
-		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->_Path + "'").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->Path + "'").c_str(), se::SECode::Warning);
 	}
 }
 

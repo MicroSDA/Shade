@@ -52,7 +52,7 @@ void se::AssetManager::Free(const std::string& assetId)
 
 }
 
-void se::AssetManager::WriteRoadMap(const se::AssetData& asset)
+void se::AssetManager::WriteAssetDataList(const se::AssetData& asset)
 {
 	std::ofstream _File;
 	_File.open("./project/RoadMap.bin", std::ofstream::binary);
@@ -62,23 +62,15 @@ void se::AssetManager::WriteRoadMap(const se::AssetData& asset)
 	}
 	else
 	{
-		GetInstance()._WriteRoadMap(_File, asset);
+		GetInstance().WriteAssetDataListRecursively(_File, asset);
 	}
 
 	_File.close();
 }
 
-void se::AssetManager::ReadRoadMap()
+void se::AssetManager::ReadAssetDataList()
 {
-	GetInstance()._ReadRoadMap();
-}
-const se::AssetData& se::AssetManager::GetAssetDataList()
-{
-	return GetInstance().m_AssetsData;
-}
-
-void se::AssetManager::_ReadRoadMap()
-{
+	auto& instance = GetInstance();
 
 	std::ifstream _File;
 	_File.open("././project/RoadMap.bin", std::ifstream::binary); //TODO resolve issue with path 
@@ -89,13 +81,16 @@ void se::AssetManager::_ReadRoadMap()
 	}
 
 	// Clear if it was loaded before
-	m_AssetsData = se::AssetData();
-	m_RoadMap.clear();
+	instance.m_AssetsData = se::AssetData();
+	instance.m_AssetDataList.clear();
 
-	ReadAssetsData(_File, m_AssetsData);
+	instance.ReadAssetsData(_File, instance.m_AssetsData);
 	_File.close();
-	SetRoadMap(&m_AssetsData, m_RoadMap);
-
+	instance.SetRoadMap(&instance.m_AssetsData, instance.m_AssetDataList);
+}
+const se::AssetData& se::AssetManager::GetAssetDataList()
+{
+	return GetInstance().m_AssetsData;
 }
 
 void se::AssetManager::ImLast(const std::string& assetId) 
@@ -118,20 +113,20 @@ se::AssetManager& se::AssetManager::GetInstance()
 	return _Instatnce;
 }
 
-void se::AssetManager::_WriteRoadMap(std::ofstream& file, const se::AssetData& asset)
+void se::AssetManager::WriteAssetDataListRecursively(std::ofstream& file, const se::AssetData& asset)
 {
-	se::Binarizer::WriteNext<std::string>(file, asset._Name);
-	se::Binarizer::WriteNext<se::AssetDataType>(file, asset._Type);
-	se::Binarizer::WriteNext<se::AssetDataSubType>(file, asset._SubType);
-	se::Binarizer::WriteNext<std::string>(file, asset._Path);
-	se::Binarizer::WriteNext<long long>(file, asset._Offset);
-	se::Binarizer::WriteNext<uint32_t>(file, (uint32_t)asset._Dependency.size());
+	se::Binarizer::WriteNext<std::string>(file, asset.ID);
+	se::Binarizer::WriteNext<se::AssetData::AType>(file, asset.Type);
+	se::Binarizer::WriteNext<se::AssetData::ASubType>(file, asset.SubType);
+	se::Binarizer::WriteNext<std::string>(file, asset.Path);
+	se::Binarizer::WriteNext<uint32_t>(file, asset.Offset);
+	se::Binarizer::WriteNext<uint32_t>(file, (uint32_t)asset.Childs.size());
 
-	if (asset._Dependency.size())
+	if (asset.Childs.size())
 	{
-		for (auto& dependency : asset._Dependency)
+		for (auto& dependency : asset.Childs)
 		{
-			_WriteRoadMap(file, dependency);
+			WriteAssetDataListRecursively(file, dependency);
 		}
 	}
 }
@@ -140,50 +135,50 @@ void se::AssetManager::_WriteRoadMap(std::ofstream& file, const se::AssetData& a
 void se::AssetManager::ReadAssetsData(std::ifstream& file, se::AssetData& asset)
 {
 
-	asset._Name = se::Binarizer::ReadNext<std::string>(file);
-	asset._Name.pop_back();// Remove \0
-	asset._Type = se::Binarizer::ReadNext<se::AssetDataType>(file);
-	asset._SubType = se::Binarizer::ReadNext<se::AssetDataSubType>(file);
-	asset._Path = se::Binarizer::ReadNext<std::string>(file);
-	asset._Path.pop_back();// Remove \0
-	asset._Offset = se::Binarizer::ReadNext<long long>(file);
-	uint32_t _DependencyCount = se::Binarizer::ReadNext<uint32_t>(file);
+	asset.ID = se::Binarizer::ReadNext<std::string>(file);
+	asset.ID.pop_back();// Remove \0
+	asset.Type = se::Binarizer::ReadNext<se::AssetData::AType>(file);
+	asset.SubType = se::Binarizer::ReadNext<se::AssetData::ASubType>(file);
+	asset.Path = se::Binarizer::ReadNext<std::string>(file);
+	asset.Path.pop_back();// Remove \0
+	asset.Offset = se::Binarizer::ReadNext<long long>(file);
+	uint32_t childsCount = se::Binarizer::ReadNext<uint32_t>(file);
 
-	if (_DependencyCount)
+	if (childsCount)
 	{
-		asset._Dependency.reserve(_DependencyCount);
+		asset.Childs.reserve(childsCount);
 
-		for (uint32_t i = 0; i < _DependencyCount; i++)
+		for (uint32_t i = 0; i < childsCount; i++)
 		{
-			asset._Dependency.emplace_back();
-			asset._Dependency.back()._Parrent = &asset;
-			ReadAssetsData(file, asset._Dependency[i]);
+			asset.Childs.emplace_back();
+			asset.Childs.back().Parrent = &asset;
+			ReadAssetsData(file, asset.Childs[i]);
 		}
 	}
 }
 
 void se::AssetManager::SetRoadMap(const se::AssetData* asset, std::unordered_map<std::string, const se::AssetData*>& map)
 {
-	if (asset->_Parrent != nullptr)
+	if (asset->Parrent != nullptr)
 	{
-		auto* _Parrent = asset->_Parrent;
+		auto* _Parrent = asset->Parrent;
 		std::string name;
-		while (_Parrent != nullptr && !_Parrent->_Name.empty())
+		while (_Parrent != nullptr && !_Parrent->ID.empty())
 		{
-			name = _Parrent->_Name + "." + name;
-			_Parrent = _Parrent->_Parrent;
+			name = _Parrent->ID + "." + name;
+			_Parrent = _Parrent->Parrent;
 		}
 
-		map[name + asset->_Name] = asset;
+		map[name + asset->ID] = asset;
 	}
 	else
 	{
-		map[asset->_Name] = asset;
+		map[asset->ID] = asset;
 	}
 
 
-	for (auto i = 0; i < asset->_Dependency.size(); i++)
+	for (auto i = 0; i < asset->Childs.size(); i++)
 	{
-		SetRoadMap(&asset->_Dependency[i], map);
+		SetRoadMap(&asset->Childs[i], map);
 	}
 }

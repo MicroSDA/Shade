@@ -56,6 +56,6 @@ void se::Mesh::Init()
 	}
 	else
 	{
-		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->_Path + "'").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->Path + "'").c_str(), se::SECode::Warning);
 	}
 }

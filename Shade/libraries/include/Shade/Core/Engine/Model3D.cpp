@@ -18,27 +18,27 @@ void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 	m_AssetData = &data;
 
 	std::map<std::string, se::Material> _MaterialsMap;
-	if (m_AssetData->_Dependency.size())
+	if (m_AssetData->Childs.size())
 	{
-		for (auto& _Asset : m_AssetData->_Dependency)
+		for (auto& _Asset : m_AssetData->Childs)
 		{
-			if (_Asset._Type == se::AssetDataType::Material)
+			if (_Asset.Type == se::AssetData::AType::Material)
 			{
 				std::ifstream _File;
-				_File.open(_Asset._Path, std::ios::binary);
+				_File.open(_Asset.Path, std::ios::binary);
 				if (!_File.is_open())
-					throw se::ShadeException(std::string("Faild to open '" + _Asset._Path + "' file.").c_str(), se::SECode::Warning);
+					throw se::ShadeException(std::string("Faild to open '" + _Asset.Path + "' file.").c_str(), se::SECode::Warning);
 				// Set read position
-				se::Binarizer::ReadAt(_File, m_AssetData->_Offset);
+				se::Binarizer::ReadAt(_File, m_AssetData->Offset);
 				//Header
 				std::string _Header = se::Binarizer::ReadNext<std::string>(_File);
 				_Header.pop_back(); // Remove \0
 				if ("#ShadeMaterial" != _Header)
-					throw se::ShadeException(std::string("Wrong header in '" + _Asset._Path + "' file.").c_str(), se::SECode::Warning);
+					throw se::ShadeException(std::string("Wrong header in '" + _Asset.Path + "' file.").c_str(), se::SECode::Warning);
 
 				unsigned int _MaterialCount = se::Binarizer::ReadNext<unsigned int>(_File);
 				if(!_MaterialCount)
-					throw se::ShadeException(std::string("Material count = 0 in '" + _Asset._Path + "' file.").c_str(), se::SECode::Warning);
+					throw se::ShadeException(std::string("Material count = 0 in '" + _Asset.Path + "' file.").c_str(), se::SECode::Warning);
 
 				for (unsigned int m = 0; m < _MaterialCount; m++)
 				{
@@ -76,31 +76,31 @@ void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 	}
 
 	std::ifstream _File;
-	_File.open(m_AssetData->_Path, std::ios::binary);
+	_File.open(m_AssetData->Path, std::ios::binary);
 	if (!_File.is_open())
-		throw se::ShadeException(std::string("Faild to open '" + m_AssetData->_Path + "' file.").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Faild to open '" + m_AssetData->Path + "' file.").c_str(), se::SECode::Warning);
 	// Set read position
-	se::Binarizer::ReadAt(_File, m_AssetData->_Offset);
+	se::Binarizer::ReadAt(_File, m_AssetData->Offset);
 	//Header
 	std::string _Header = se::Binarizer::ReadNext<std::string>(_File);
 	_Header.pop_back(); // Remove \0
 	if ("#ShadeModel3D" != _Header)
-		throw se::ShadeException(std::string("Wrong header in '" + m_AssetData->_Path + "' file.").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Wrong header in '" + m_AssetData->Path + "' file.").c_str(), se::SECode::Warning);
 	// Start to reading data
 	unsigned int _MeshCount = se::Binarizer::ReadNext<unsigned int>(_File);
 	if (!_MeshCount)
-		throw se::ShadeException(std::string("Mesh count = 0 in '" + m_AssetData->_Path + "' file.").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Mesh count = 0 in '" + m_AssetData->Path + "' file.").c_str(), se::SECode::Warning);
 
 	for (unsigned int m = 0; m < _MeshCount; m++)
 	{
-		se::Entity _MeshEntity = this->CreateEntity(m_AssetData->_Dependency[m]._Name);
+		se::Entity _MeshEntity = this->CreateEntity(m_AssetData->Childs[m].ID);
 
 		std::string _MeshName = se::Binarizer::ReadNext<std::string>(_File);
 		_MeshName.pop_back();
 
 		unsigned int _VertexCount = se::Binarizer::ReadNext<unsigned int>(_File);
 		if (!_VertexCount)
-			throw se::ShadeException(std::string("Vertex count = 0 in '" + m_AssetData->_Path + "' file.").c_str(), se::SECode::Warning);
+			throw se::ShadeException(std::string("Vertex count = 0 in '" + m_AssetData->Path + "' file.").c_str(), se::SECode::Warning);
 
 		std::vector<Vertex> _Vertices;
 		_Vertices.reserve(_VertexCount);
@@ -127,7 +127,7 @@ void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 		// Indices
 		unsigned int _IndicesCount = se::Binarizer::ReadNext<unsigned int>(_File);
 		if (!_IndicesCount)
-			throw se::ShadeException(std::string("Indices count = 0 in '" + m_AssetData->_Path + "' file.").c_str(), se::SECode::Warning);
+			throw se::ShadeException(std::string("Indices count = 0 in '" + m_AssetData->Path + "' file.").c_str(), se::SECode::Warning);
 
 		std::vector<unsigned int> _Indices;
 		_Indices.reserve(_IndicesCount);
@@ -135,20 +135,28 @@ void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 			_Indices.push_back(se::Binarizer::ReadNext<unsigned int>(_File));
 		
 		// Creating otside of AssetManager
-		auto _pMesh = se::AssetManager::Hold<se::Mesh>(m_AssetId + "." + m_AssetData->_Dependency[m]._Name);
+		auto _pMesh = se::AssetManager::Hold<se::Mesh>(m_AssetId + "." + m_AssetData->Childs[m].ID);
 		_pMesh->SetVertices(_Vertices);
 		_pMesh->SetIndices(_Indices);
 		se::MeshComponent& _MeshComponent = _MeshEntity.AddComponent<se::MeshComponent>(_pMesh);
 		_MeshEntity.AddComponent<se::MaterialComponent>(_MaterialsMap[_MeshName]);
 		// Textures
-		if (m_AssetData->_Dependency[m]._Dependency.size())
+		if (m_AssetData->Childs[m].Childs.size())
 		{
-			for (auto& _Asset : m_AssetData->_Dependency[m]._Dependency)
+			for (auto& _Asset : m_AssetData->Childs[m].Childs)
 			{
-				if (_Asset._Type == se::AssetDataType::Texture)
+				switch (_Asset.Type)
 				{
-					auto _TextureEntity = _MeshComponent.Mesh->CreateEntity(_Asset._Name);
-					_TextureEntity.AddComponent<se::TextureComponent>(se::AssetManager::Hold<se::Texture>(m_AssetId + "." + m_AssetData->_Dependency[m]._Name + "." + _Asset._Name));
+				case se::AssetData::AType::Texture:
+				{
+					auto _TextureEntity = _MeshComponent.Mesh->CreateEntity(_Asset.ID);
+					_TextureEntity.AddComponent<se::TextureComponent>(
+						se::AssetManager::Hold<se::Texture>(m_AssetId +
+						"." + m_AssetData->Childs[m].ID + 
+						"." + _Asset.ID));
+				}
+				default:
+					break;
 				}
 			}
 		}
@@ -172,7 +180,7 @@ void se::Model3D::Init()
 	}
 	else
 	{
-		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->_Path + "'").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->Path + "'").c_str(), se::SECode::Warning);
 	}
 	
 }

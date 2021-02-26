@@ -133,12 +133,12 @@ void EditorLayer::ShowMainMenu(const bool& show)
 			{
 				if (ImGui::MenuItem("New")) 
 				{
-					std::string file = se::FileDialog::OpenFile("");
+					/*std::string file = se::FileDialog::OpenFile("");
 					if(!file.empty())
-						Editor::Import(Editor::ImportType::Model3D, file);
+						Editor::Import(Editor::ImportType::Model3D, file);*/
 				}
 
-				if (ImGui::MenuItem("Open"))
+				if (ImGui::MenuItem("Open scene"))
 				{
 					std::string filePath = se::FileDialog::OpenFile("Shade Scene (*.sahde)\0*.shade\0");
 					if (filePath.size())
@@ -152,13 +152,20 @@ void EditorLayer::ShowMainMenu(const bool& show)
 					}
 				}
 
-				if (ImGui::MenuItem("Save")) 
+				if (ImGui::MenuItem("Save scene")) 
 				{ 
 					std::string filePath = se::FileDialog::OpenFile("Shade Scene (*.sahde)\0*.shade\0");
 					if (filePath.size())
 					{
 						se::Serializer::SerializeScene(filePath, *this->GetScene());
 					}
+				}
+
+				if (ImGui::MenuItem("Import"))
+				{
+					std::string file = se::FileDialog::OpenFile("3D model");
+					if (!file.empty())
+						Editor::Import(Editor::ImportType::Model3D, file);
 				}
 
 				ImGui::Separator();
@@ -286,7 +293,7 @@ void EditorLayer::ShowAssetList(const bool& show)
 		if (ImGui::Begin("Asset list"))
 		{
 			auto list = se::AssetManager::GetAssetDataList();
-			for (auto& node : list._Dependency)
+			for (auto& node : list.Childs)
 			{
 				DrawAssetDataNode(node);
 			}
@@ -424,15 +431,15 @@ void EditorLayer::DrawAddComponentDelteEntity(se::Entity& entity)
 
 void EditorLayer::DrawAssetDataNode(se::AssetData& data)
 {
-	if (ImGui::TreeNodeEx(data._Name.c_str(), ImGuiTreeNodeFlags_SelectedWhenOpen))
+	if (ImGui::TreeNodeEx(data.ID.c_str(), ImGuiTreeNodeFlags_SelectedWhenOpen))
 	{
-		if (!data._Name.empty())
-			ImGui::TextWrapped("Name: %s", data._Name.c_str());
-		if (!data._Path.empty())
-			ImGui::TextWrapped("Path: %s", data._Path.c_str());
+		if (!data.ID.empty())
+			ImGui::TextWrapped("Name: %s", data.ID.c_str());
+		if (!data.Path.empty())
+			ImGui::TextWrapped("Path: %s", data.Path.c_str());
 		
 
-		for (auto& node : data._Dependency)
+		for (auto& node : data.Childs)
 		{
 			DrawAssetDataNode(node);
 		}
@@ -509,15 +516,15 @@ void EditorLayer::TextureCallback(se::Entity& entity)
 	ImTextureID tid = reinterpret_cast<void*>(texture->GetTextureRenderId());
 	uint32_t id = entity;
 
-	switch (texture->GetAssetData()._SubType)
+	switch (texture->GetAssetData().SubType)
 	{
-	case se::AssetDataSubType::Diffuse:
+	case se::AssetData::ASubType::Diffuse:
 		ImGui::BulletText("Type: Diffuse");
 		break;
-	case se::AssetDataSubType::Specular:
+	case se::AssetData::ASubType::Specular:
 		ImGui::BulletText("Type: Specular");
 		break;
-	case se::AssetDataSubType::NormalMap:
+	case se::AssetData::ASubType::NormalMap:
 		ImGui::BulletText("Type: NormalMap");
 		break;
 	}
@@ -846,15 +853,15 @@ void EditorLayer::AddModle3DModal(const char* modalName, se::Entity& entity)
 	if (ImGui::BeginPopupModal(modalName, NULL, ImGuiWindowFlags_AlwaysAutoResize))
 	{
 		auto list = se::AssetManager::GetAssetDataList();
-		for (auto& node : list._Dependency)
+		for (auto& node : list.Childs)
 		{
-			if (node._Name == "Models")
+			if (node.ID == "Models")
 			{
-				for (auto& model_asset : node._Dependency)
+				for (auto& model_asset : node.Childs)
 				{
-					if (ImGui::Selectable(model_asset._Name.c_str()))
+					if (ImGui::Selectable(model_asset.ID.c_str()))
 					{
-						entity.GetComponent<se::Model3DComponent>().Model3D = se::AssetManager::Hold<se::Model3D>("Models." + model_asset._Name);
+						entity.GetComponent<se::Model3DComponent>().Model3D = se::AssetManager::Hold<se::Model3D>("Models." + model_asset.ID);
 						ImGui::CloseCurrentPopup();
 					}
 					

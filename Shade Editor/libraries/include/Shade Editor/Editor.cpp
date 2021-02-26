@@ -17,7 +17,7 @@ bool Editor::ImportModel3D(const std::string& filePath)
 	model3D->LoadFromFile(filePath);
 	model3D->Init();
 
-	auto modelEntity = se::Application::GetApplication().GetCurrentScene()->CreateEntity("AssimModel");
+	auto modelEntity = se::Application::GetApplication().GetCurrentScene()->CreateEntity(se::Util::GetNameFromPath(filePath));
 	modelEntity.AddComponent<se::Model3DComponent>(se::AssetPointer<se::Model3D>(static_cast<se::Model3D*>(model3D)));
 	modelEntity.AddComponent<se::Transform3DComponent>();
 	

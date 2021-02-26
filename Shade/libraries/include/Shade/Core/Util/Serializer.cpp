@@ -111,7 +111,7 @@ static bool SerrializeModel3DComponent(se::Entity& entity, YAML::Emitter& emitte
 	{
 		auto& component = entity.GetComponent<se::Model3DComponent>().Model3D;
 		emitter << YAML::Key << "Model3DComponent" << YAML::BeginMap;
-		emitter << YAML::Key << "Asset" << YAML::Value << component->GetAssetId();
+		emitter << YAML::Key << "Asset" << YAML::Value << component->GetAssetID();
 		emitter << YAML::EndMap;
 		return true;
 	}

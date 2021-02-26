@@ -3,35 +3,38 @@
 
 namespace se
 {
-	enum class AssetDataType
+	// Specify your asset according to the Asset Data structure
+	struct SE_API AssetData
 	{
-		Container,
-		Packet,
-		Model3D,
-		Mesh,
-		Texture,
-		Shader,
-		Material,
-		Sprite,
-		Font
-	};
-	enum class AssetDataSubType
-	{
-		None,
-		Diffuse,
-		Specular,
-		NormalMap,
-	};
-	struct AssetData
-	{
-		std::string             _Name;
-		AssetDataType           _Type;
-		AssetDataSubType        _SubType;
-		std::string             _Path;
-		long long               _Offset = NULL;
-		std::vector<AssetData>  _Dependency;
-		AssetData*              _Parrent = nullptr;
-		AssetData*              _Alies   = nullptr;
+		std::string						ID      = "ROOT";							// Asset Id
+		std::string						Path    = "";								// Path to file
+		std::uint32_t					Offset  = 0;
+		enum class AType : uint32_t
+		{
+			Container,
+			Packet,
+			Shader,
+			Model3D,
+			Mesh,
+			Texture,
+			Material,
+			Sprite,
+			Font
+
+		}		Type    = se::AssetData::AType::Container;	// Type
+		enum class ASubType : uint32_t
+		{
+			None,
+			Diffuse,
+			Specular,
+			NormalMap,
+			Albedo
+			//TODO: More
+
+		}	SubType = se::AssetData::ASubType::None;    // Sub type
+		std::vector<AssetData>			Childs;										// Childs
+		se::AssetData* Parrent	= nullptr;
+		se::AssetData* Ally		= nullptr;											// Isn't implemented yeat
 	};
 };
 

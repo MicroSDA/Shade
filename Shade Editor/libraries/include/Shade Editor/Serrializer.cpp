@@ -71,7 +71,7 @@ void Serrializer::Serrialize3DModel(const std::string& filePath, se::AssetData* 
 	}
 	else 
 	{
-		assetData->_Type = se::AssetDataType::Model3D;
+		assetData->Type = se::AssetData::AType::Model3D;
 		std::string _Path;
 		if (withDeps)
 		{
@@ -79,10 +79,10 @@ void Serrializer::Serrialize3DModel(const std::string& filePath, se::AssetData* 
 		}
 
 		std::vector<AssimpMesh> _Meshes = ProcessModel3DNode(_Path, m_pScene->mRootNode, m_pScene, *assetData);
-		assetData->_Path += assetData->_Name + ".bin";
+		assetData->Path += assetData->ID + ".bin";
 
 		std::ofstream _File;
-		_File.open(assetData->_Path, std::ios::binary);
+		_File.open(assetData->Path, std::ios::binary);
 		if (_File.is_open())
 		{
 			//Header
@@ -126,7 +126,7 @@ void Serrializer::Serrialize3DModel(const std::string& filePath, se::AssetData* 
 		}
 		else
 		{
-			throw se::ShadeException(std::string("Failed to open model '" + assetData->_Path + "' !").c_str(), se::SECode::Warning);
+			throw se::ShadeException(std::string("Failed to open model '" + assetData->Path + "' !").c_str(), se::SECode::Warning);
 		}
 
 		std::vector<se::Material> _Materials;
@@ -140,11 +140,11 @@ void Serrializer::Serrialize3DModel(const std::string& filePath, se::AssetData* 
 		if (_Materials.size())
 		{
 			se::AssetData _Material;
-			_Material._Name = "Material";
-			_Material._Type = se::AssetDataType::Material;
-			_Material._Path = GetPath(assetData->_Path) + "/material.bin";
-			SerrializeMaterial(_Material._Path, _Materials, assetData);
-			assetData->_Dependency.push_back(_Material);
+			_Material.ID = "Material";
+			_Material.Type = se::AssetData::AType::Material;
+			_Material.Path = GetPath(assetData->Path) + "/material.bin";
+			SerrializeMaterial(_Material.Path, _Materials, assetData);
+			assetData->Childs.push_back(_Material);
 		}
 		
 
@@ -160,7 +160,7 @@ void Serrializer::SerrializeTexture(const std::string& filePath, se::AssetData* 
 	if (_Data)
 	{
 		std::ofstream _File;
-		_File.open(assetData->_Path, std::ios::binary);
+		_File.open(assetData->Path, std::ios::binary);
 		if (_File.is_open())
 		{
 			se::Binarizer::WriteNext<std::string>(_File, "#ShadeImage");
@@ -174,7 +174,7 @@ void Serrializer::SerrializeTexture(const std::string& filePath, se::AssetData* 
 		}
 		else
 		{
-			throw se::ShadeException(std::string("Failed to save image '" + assetData->_Path + "' !").c_str(), se::SECode::Warning);
+			throw se::ShadeException(std::string("Failed to save image '" + assetData->Path + "' !").c_str(), se::SECode::Warning);
 		}
 
 		stbi_image_free(_Data);
@@ -263,10 +263,10 @@ void Serrializer::SerrializeShader(const std::vector<ShaderMeta>& shaders, se::A
 	}
 
 	std::ofstream _Write;
-	_Write.open(assetData->_Path + assetData->_Name + ".bin", std::ios::binary);
+	_Write.open(assetData->Path + assetData->ID + ".bin", std::ios::binary);
 	if (_Write.is_open())
 	{
-		std::string _Name = "#" + assetData->_Name + "\n";
+		std::string _Name = "#" + assetData->ID + "\n";
 		_Write.write(_Name.c_str(), _Name.size());
 		for (short s = 0; s < shaders.size(); s++)
 		{
@@ -277,11 +277,11 @@ void Serrializer::SerrializeShader(const std::vector<ShaderMeta>& shaders, se::A
 		_Write.write("#---", 4);
 		_Write.close();
 
-		assetData->_Path = assetData->_Path + assetData->_Name + ".bin";
+		assetData->Path = assetData->Path + assetData->ID + ".bin";
 	}
 	else
 	{
-		throw se::ShadeException(std::string("Failed to save sahder file '"+ assetData->_Path + assetData->_Name + ".bin" +"'").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Failed to save sahder file '"+ assetData->Path + assetData->ID + ".bin" +"'").c_str(), se::SECode::Warning);
 	}
 }
 
@@ -363,7 +363,7 @@ void Serrializer::SerrializeFont(const std::string& filePath, se::AssetData* con
 			if (_Data)
 			{
 				std::ofstream _File;
-				_File.open(assetData->_Path, std::ios::binary);
+				_File.open(assetData->Path, std::ios::binary);
 				if (_File.is_open())
 				{
 					se::Binarizer::WriteNext<std::string>(_File, "#ShadeFont");
@@ -426,12 +426,12 @@ std::vector<AssimpMesh>  Serrializer::ProcessModel3DNode(const std::string& file
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
 		se::AssetData _Mesh;
-		_Mesh._Name = mesh->mName.C_Str();
-		_Mesh._Path = data._Path;
-		_Mesh._Type = se::AssetDataType::Mesh;
+		_Mesh.ID = mesh->mName.C_Str();
+		_Mesh.Path = data.Path;
+		_Mesh.Type = se::AssetData::AType::Mesh;
 
 		_Meshes.push_back(ProcessModel3DMesh(filePath, mesh, scene, i, _Mesh));
-		data._Dependency.push_back(_Mesh);
+		data.Childs.push_back(_Mesh);
 	}
 
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -493,37 +493,37 @@ AssimpMesh Serrializer::ProcessModel3DMesh(const std::string& filePath, aiMesh* 
 		{
 			aiString path;
 			_Assimpmaterial->GetTexture(aiTextureType_DIFFUSE, i, &path);
-			_Image._Name    = GetNameFromPath(path.C_Str());
-			_Image._Type    = se::AssetDataType::Texture;
-			_Image._SubType = se::AssetDataSubType::Diffuse;
-			_Image._Path    = assetData._Path + _Image._Name + ".bin";
+			_Image.ID    = GetNameFromPath(path.C_Str());
+			_Image.Type    = se::AssetData::AType::Texture;
+			_Image.SubType = se::AssetData::ASubType::Diffuse;
+			_Image.Path    = assetData.Path + _Image.ID + ".bin";
 			SerrializeTexture(filePath + "/" + path.C_Str(), &_Image);
-			assetData._Dependency.push_back(_Image);
+			assetData.Childs.push_back(_Image);
 		}
 		for (unsigned int i = 0; i < _Assimpmaterial->GetTextureCount(aiTextureType_SPECULAR); i++)
 		{
 			aiString path;
 			_Assimpmaterial->GetTexture(aiTextureType_SPECULAR, i, &path);
-			_Image._Name    = GetNameFromPath(path.C_Str());
-			_Image._Type    = se::AssetDataType::Texture;
-			_Image._SubType = se::AssetDataSubType::Specular;
-			_Image._Path = assetData._Path + _Image._Name + ".bin";
+			_Image.ID = GetNameFromPath(path.C_Str());
+			_Image.Type    = se::AssetData::AType::Texture;
+			_Image.SubType = se::AssetData::ASubType::Specular;
+			_Image.Path = assetData.Path + _Image.ID + ".bin";
 			SerrializeTexture(filePath + "/" + path.C_Str(), &_Image);
-			assetData._Dependency.push_back(_Image);
+			assetData.Childs.push_back(_Image);
 		}
 		for (unsigned int i = 0; i < _Assimpmaterial->GetTextureCount(aiTextureType_HEIGHT); i++)
 		{
 			aiString path;
 			_Assimpmaterial->GetTexture(aiTextureType_HEIGHT, i, &path);
-			_Image._Name    = GetNameFromPath(path.C_Str());
-			_Image._Type    = se::AssetDataType::Texture;
-			_Image._SubType = se::AssetDataSubType::NormalMap;
-			_Image._Path = assetData._Path + _Image._Name + ".bin";
+			_Image.ID    = GetNameFromPath(path.C_Str());
+			_Image.Type    = se::AssetData::AType::Texture;
+			_Image.SubType = se::AssetData::ASubType::NormalMap;
+			_Image.Path = assetData.Path + _Image.ID + ".bin";
 			SerrializeTexture(filePath + "/" + path.C_Str(), &_Image);
-			assetData._Dependency.push_back(_Image);
+			assetData.Childs.push_back(_Image);
 		}
 
-		_Mesh._Material.SetName(assetData._Name);
+		_Mesh._Material.SetName(assetData.ID);
 		_Assimpmaterial->Get(AI_MATKEY_COLOR_AMBIENT,      _AssimpColor); // Ka
 		_Mesh._Material.SetAmbientColor(_AssimpColor.r,    _AssimpColor.g, _AssimpColor.b);
 		_Assimpmaterial->Get(AI_MATKEY_COLOR_DIFFUSE,      _AssimpColor); // Kd

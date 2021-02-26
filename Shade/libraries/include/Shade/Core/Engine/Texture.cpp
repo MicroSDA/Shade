@@ -35,7 +35,7 @@ void se::Texture::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 	m_AssetData = &data;
 
 	std::ifstream _File;
-	_File.open(m_AssetData->_Path, std::ios::binary);
+	_File.open(m_AssetData->Path, std::ios::binary);
 
 	if (_File.is_open())
 	{
@@ -45,17 +45,17 @@ void se::Texture::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 		{
 			m_ImageData.m_Width = se::Binarizer::ReadNext<int>(_File);
 			if (m_ImageData.m_Width < 1 || m_ImageData.m_Width > 10000)
-				throw se::ShadeException(std::string("Wrong image width '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+				throw se::ShadeException(std::string("Wrong image width '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 
 			m_ImageData.m_Height = se::Binarizer::ReadNext<int>(_File);
 			if (m_ImageData.m_Height < 1 || m_ImageData.m_Height > 10000)
-				throw se::ShadeException(std::string("Wrong image height '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+				throw se::ShadeException(std::string("Wrong image height '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 
 			m_ImageData.m_InternalFormat = se::Binarizer::ReadNext<int>(_File);
 			m_ImageData.m_BufferSize = se::Binarizer::ReadNext<unsigned int>(_File);
 
 			if (m_ImageData.m_BufferSize < 1 || m_ImageData.m_BufferSize > 104857600)
-				throw se::ShadeException(std::string("Image size more then 100mb '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+				throw se::ShadeException(std::string("Image size more then 100mb '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 
 			m_ImageData.m_pImageData = new unsigned char[m_ImageData.m_BufferSize];
 			_File.read(reinterpret_cast<char*>(m_ImageData.m_pImageData), m_ImageData.m_BufferSize);
@@ -63,13 +63,13 @@ void se::Texture::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 		}
 		else
 		{
-			throw se::ShadeException(std::string("Wrong texture header '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+			throw se::ShadeException(std::string("Wrong texture header '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 		}
 
 	}
 	else
 	{
-		throw se::ShadeException(std::string("Failed to open image '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Failed to open image '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 	}
 }
 
@@ -97,7 +97,7 @@ void se::Texture::Init()
 					_InternalFormat = GL_RGBA;
 					break;
 				default:
-					throw se::ShadeException(std::string("Unsupported texture format in '" + m_AssetData->_Path + "'!").c_str(), se::SECode::Warning);
+					throw se::ShadeException(std::string("Unsupported texture format in '" + m_AssetData->Path + "'!").c_str(), se::SECode::Warning);
 					break;
 			}
 
@@ -126,12 +126,12 @@ void se::Texture::Init()
 		}
 		else
 		{
-			throw se::ShadeException(std::string("Failed to initialize texure '" + m_AssetData->_Path + "' image data is nullptr !").c_str(), se::SECode::Warning);
+			throw se::ShadeException(std::string("Failed to initialize texure '" + m_AssetData->Path + "' image data is nullptr !").c_str(), se::SECode::Warning);
 		}
 
 	}
 	else
 	{
-		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->_Path + "'").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Asset has been already initialized'" + m_AssetData->Path + "'").c_str(), se::SECode::Warning);
 	}
 }

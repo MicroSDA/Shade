@@ -51,7 +51,10 @@ void AssimpModel3D::ProcessModel3DMesh(const char* filePath, aiMesh* mesh, const
 	indices.reserve(mesh->mNumFaces);
 
 	se::AssetPointer<se::Mesh> pMesh(new se::Mesh());
-	auto meshEntity = this->CreateEntity("Mesh");
+	se::AssetData assetDataMesh;
+
+	pMesh->SetAssetData(assetDataMesh);
+	auto meshEntity = this->CreateEntity(mesh->mName.C_Str());
 	meshEntity.AddComponent<se::MeshComponent>(pMesh);
 
 	//Vertices
@@ -96,19 +99,21 @@ void AssimpModel3D::ProcessModel3DMesh(const char* filePath, aiMesh* mesh, const
 		se::AssetData _Image;
 		se::AssetData _Material;
 		aiColor3D     _AssimpColor;
-		aiMaterial* _Assimpmaterial = scene->mMaterials[mesh->mMaterialIndex];
+		aiMaterial*   _Assimpmaterial = scene->mMaterials[mesh->mMaterialIndex];
 		for (unsigned int i = 0; i < _Assimpmaterial->GetTextureCount(aiTextureType_DIFFUSE); i++)
 		{
 			aiString path;
 			_Assimpmaterial->GetTexture(aiTextureType_DIFFUSE, i, &path);
-			_Image._Name = se::Util::GetNameFromPath(path.C_Str());
-			_Image._Type = se::AssetDataType::Texture;
-			_Image._SubType = se::AssetDataSubType::Diffuse;
-			_Image._Path = path.C_Str();
+			_Image.ID      = se::Util::GetNameFromPath(path.C_Str());
+			_Image.Type    = se::AssetData::AType::Texture;
+			_Image.SubType = se::AssetData::ASubType::Diffuse;
+			_Image.Path = path.C_Str();
 
-			auto _TextureEntity = pMesh->CreateEntity(_Image._Name);
+			auto _TextureEntity = pMesh->CreateEntity(_Assimpmaterial->GetName().C_Str());
 			AssimpTexture* pTexture = new AssimpTexture();
 			std::string _path = se::Util::GetPath(filePath) + "/" + path.C_Str();
+
+			pTexture->SetAssetData(_Image);
 			pTexture->LoadFromFile(_path.c_str());
 			pTexture->Init();
 			_TextureEntity.AddComponent<se::TextureComponent>(se::AssetPointer<se::Texture>(static_cast<se::Texture*>(pTexture)));
@@ -117,24 +122,42 @@ void AssimpModel3D::ProcessModel3DMesh(const char* filePath, aiMesh* mesh, const
 		{
 			aiString path;
 			_Assimpmaterial->GetTexture(aiTextureType_SPECULAR, i, &path);
-			_Image._Name = se::Util::GetNameFromPath(path.C_Str());
-			_Image._Type = se::AssetDataType::Texture;
-			_Image._SubType = se::AssetDataSubType::Specular;
-			_Image._Path = path.C_Str();
+			_Image.ID      = se::Util::GetNameFromPath(path.C_Str());
+			_Image.Type    = se::AssetData::AType::Texture;
+			_Image.SubType = se::AssetData::ASubType::Specular;
+			_Image.Path    = path.C_Str();
+
+			auto _TextureEntity = pMesh->CreateEntity(_Image.ID);
+			AssimpTexture* pTexture = new AssimpTexture();
+			std::string _path = se::Util::GetPath(filePath) + "/" + path.C_Str();
+		
+			pTexture->SetAssetData(_Image);
+			pTexture->LoadFromFile(_path.c_str());
+			pTexture->Init();
+			_TextureEntity.AddComponent<se::TextureComponent>(se::AssetPointer<se::Texture>(static_cast<se::Texture*>(pTexture)));
 		}
 		for (unsigned int i = 0; i < _Assimpmaterial->GetTextureCount(aiTextureType_HEIGHT); i++)
 		{
 			aiString path;
 			_Assimpmaterial->GetTexture(aiTextureType_HEIGHT, i, &path);
-			_Image._Name = se::Util::GetNameFromPath(path.C_Str());
-			_Image._Type = se::AssetDataType::Texture;
-			_Image._SubType = se::AssetDataSubType::NormalMap;
-			_Image._Path = path.C_Str();
+			_Image.ID      = se::Util::GetNameFromPath(path.C_Str());
+			_Image.Type    = se::AssetData::AType::Texture;
+			_Image.SubType = se::AssetData::ASubType::NormalMap;
+			_Image.Path    = path.C_Str();
+
+			auto _TextureEntity = pMesh->CreateEntity(_Image.ID);
+			AssimpTexture* pTexture = new AssimpTexture();
+			std::string _path = se::Util::GetPath(filePath) + "/" + path.C_Str();
+
+			pTexture->SetAssetData(_Image);
+			pTexture->LoadFromFile(_path.c_str());
+			pTexture->Init();
+			_TextureEntity.AddComponent<se::TextureComponent>(se::AssetPointer<se::Texture>(static_cast<se::Texture*>(pTexture)));
 		}
 
 		se::Material material;
 
-		material.SetName("AssimpMaterial");
+		material.SetName("Material");
 		_Assimpmaterial->Get(AI_MATKEY_COLOR_AMBIENT, _AssimpColor); // Ka
 		material.SetAmbientColor(_AssimpColor.r, _AssimpColor.g, _AssimpColor.b);
 		_Assimpmaterial->Get(AI_MATKEY_COLOR_DIFFUSE, _AssimpColor); // Kd

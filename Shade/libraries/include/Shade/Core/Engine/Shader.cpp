@@ -145,10 +145,10 @@ void se::Shader::LoadFromAssetData(const std::string& assetId, se::AssetData& da
 	m_AssetData = &data;
 
 	std::ifstream _File;
-	_File.open(m_AssetData->_Path, std::ifstream::in);
+	_File.open(m_AssetData->Path, std::ifstream::in);
 	if (_File.is_open())
 	{
-		_File.seekg(m_AssetData->_Offset);
+		_File.seekg(m_AssetData->Offset);
 		std::string line;
 		while (_File.good())
 		{
@@ -168,7 +168,7 @@ void se::Shader::LoadFromAssetData(const std::string& assetId, se::AssetData& da
 
 		_File.close();
 		if (m_Shaders.size() == 0)
-			throw se::ShadeException(std::string("Shaders count 0 in '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+			throw se::ShadeException(std::string("Shaders count 0 in '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 
 		m_Program = glCreateProgram();
 		for (unsigned int i = 0; i < m_Shaders.size(); i++) {
@@ -181,7 +181,7 @@ void se::Shader::LoadFromAssetData(const std::string& assetId, se::AssetData& da
 	}
 	else
 	{
-		throw se::ShadeException(std::string("Failed to open shader file '" + m_AssetData->_Path + "' !").c_str(), se::SECode::Warning);
+		throw se::ShadeException(std::string("Failed to open shader file '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
 	}
 
 }
