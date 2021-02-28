@@ -28,8 +28,8 @@ namespace se
 		static se::AssetPointer<T> Hold(const ID& className, const se::Asset::Flag& flag = se::Asset::Flag::None);
 		// Unload specific asset if ref count is 0
 		static void Free(const std::string& className);
-		static void WriteAssetDataList(const se::AssetData& asset);
-		static void ReadAssetDataList();
+		static void WriteAssetDataList(const std::string& filePath, const se::AssetData& asset);
+		static void ReadAssetDataList(const std::string& filePath);
 		static const AssetData& GetAssetDataList();
 	private:
 		//Singleton implementation

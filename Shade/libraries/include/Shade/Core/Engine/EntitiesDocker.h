@@ -13,11 +13,12 @@ namespace se
 		virtual ~EntitiesDocker();
 
 		se::Entity CreateEntity(const std::string& name = "Entity");
+	
 		void DestroyEntity(const Entity& entity);
 		void DestroyEntities();
 		entt::registry& GetEntities();
 	private:
-		entt::registry m_Registry;
+		entt::registry     m_Registry;
 	};
 }
 

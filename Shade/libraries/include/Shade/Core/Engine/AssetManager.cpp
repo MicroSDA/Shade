@@ -52,10 +52,10 @@ void se::AssetManager::Free(const std::string& assetId)
 
 }
 
-void se::AssetManager::WriteAssetDataList(const se::AssetData& asset)
+void se::AssetManager::WriteAssetDataList(const std::string& filePath, const se::AssetData& asset)
 {
 	std::ofstream _File;
-	_File.open("./project/RoadMap.bin", std::ofstream::binary);
+	_File.open(filePath, std::ofstream::binary);
 	if (!_File.is_open())
 	{
 		throw se::ShadeException("Error: Road map file cannot be open!", se::SECode::Error);
@@ -68,12 +68,12 @@ void se::AssetManager::WriteAssetDataList(const se::AssetData& asset)
 	_File.close();
 }
 
-void se::AssetManager::ReadAssetDataList()
+void se::AssetManager::ReadAssetDataList(const std::string& filePath)
 {
 	auto& instance = GetInstance();
 
 	std::ifstream _File;
-	_File.open("././project/RoadMap.bin", std::ifstream::binary); //TODO resolve issue with path 
+	_File.open(filePath, std::ifstream::binary); //TODO resolve issue with path 
 
 	if (!_File.is_open())
 	{

@@ -121,7 +121,7 @@ ShadeEditor::~ShadeEditor()
 
 void ShadeEditor::OnInit()
 {
-	se::AssetManager::ReadAssetDataList();
+	se::AssetManager::ReadAssetDataList("project/AssetData.bin");
 	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
 	se::WindowManager::Create(se::Window());
 
@@ -140,6 +140,7 @@ void ShadeEditor::OnInit()
 
 	this->CreateEntity("SceneViewPort").AddComponent<glm::vec2>();
 	auto camera = this->CreateEntity("EditorCamera");
+
 	auto camera_copm = camera.AddComponent<se::CameraComponent>(new se::Camera(glm::vec3(0.0f, 5.0f, 0.0f), 45.0f, 1.0f, 0.01f, 3000.0f));
 	camera.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
 	scene->SetActiveCamera(camera_copm.Camera);

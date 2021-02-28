@@ -190,6 +190,23 @@ void se::Shader::Init()
 {
 }
 
+void se::Shader::SetLayout(void(*layout)(const void*, const se::Shader*))
+{
+	m_ShaderLayout = layout;
+}
+
+void se::Shader::Process(const void* entity)
+{
+	m_ShaderLayout(entity, this);
+}
+
+void se::Shader::SendCamera(const se::Camera* camera)
+{
+	SendUniform3Float("CameraPosition",                   camera->GetPosition());
+	SendUniformMatrix4Float("ViewMatrix", GL_FALSE,       camera->GetView());
+	SendUniformMatrix4Float("ProjectionMatrix", GL_FALSE, camera->GetProjection());
+}
+
 inline void se::Shader::SendUniformMatrix3Float(const std::string& name, const GLboolean& isTransopnse, const glm::fmat3& value) const
 {
 	glUniformMatrix3fv(GetUniformLocation(name), 1, isTransopnse, glm::value_ptr(value));

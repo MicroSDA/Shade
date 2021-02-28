@@ -20,7 +20,7 @@ namespace se
 	public:
 		Texture();
 		virtual ~Texture();
-		inline const void Bind(const uint32_t& id) const;
+		const void Bind(const std::uint32_t& id) const;
 		static const void BindTest(const uint32_t& id)
 		{
 			glActiveTexture(GL_TEXTURE0 + static_cast<GLuint>(0));

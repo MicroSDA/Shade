@@ -12,7 +12,7 @@ se::Texture::~Texture()
 	glDeleteTextures(1, &m_Texture);
 }
 
-inline const void se::Texture::Bind(const uint32_t& id) const
+const void se::Texture::Bind(const std::uint32_t& id) const
 {
 	glActiveTexture(GL_TEXTURE0 + static_cast<GLuint>(id));
 	glBindTexture(GL_TEXTURE_2D, m_Texture);

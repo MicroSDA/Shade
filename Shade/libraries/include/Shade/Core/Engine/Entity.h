@@ -26,15 +26,16 @@ namespace se
 		template<typename T>
 		T& GetComponent() const
 		{
+			//GetMy if you want to create in tour registry
 			if (!HasComponent<T>())
-				throw se::ShadeException(std::string("Entity does not have component!" + std::string(typeid(T).name())).c_str(), se::SECode::Error);
+				throw se::ShadeException(std::string("Entity does not have component! : " + std::string(typeid(T).name())).c_str(), se::SECode::Error);
 			return m_pDocker->GetEntities().get<T>(m_EntityHandle);
 		}
 		template<typename T>
 		void RemoveComponent()
 		{
 			if (!HasComponent<T>())
-				throw se::ShadeException(std::string("Entity does not have component!" + std::string(typeid(T).name())).c_str(), se::SECode::Error);
+				throw se::ShadeException(std::string("Entity does not have component! : " + std::string(typeid(T).name())).c_str(), se::SECode::Error);
 			m_pDocker->GetEntities().remove<T>(m_EntityHandle);
 		}
 		template<typename T>

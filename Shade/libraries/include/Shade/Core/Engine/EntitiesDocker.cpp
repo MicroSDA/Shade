@@ -15,10 +15,9 @@ se::Entity se::EntitiesDocker::CreateEntity(const std::string& name)
     _Tag.Tag = (name == "Entity") ? "Entity" : name;
     return _Entity;
 }
-
 void se::EntitiesDocker::DestroyEntity(const Entity& entity)
 {
-   m_Registry.destroy(entity);
+    m_Registry.destroy(entity);
 }
 
 void se::EntitiesDocker::DestroyEntities()
