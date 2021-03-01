@@ -2,6 +2,7 @@
 #include "Shade/Core/Engine/Asset.h"
 #include "Shade/Core/Util/Binarizer.h"
 #include "Shade/Core/Util/ShadeException.h"
+#include "Shade/Core/Util/Log.h"
 
 namespace se
 {  
@@ -144,12 +145,16 @@ namespace se
 			}
 			else
 			{
-				std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
-				throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+				SE_DEBUG_PRINT("Specifaed class name '" + className + "' hasn't been found", se::SLCode::Warning);
+				//std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
+				//throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+				return nullptr;
 			}
 
-			std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
-			throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+			SE_DEBUG_PRINT("Specifaed class name '" + className + "' hasn't been found", se::SLCode::Warning);
+			//std::string _Msg("Exeption : Specifaed class name '" + className + "' hasn't been found");
+			//throw se::ShadeException(_Msg.c_str(), se::SECode::Error);
+			return nullptr;
 		}
 
 		return nullptr; // for warning disable

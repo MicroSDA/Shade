@@ -167,6 +167,32 @@ void EditorLayer::ShowMainMenu(const bool& show)
 					}
 					ImGui::EndMenu();
 				}
+				if (ImGui::BeginMenu("Assets"))
+				{
+					if (ImGui::MenuItem("New list")) 
+					{
+						std::string file = se::FileDialog::SaveFile("*.bin");
+						if (!file.empty())
+						{
+							se::AssetData root;
+							se::AssetData models;
+							models.ID = "Models";
+							models.Type = se::AssetData::AType::Container;
+							root.Childs.push_back(models);
+
+							se::AssetManager::WriteAssetDataList(file, root);
+							se::AssetManager::ReadAssetDataList(file);
+						}
+					}
+					if (ImGui::MenuItem("Open list")) 
+					{
+						std::string file = se::FileDialog::OpenFile("*.bin");
+						if (!file.empty())
+							se::AssetManager::ReadAssetDataList(file);
+					}
+
+					ImGui::EndMenu();
+				}
 
 				ImGui::Separator();
 				if (ImGui::MenuItem("Exit"))  se::Application::GetApplication().Quit();
@@ -291,16 +317,23 @@ void EditorLayer::ShowAssetList(const bool& show)
 {
 	if (show)
 	{
-		if (ImGui::Begin("Asset list"))
+		if (ImGui::Begin("Assets"))
 		{
-
 			auto list = se::AssetManager::GetAssetDataList();
-
+			bool opened = false;
 			for (auto& node : list.Childs)
 			{
+				opened = true;
 				DrawAssetDataNode(node);
 			}
+			if (opened)
+			{
+				ImGui::Separator();
+				if (ImGui::Button("Save", ImVec2(ImGui::GetContentRegionAvailWidth(), 0)))
+				{
 
+				}
+			}
 		} ImGui::End();
 	}
 }
@@ -439,12 +472,6 @@ void EditorLayer::DrawAssetDataNode(se::AssetData& data)
 			ImGui::TextWrapped("Name: %s", data.ID.c_str());
 		if (!data.Path.empty())
 			ImGui::TextWrapped("Path: %s", data.Path.c_str());
-
-		if (ImGui::Button("Set"))
-		{
-			data.Type = se::AssetData::AType::Texture;
-		}
-
 		for (auto& node : data.Childs)
 		{
 			DrawAssetDataNode(node);

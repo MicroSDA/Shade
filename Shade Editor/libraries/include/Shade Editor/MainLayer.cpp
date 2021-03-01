@@ -28,7 +28,6 @@ void MainLayer::OnInit()
 	m_BasicModelShader  = se::ShadeShared<se::Shader>(se::Shader::CreateFromFile("resources/shaders/BasicModel.bin"));
 	m_GridShader		= se::ShadeShared<se::Shader>(se::Shader::CreateFromFile("resources/shaders/Grid.bin"));
 
-
 	//Shader's layouts
 	m_BasicModelShader->SetLayout([](const void* entity, const se::Shader* shader) {
 		shader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, static_cast<const se::Transform3DComponent*>(entity)->Transform.GetModelMatrix());

@@ -4,6 +4,7 @@
 se::Shader::Shader():
     m_Program(NULL)
 {
+	m_ShaderLayout = [](const void*, const se::Shader*) { SE_DEBUG_PRINT("Shader layout isn't set!", se::SLCode::Warning); };
 }
 
 se::Shader* se::Shader::CreateFromFile(const std::string& filePath)

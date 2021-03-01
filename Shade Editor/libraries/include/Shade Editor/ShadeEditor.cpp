@@ -121,7 +121,7 @@ ShadeEditor::~ShadeEditor()
 
 void ShadeEditor::OnInit()
 {
-	se::AssetManager::ReadAssetDataList("map.bin");
+	//se::AssetManager::ReadAssetDataList("map.bin");
 	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
 	se::WindowManager::Create(se::Window());
 
