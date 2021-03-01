@@ -32,11 +32,15 @@
 		for(int i = 0; i < PONT_LIGHTS_COUNT; i++)
 		{
 			TotalColor += ProcessPointLight(TBNNormal, pointL[i], material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
+			if(i >= MAX_LIGHTNING_SOURCES - 1)
+				break;
 		}
-	    //vec4 m_TotalColor = ProcessGeneralLight(TBNNormal, generalL, material, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
-		//vec4 m_TotalColor = ProcessPointLight(TBNNormal, pointL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
-		//vec4 m_TotalColor = ProcessSpotLight(TBNNormal, spotL, material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
-		
+		for(int i = 0; i < SPOT_LIGHTS_COUNT; i++)
+		{
+			TotalColor+= ProcessSpotLight(TBNNormal, spotL[i], material, ModelPosition, ToCameraDirection, texture(DIFFUSE_TEXTURE, TextureCoords).rgba, texture(SPECULAR_TEXTURE, TextureCoords).rgba);
+			if(i >= MAX_LIGHTNING_SOURCES - 1)
+				break;
+		}
+
 		ColorAttachment1 = vec4(pow(TotalColor.rgb, vec3(0.70/1)), 1.0 ); // m_TotalColor.a for imgui alpha shoudl be as 1.0
-		ColorAttachment2 = 10;
 	}

@@ -186,7 +186,6 @@ vec3 CalculateTBNNormal(vec3 NormalMap, mat3 TBNMatrix)
 		}
 
 		ColorAttachment1 = vec4(pow(TotalColor.rgb, vec3(0.70/1)), 1.0 ); // m_TotalColor.a for imgui alpha shoudl be as 1.0
-		ColorAttachment2 = 10;
 	}
 #end
 #---

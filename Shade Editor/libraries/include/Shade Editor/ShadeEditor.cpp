@@ -14,102 +14,102 @@ ShadeEditor::ShadeEditor()
 	se::AssetData _Sprite;
 
 
-	_Container._Name = "";
+	_Container.ID = "";
 
-	_ModelsPacket._Name = "Models";
-	_ShaderPacket._Name = "Shaders";
+	_ModelsPacket.ID = "Models";
+	_ShaderPacket.ID = "Shaders";
 
-	_Model._Name = "Cube";
-	_Model._Path = "./resources/models/cube/";
+	_Model.ID = "Cube";
+	_Model.Path = "./resources/models/cube/";
 	Serrializer::Serrialize3DModel("./project/resources/models/cube/cube.obj", &_Model, true);
-	_ModelsPacket._Dependency.push_back(_Model);
+	_ModelsPacket.Childs.push_back(_Model);
 
 	_Model = se::AssetData{}; // Reset
-	_Model._Name = "Floor";
-	_Model._Path = "./resources/models/floor/";
+	_Model.ID = "Floor";
+	_Model.Path = "./resources/models/floor/";
 	Serrializer::Serrialize3DModel("./project/resources/models/floor/floor.obj", &_Model, true);
-	_ModelsPacket._Dependency.push_back(_Model);
+	_ModelsPacket.Childs.push_back(_Model);
 
 
-	_Model = se::AssetData{}; // Reset
-	_Model._Name = "SamuraiHelmet";
-	_Model._Path = "./resources/models/samurai-helmet/";
+	/*_Model = se::AssetData{}; // Reset
+	_Model.ID = "SamuraiHelmet";
+	_Model.Path = "./resources/models/samurai-helmet/";
 	Serrializer::Serrialize3DModel("./project/resources/models/samurai-helmet/samurai-helmet.obj", &_Model, true);
-	_ModelsPacket._Dependency.push_back(_Model);
+	_ModelsPacket.Childs.push_back(_Model);*/
 
-	_Model = se::AssetData{}; // Reset
-	_Model._Name = "Skull";
-	_Model._Path = "./resources/models/skull/";
+	/*_Model = se::AssetData{}; // Reset
+	_Model.ID = "Skull";
+	_Model.Path = "./resources/models/skull/";
 	Serrializer::Serrialize3DModel("./project/resources/models/skull/skull.obj", &_Model, true);
-	_ModelsPacket._Dependency.push_back(_Model);
+	_ModelsPacket.Childs.push_back(_Model);
 
 /////////////////////////////////////
-	_Shader._Name = "BasicModel";
-	_Shader._Path = "./resources/shaders/";
+	_Shader.ID = "BasicModel";
+	_Shader.Path = "./resources/shaders/";
 
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/BasicModelVertex.glsl","#vertex"},
 		{"./project/resources/shaders/BasicModelFragment.glsl","#fragment"}, }, &_Shader);
-	_ShaderPacket._Dependency.push_back(_Shader);
+	_ShaderPacket.Childs.push_back(_Shader);
 
 	_Shader = se::AssetData{}; // Reset
-	_Shader._Name = "Sprite";
-	_Shader._Path = "./resources/shaders/";
+	_Shader.ID = "Sprite";
+	_Shader.Path = "./resources/shaders/";
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/SpriteVertex.glsl","#vertex"},
 		{"./project/resources/shaders/SpriteFragment.glsl","#fragment"}, }, &_Shader);
-	_ShaderPacket._Dependency.push_back(_Shader);
+	_ShaderPacket.Childs.push_back(_Shader);
 
 	_Shader = se::AssetData{}; // Reset
-	_Shader._Name = "Grid";
-	_Shader._Path = "./resources/shaders/";
+	_Shader.ID = "Grid";
+	_Shader.Path = "./resources/shaders/";
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/GridVertex.glsl","#vertex"},
 		{"./project/resources/shaders/GridFragment.glsl","#fragment"}, }, &_Shader);
-	_ShaderPacket._Dependency.push_back(_Shader);
+	_ShaderPacket.Childs.push_back(_Shader);
 
 	_Shader = se::AssetData{}; // Reset
-	_Shader._Name = "Text";
-	_Shader._Path = "./resources/shaders/";
+	_Shader.ID = "Text";
+	_Shader.Path = "./resources/shaders/";
 	Serrializer::SerrializeShader({
 		{"./project/resources/shaders/TextVertex.glsl","#vertex"},
 		{"./project/resources/shaders/TextFragment.glsl","#fragment"}, }, &_Shader);
-	_ShaderPacket._Dependency.push_back(_Shader);
+	_ShaderPacket.Childs.push_back(_Shader);
 
 
 	
-	_SpritePacket._Name = "Sprites";
-	_SpritePacket._Path = "./resources/textures/";
+	_SpritePacket.ID = "Sprites";
+	_SpritePacket.Path = "./resources/textures/";
 	se::AssetData _Texture;
 
-	_Texture._Name = "PoeImage";
-	_Texture._Type = se::AssetDataType::Texture;
-	_Texture._Path = "./resources/textures/image.bin"; // if serialize like that need to specify full path and name
+	_Texture.ID = "PoeImage";
+	_Texture.Type = se::AssetData::AType::Texture;
+	_Texture.Path = "./resources/textures/image.bin"; // if serialize like that need to specify full path and name
 	Serrializer::SerrializeTexture("./project/resources/images/image.png", &_Texture);
 
-	_Sprite._Name = "PoeImage";
-	_Sprite._Type = se::AssetDataType::Sprite;
-	_Sprite._Dependency.push_back(_Texture);
-	_SpritePacket._Dependency.push_back(_Sprite);
+	_Sprite.ID = "PoeImage";
+	_Sprite.Type = se::AssetData::AType::Sprite;
+	_Sprite.Childs.push_back(_Texture);
+	_SpritePacket.Childs.push_back(_Sprite);
 
-	_Texture._Name = "Font";
-	_Texture._Type = se::AssetDataType::Texture;
-	_Texture._Path = "./resources/textures/font.bin"; // if serialize like that need to specify full path and name
-	Serrializer::SerrializeTexture("./project/resources/fonts/candara/candara.png", &_Texture);*/
+	_Texture.ID = "Font";
+	_Texture.Type = se::AssetData::AType::Texture;
+	_Texture.Path = "./resources/textures/font.bin"; // if serialize like that need to specify full path and name
+	Serrializer::SerrializeTexture("./project/resources/fonts/candara/candara.png", &_Texture);
 
-	/*se::AssetData _Font;
-	_Font._Name = "FontFile";
-	_Font._Type = se::AssetDataType::Font;
-	_Font._Path = "./resources/fonts/candara/candara.bin"; // if serialize like that need to specify full path and name
-	Serrializer::SerrializeFont("./project/resources/fonts/candara/candara.fnt", &_Font);*/
+	se::AssetData _Font;
+	_Font.ID = "FontFile";
+	_Font.Type = se::AssetData::AType::Font;
+	_Font.Path = "./resources/fonts/candara/candara.bin"; // if serialize like that need to specify full path and name
+	Serrializer::SerrializeFont("./project/resources/fonts/candara/candara.fnt", &_Font);
 
-	/*_Container._Dependency.push_back(_ShaderPacket);
-	_Container._Dependency.push_back(_ModelsPacket);
-	_Container._Dependency.push_back(_SpritePacket);
-	_Container._Dependency.push_back(_Texture);
-	_Container._Dependency.push_back(_Font);
+	_Container.Childs.push_back(_ShaderPacket);
+	_Container.Childs.push_back(_ModelsPacket);
+	_Container.Childs.push_back(_SpritePacket);
+	_Container.Childs.push_back(_Texture);
+	_Container.Childs.push_back(_Font);
 
-	se::AssetManager::WriteRoadMap(_Container);
+	se::AssetManager::WriteAssetDataList("map.bin", _Container);
 	exit(0);*/
 
 }
@@ -121,18 +121,18 @@ ShadeEditor::~ShadeEditor()
 
 void ShadeEditor::OnInit()
 {
-	se::AssetManager::ReadAssetDataList("project/AssetData.bin");
+	se::AssetManager::ReadAssetDataList("map.bin");
 	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
 	se::WindowManager::Create(se::Window());
 
-	auto scene = CreateScene<MainScene>("MainScene");
+	auto scene = CreateScene<MainScene>("Main");
 
 	for (auto const& [name, scene] : GetScenes())
 	{
 		InitScene(name);
 	}
 
-	SetCurentScene("MainScene");
+	SetCurentScene("Main");
 
 	auto grid = this->CreateEntity("Grid");
 	grid.AddComponent<se::Transform3DComponent>();

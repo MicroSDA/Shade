@@ -18,7 +18,6 @@ std::string se::FileDialog::OpenFile(const char* filter)
 	SDL_GetWindowWMInfo(se::WindowManager::GetWindow().Handler , &wmInfo);
 	HWND hwnd = wmInfo.info.win.window;
 
-
 	OPENFILENAMEA ofn;
 	CHAR szFile[260] = { 0 };
 	CHAR currentDir[256] = { 0 };
@@ -41,4 +40,31 @@ std::string se::FileDialog::OpenFile(const char* filter)
 	}
 
 	return path;
+}
+
+std::string se::FileDialog::SaveFile(const char* filter)
+{
+	SDL_SysWMinfo wmInfo;
+	SDL_VERSION(&wmInfo.version);
+	SDL_GetWindowWMInfo(se::WindowManager::GetWindow().Handler, &wmInfo);
+	HWND hwnd = wmInfo.info.win.window;
+
+	OPENFILENAMEA ofn;
+	CHAR szFile[260] = { 0 };
+	CHAR currentDir[256] = { 0 };
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = wmInfo.info.win.window;
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	if (GetCurrentDirectoryA(256, currentDir))
+		ofn.lpstrInitialDir = currentDir;
+	ofn.lpstrFilter = filter;
+	ofn.nFilterIndex = 1;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	if (GetSaveFileNameA(&ofn) == TRUE)
+		return  ofn.lpstrFile;
+	else
+		return std::string();
 }

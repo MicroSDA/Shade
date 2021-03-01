@@ -14,6 +14,7 @@ MainLayer::~MainLayer()
 
 void MainLayer::OnCreate()
 {
+
 }
 
 void MainLayer::OnInit()
@@ -39,7 +40,8 @@ void MainLayer::OnInit()
 
 void MainLayer::OnUpdate(const se::Timer& deltaTime)
 {
-	
+	//se::AssetManager::WriteAssetDataList("map.bin", se::AssetManager::GetAssetDataList());
+	//abort();
 }
 
 void MainLayer::OnRender()
@@ -47,25 +49,26 @@ void MainLayer::OnRender()
 	auto camera = GetScene()->GetActiveCamera();
 	if (camera != nullptr)
 	{
-		// Models 
 		m_BasicModelShader->Bind();
 		m_BasicModelShader->SendCamera(camera);
 
-		GetScene()->GetEntities().view<se::EnvironmentComponent>().each([&](auto entityId, se::EnvironmentComponent& env_comp) {
-			env_comp.Environment->Process(m_BasicModelShader.get());
+		GetScene()->GetEntities().view<se::EnvironmentComponent>().each([&](auto entityId, se::EnvironmentComponent& env_comp)
+			{
+				env_comp.Environment->Process(m_BasicModelShader.get());
 			});
-
+		// Models 
 		GetScene()->GetEntities().view<se::Model3DComponent, se::Transform3DComponent>().each([&](
 			auto entityId, se::Model3DComponent& model_comp, se::Transform3DComponent& transf_comp)
 			{
 				if (model_comp.Model3D != nullptr)
 				{
 					m_BasicModelShader->Process(&transf_comp);
-
+					// Meshes
 					model_comp.Model3D->GetEntities().view<se::MeshComponent, se::MaterialComponent>().each([&](
 						auto entityId, se::MeshComponent& mesh_comp, se::MaterialComponent& material_comp)
 						{
 							material_comp.Material.Process(m_BasicModelShader.get());
+							// Textures
 							mesh_comp.Mesh->GetEntities().view<se::TextureComponent>().each([](
 								auto entityId, se::TextureComponent& texture_comp)
 								{

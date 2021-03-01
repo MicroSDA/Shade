@@ -12,15 +12,6 @@ Entities:
       Constant: 1
       Linear: 0.0799999982
       Qaudratic: 0.00999999978
-  - Entity: 7
-    TagComponent:
-      Tag: Skull
-    Transform3DComponent:
-      Position: [-0.00764543377, 2.51426578, -3.2803843]
-      Rotation: [2.44378161, -0.0180442184, -3.11207557]
-      Scale: [0.999976754, 1, 1.00000143]
-    Model3DComponent:
-      Asset: Models.Skull
   - Entity: 6
     TagComponent:
       Tag: Cube

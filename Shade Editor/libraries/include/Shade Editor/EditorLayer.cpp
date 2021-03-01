@@ -131,11 +131,10 @@ void EditorLayer::ShowMainMenu(const bool& show)
 			
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New")) 
+				if (ImGui::MenuItem("New scene")) 
 				{
-					/*std::string file = se::FileDialog::OpenFile("");
-					if(!file.empty())
-						Editor::Import(Editor::ImportType::Model3D, file);*/
+					std::string file = se::FileDialog::SaveFile("*.shade\0");
+					std::cout << file << std::endl;
 				}
 
 				if (ImGui::MenuItem("Open scene"))
@@ -146,9 +145,6 @@ void EditorLayer::ShowMainMenu(const bool& show)
 						this->GetScene()->DestroyEntities();
 						if (se::Serializer::DeserializeScene(filePath, *this->GetScene()))
 							m_IsScenePlay = false;
-
-						//GetScene()->CreateEntity("Spot light").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::SpotLight()));
-						//GetScene()->CreateEntity("Spot light 2").AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(new se::SpotLight()));
 					}
 				}
 
@@ -292,12 +288,13 @@ void EditorLayer::ShowAssetList(const bool& show)
 	{
 		if (ImGui::Begin("Asset list"))
 		{
+			
 			auto list = se::AssetManager::GetAssetDataList();
+			
 			for (auto& node : list.Childs)
 			{
 				DrawAssetDataNode(node);
 			}
-			
 
 		} ImGui::End();
 	}
@@ -437,7 +434,11 @@ void EditorLayer::DrawAssetDataNode(se::AssetData& data)
 			ImGui::TextWrapped("Name: %s", data.ID.c_str());
 		if (!data.Path.empty())
 			ImGui::TextWrapped("Path: %s", data.Path.c_str());
-		
+
+		if (ImGui::Button("Set"))
+		{
+			data.Type = se::AssetData::AType::Texture;
+		}
 
 		for (auto& node : data.Childs)
 		{

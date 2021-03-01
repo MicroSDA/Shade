@@ -120,7 +120,7 @@ void se::AssetManager::WriteAssetDataListRecursively(std::ofstream& file, const 
 	se::Binarizer::WriteNext<se::AssetData::ASubType>(file, asset.SubType);
 	se::Binarizer::WriteNext<std::string>(file, asset.Path);
 	se::Binarizer::WriteNext<uint32_t>(file, asset.Offset);
-	se::Binarizer::WriteNext<uint32_t>(file, (uint32_t)asset.Childs.size());
+	se::Binarizer::WriteNext<uint32_t>(file, static_cast<uint32_t>(asset.Childs.size()));
 
 	if (asset.Childs.size())
 	{
@@ -141,7 +141,8 @@ void se::AssetManager::ReadAssetsData(std::ifstream& file, se::AssetData& asset)
 	asset.SubType = se::Binarizer::ReadNext<se::AssetData::ASubType>(file);
 	asset.Path = se::Binarizer::ReadNext<std::string>(file);
 	asset.Path.pop_back();// Remove \0
-	asset.Offset = se::Binarizer::ReadNext<long long>(file);
+	asset.Offset = se::Binarizer::ReadNext<uint32_t>(file);
+
 	uint32_t childsCount = se::Binarizer::ReadNext<uint32_t>(file);
 
 	if (childsCount)
