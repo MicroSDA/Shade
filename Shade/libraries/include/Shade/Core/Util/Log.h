@@ -16,7 +16,8 @@ namespace se
 	class SE_API Log
 	{
 	public:
-		static void Print(const char* message, const se::SLCode& code);
+		static void Print(const char* message,        const se::SLCode& code);
+		static void Print(const std::string& message, const se::SLCode& code);
 	private:
 		Log(const Log&) = delete;
 		Log& operator= (const Log&) = delete;

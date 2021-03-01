@@ -6,6 +6,58 @@ se::Shader::Shader():
 {
 }
 
+se::Shader* se::Shader::CreateFromFile(const std::string& filePath)
+{
+	std::ifstream _File;
+	_File.open(filePath, std::ifstream::in);
+	if (_File.is_open())
+	{
+		se::Shader* pShader = new se::Shader;
+
+		std::string line;
+		while (_File.good())
+		{
+			std::getline(_File, line);
+			if (line == "#vertex")
+				pShader->m_Shaders.push_back(pShader->CreateShader(pShader->LoadShader(_File), GL_VERTEX_SHADER));
+
+			if (line == "#fragment")
+				pShader->m_Shaders.push_back(pShader->CreateShader(pShader->LoadShader(_File), GL_FRAGMENT_SHADER));
+
+			if (line == "#geometry")
+				pShader->m_Shaders.push_back(pShader->CreateShader(pShader->LoadShader(_File), GL_GEOMETRY_SHADER));
+
+			if (line == "#---")
+				break;
+		}
+
+		_File.close();
+		if (pShader->m_Shaders.size() == 0)
+		{
+			delete pShader;
+			SE_DEBUG_PRINT("Shader count 0 in '" + filePath + "'", se::SLCode::Warning);
+			return nullptr;
+		}
+
+		pShader->m_Program = glCreateProgram();
+		for (unsigned int i = 0; i < pShader->m_Shaders.size(); i++) {
+			glAttachShader(pShader->m_Program, pShader->m_Shaders[i]);
+		}
+		glLinkProgram(pShader->m_Program);
+		pShader->CheckShaderError(pShader->m_Program, GL_LINK_STATUS, true, "Error: Shader program linkin faild: ");
+		glValidateProgram(pShader->m_Program);
+		pShader->CheckShaderError(pShader->m_Program, GL_VALIDATE_STATUS, true, "Error: Shader program validate faild: ");
+
+		return pShader;
+	}
+	else
+	{
+		SE_DEBUG_PRINT("Failed to opne shader file '" + filePath + "'", se::SLCode::Warning);
+		return nullptr;
+	}
+
+}
+
 se::Shader::~Shader()
 {
 	// Delete program and shader
@@ -104,8 +156,7 @@ void se::Shader::CheckShaderError(GLuint shader, GLuint flag, bool isProgram, co
 			glGetShaderInfoLog(shader, sizeof(error), NULL, error);
 		}
 
-		std::string _Msg(errorMessage + ": '" + error + "'");
-		SE_DEBUG_PRINT(_Msg.c_str(), se::SLCode::Error);
+		SE_DEBUG_PRINT(errorMessage + ": '" + error + "'", se::SLCode::Error);
 	}
 }
 
@@ -139,57 +190,6 @@ inline GLint se::Shader::GetAttribLocation(const std::string& name) const
 	
 }
 
-void se::Shader::LoadFromAssetData(const std::string& assetId, se::AssetData& data)
-{
-	m_AssetId   = assetId;
-	m_AssetData = &data;
-
-	std::ifstream _File;
-	_File.open(m_AssetData->Path, std::ifstream::in);
-	if (_File.is_open())
-	{
-		_File.seekg(m_AssetData->Offset);
-		std::string line;
-		while (_File.good())
-		{
-			std::getline(_File, line);
-			if (line == "#vertex")
-				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_VERTEX_SHADER));
-
-			if (line == "#fragment")
-				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_FRAGMENT_SHADER));
-
-			if (line == "#geometry")
-				m_Shaders.push_back(CreateShader(LoadShader(_File), GL_GEOMETRY_SHADER));
-
-			if (line == "#---")
-				break;
-		}
-
-		_File.close();
-		if (m_Shaders.size() == 0)
-			throw se::ShadeException(std::string("Shaders count 0 in '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
-
-		m_Program = glCreateProgram();
-		for (unsigned int i = 0; i < m_Shaders.size(); i++) {
-			glAttachShader(m_Program, m_Shaders[i]);
-		}
-		glLinkProgram(m_Program);
-		CheckShaderError(m_Program, GL_LINK_STATUS, true, "Error: Shader program linkin faild: ");
-		glValidateProgram(m_Program);
-		CheckShaderError(m_Program, GL_VALIDATE_STATUS, true, "Error: Shader program validate faild: ");
-	}
-	else
-	{
-		throw se::ShadeException(std::string("Failed to open shader file '" + m_AssetData->Path + "' !").c_str(), se::SECode::Warning);
-	}
-
-}
-
-void se::Shader::Init()
-{
-}
-
 void se::Shader::SetLayout(void(*layout)(const void*, const se::Shader*))
 {
 	m_ShaderLayout = layout;
@@ -205,64 +205,4 @@ void se::Shader::SendCamera(const se::Camera* camera)
 	SendUniform3Float("CameraPosition",                   camera->GetPosition());
 	SendUniformMatrix4Float("ViewMatrix", GL_FALSE,       camera->GetView());
 	SendUniformMatrix4Float("ProjectionMatrix", GL_FALSE, camera->GetProjection());
-}
-
-inline void se::Shader::SendUniformMatrix3Float(const std::string& name, const GLboolean& isTransopnse, const glm::fmat3& value) const
-{
-	glUniformMatrix3fv(GetUniformLocation(name), 1, isTransopnse, glm::value_ptr(value));
-}
-
-inline void se::Shader::SendUniformMatrix4Float(const std::string& name, const GLboolean& isTransopnse, const glm::fmat4& value) const
-{
-	glUniformMatrix4fv(GetUniformLocation(name), 1, isTransopnse, glm::value_ptr(value));
-}
-
-inline void se::Shader::SendUniform1Int(const std::string& name, const GLint& value) const
-{
-	glUniform1i(GetUniformLocation(name), value);
-}
-
-inline void se::Shader::SendUniform2Int(const std::string& name, const glm::ivec2& value) const
-{
-	glUniform2i(GetUniformLocation(name), value.x, value.y);
-}
-
-inline void se::Shader::SendUniform3Int(const std::string& name, const glm::ivec3& value) const
-{
-	glUniform3i(GetUniformLocation(name), value.x, value.y, value.z);
-}
-
-inline void se::Shader::SendUniform4Int(const std::string& name, const glm::ivec4& value) const
-{
-	glUniform4i(GetUniformLocation(name), value.x, value.y, value.z, value.a);
-}
-
-inline void se::Shader::SendUniform1Float(const std::string& name, const GLfloat& value) const
-{
-	glUniform1f(GetUniformLocation(name), value);
-}
-
-inline void se::Shader::SendUniform2Float(const std::string& name, const glm::fvec2& value) const
-{
-	glUniform2f(GetUniformLocation(name), value.x, value.y);
-}
-
-inline void se::Shader::SendUniform3Float(const std::string& name, const glm::fvec3& value) const
-{
-	glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
-}
-
-inline void se::Shader::SendUniform4Float(const std::string& name, const glm::fvec4& value) const
-{
-	glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.a);
-}
-
-inline void se::Shader::SendUniformBool(const std::string& name, const bool& value) const
-{
-	glUniform1i(GetUniformLocation(name), value);
-}
-
-inline void se::Shader::SetAttribLocation(const std::string& name) const
-{
-	glBindAttribLocation(m_Program,GetAttribLocation(name), name.c_str());
 }

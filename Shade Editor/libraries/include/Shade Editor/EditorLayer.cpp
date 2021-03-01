@@ -63,7 +63,7 @@ void EditorLayer::OnUpdate(const se::Timer& deltaTime)
 		{
 			GetScene()->SetActiveCamera(cameras.get<se::CameraComponent>(camera).Camera.get());
 			cameras.get<se::NativeScriptComponent>(camera).Instance->SetUpdate(true);
-		}	
+		}
 
 		m_IsProjectBar = true;
 	}
@@ -128,10 +128,10 @@ void EditorLayer::ShowMainMenu(const bool& show)
 	{
 		if (ImGui::BeginMenuBar())
 		{
-			
+
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New scene")) 
+				if (ImGui::MenuItem("New scene"))
 				{
 					std::string file = se::FileDialog::SaveFile("*.shade\0");
 					std::cout << file << std::endl;
@@ -148,8 +148,8 @@ void EditorLayer::ShowMainMenu(const bool& show)
 					}
 				}
 
-				if (ImGui::MenuItem("Save scene")) 
-				{ 
+				if (ImGui::MenuItem("Save scene"))
+				{
 					std::string filePath = se::FileDialog::OpenFile("Shade Scene (*.sahde)\0*.shade\0");
 					if (filePath.size())
 					{
@@ -157,11 +157,15 @@ void EditorLayer::ShowMainMenu(const bool& show)
 					}
 				}
 
-				if (ImGui::MenuItem("Import"))
+				if (ImGui::BeginMenu("Import"))
 				{
-					std::string file = se::FileDialog::OpenFile("3D model");
-					if (!file.empty())
-						Editor::Import(Editor::ImportType::Model3D, file);
+					if (ImGui::MenuItem("Model3d"))
+					{
+						std::string file = se::FileDialog::OpenFile("3D model");
+						if (!file.empty())
+							Editor::Import(Editor::ImportType::Model3D, file);
+					}
+					ImGui::EndMenu();
 				}
 
 				ImGui::Separator();
@@ -192,18 +196,19 @@ void EditorLayer::ShowMainMenu(const bool& show)
 					m_IsScenePlay = false;
 				}
 			}
-			
+
 		} ImGui::EndMenuBar();
 	}
 }
 
 void EditorLayer::ShowProjectBar(const bool& show)
 {
+
 	if (show)
 	{
 		if (ImGui::Begin("Project"))
 		{
-			if (ImGui::TreeNode(std:: string("##" + GetScene()->GetName()).c_str(), std::string("Scene: " + GetScene()->GetName()).c_str()))
+			if (ImGui::TreeNode(std::string("##" + GetScene()->GetName()).c_str(), std::string("Scene: " + GetScene()->GetName()).c_str()))
 			{
 				DrawEntities(m_SelectedEntity, this->GetScene());
 				DrawInspector(m_SelectedEntity);
@@ -243,9 +248,9 @@ void EditorLayer::ShowSceneWindow(const bool& show)
 					viewPortSize.y = ImGui::GetContentRegionAvail().y;
 
 					//Create window resize event and grab it in MainLayer
-					 se::Event event;
-					 event.SetType(se::Event::Type::Window);
-					 event.SetWindow(se::Event::Window::Resized);
+					se::Event event;
+					event.SetType(se::Event::Type::Window);
+					event.SetWindow(se::Event::Window::Resized);
 					se::EventManager::PusEvent(event);
 				}
 
@@ -288,9 +293,9 @@ void EditorLayer::ShowAssetList(const bool& show)
 	{
 		if (ImGui::Begin("Asset list"))
 		{
-			
+
 			auto list = se::AssetManager::GetAssetDataList();
-			
+
 			for (auto& node : list.Childs)
 			{
 				DrawAssetDataNode(node);
@@ -328,7 +333,7 @@ void EditorLayer::DrawEntities(se::Entity& selectedEntity, se::EntitiesDocker* d
 		}
 		ImGui::TreePop();
 
-	
+
 	}
 }
 
@@ -360,7 +365,7 @@ void EditorLayer::DrawEntity(se::Entity& entity, se::Entity& selectedEntity, con
 			AddModel3DComponentCallback(componenty);
 			});
 		AddComponent<se::CameraComponent>("Camera", entity, [&](se::CameraComponent& component) {
-				AddCameraComponentCallback(component);
+			AddCameraComponentCallback(component);
 			});
 		AddComponent<se::EnvironmentComponent>("Dirrect light", entity, [&](se::EnvironmentComponent& component) {
 			AddLightComponentCallback<se::GeneralLight>(component);
@@ -490,9 +495,9 @@ void EditorLayer::Model3DCallback(se::Entity& entity)
 	{
 		ImGui::Text("Asset id: %s");
 		ImGui::SameLine();
-		if (ImGui::Button("Set", ImVec2{ImGui::GetContentRegionAvailWidth(), 0} ))
+		if (ImGui::Button("Set", ImVec2{ ImGui::GetContentRegionAvailWidth(), 0 }))
 			ImGui::OpenPopup("Asset list##model3d");
-		
+
 	}
 
 	AddModle3DModal("Asset list##model3d", entity);
@@ -558,7 +563,7 @@ void EditorLayer::MaterialCallback(se::Entity& entity)
 						});
 				});
 		});
-	
+
 }
 
 void EditorLayer::EnvironmentCallback(se::Entity& entity)
@@ -620,11 +625,11 @@ void EditorLayer::CameraCallback(se::Entity& entity)
 	DrawFloatVec3("Position", glm::value_ptr(camera->GetPosition()));
 	DrawFloatVec3("Dirrection", glm::value_ptr(camera->GetForwardDirrection()), -1.0, 1, 0);
 
-	if(DrawFloat("Near", &camera->GetNear(), 0.1f))
+	if (DrawFloat("Near", &camera->GetNear(), 0.1f))
 		camera->Resize();
-	if(DrawFloat("Far", &camera->GetFar(), 0.1f)) 
+	if (DrawFloat("Far", &camera->GetFar(), 0.1f))
 		camera->Resize();
-	if(DrawFloat("Fov", &camera->GetFov(), 45.0))
+	if (DrawFloat("Fov", &camera->GetFov(), 45.0))
 		camera->Resize();
 
 	/*if (entity.HasComponent<se::NativeScriptComponent>())
@@ -659,7 +664,7 @@ void EditorLayer::CameraCallback(se::Entity& entity)
 	}*/
 
 
-	
+
 }
 
 void EditorLayer::AddTransform3DComponentCallback(se::Transform3DComponent& component)
@@ -671,14 +676,14 @@ void EditorLayer::AddCameraComponentCallback(se::CameraComponent& component)
 {
 	auto pCamera = new se::Camera();
 	auto aspect = m_MainSceneVeiwPort.GetComponent<glm::vec2>();
-	pCamera->Resize( aspect.x / aspect.y);
+	pCamera->Resize(aspect.x / aspect.y);
 	component.IsPrimary = true;
 	component.Camera = se::ShadeShared<se::Camera>(pCamera);
 }
 
 void EditorLayer::AddModel3DComponentCallback(se::Model3DComponent& component)
 {
-	
+
 }
 
 bool EditorLayer::DrawColor3(const char* lable, float* data, const float& cw1, const float& cw2)
@@ -789,7 +794,7 @@ void EditorLayer::ShowEnvironmentImGuizmo(se::Entity& entity)
 		auto pLight = static_cast<se::PointLight*>(environment);
 
 		glm::mat4 transform = glm::translate(pLight->GetPosition());
-		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera(),m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		if (this->ShowImGuizmo(transform, GetScene()->GetActiveCamera(), m_IsImGuizmoShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
 		{
 			glm::vec3 position, rotation, scale;
 			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(transform), glm::value_ptr(position), glm::value_ptr(rotation), glm::value_ptr(scale));
@@ -865,11 +870,11 @@ void EditorLayer::AddModle3DModal(const char* modalName, se::Entity& entity)
 						entity.GetComponent<se::Model3DComponent>().Model3D = se::AssetManager::Hold<se::Model3D>("Models." + model_asset.ID);
 						ImGui::CloseCurrentPopup();
 					}
-					
+
 				}
 			}
 		}
-		
+
 		ImGui::Separator();
 		if (ImGui::Button("Close"))
 			ImGui::CloseCurrentPopup();

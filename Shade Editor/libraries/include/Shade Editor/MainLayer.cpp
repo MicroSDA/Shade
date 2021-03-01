@@ -25,8 +25,8 @@ void MainLayer::OnInit()
 	se::FramebufferSpec spec(100, 100, { se::FrameBufferTextureFormat::RGBA8, se::FrameBufferTextureFormat::Depth });
 	GetScene()->CreateFrameBuffer("MainLayerFB", spec);
 
-	m_BasicModelShader	= se::AssetManager::Hold<se::Shader>("Shaders.BasicModel", se::Asset::Flag::KeepAlive);
-	m_GridShader		= se::AssetManager::Hold<se::Shader>("Shaders.Grid", se::Asset::Flag::KeepAlive);
+	m_BasicModelShader  = se::ShadeShared<se::Shader>(se::Shader::CreateFromFile("resources/shaders/BasicModel.bin"));
+	m_GridShader		= se::ShadeShared<se::Shader>(se::Shader::CreateFromFile("resources/shaders/Grid.bin"));
 
 
 	//Shader's layouts
@@ -40,8 +40,6 @@ void MainLayer::OnInit()
 
 void MainLayer::OnUpdate(const se::Timer& deltaTime)
 {
-	//se::AssetManager::WriteAssetDataList("map.bin", se::AssetManager::GetAssetDataList());
-	//abort();
 }
 
 void MainLayer::OnRender()

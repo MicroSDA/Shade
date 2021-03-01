@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "Log.h"
 
+void se::Log::Print(const std::string& message, const se::SLCode& code)
+{
+	GetInstance()._Print(message.c_str(), code);
+}
+
 void se::Log::Print(const char* message, const se::SLCode& code)
 {
 	GetInstance()._Print(message, code);
