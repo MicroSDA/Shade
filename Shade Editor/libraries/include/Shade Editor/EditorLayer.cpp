@@ -27,46 +27,39 @@ void EditorLayer::OnInit()
 
 void EditorLayer::OnUpdate(const se::Timer& deltaTime)
 {
-	// Changing scene veiw port
-	auto entts = se::Application::GetApplication().GetEntities().view<glm::vec2, se::TagComponent>();
-	for (auto& ent : entts)
-	{
-		se::Entity entity{ ent , &se::Application::GetApplication() };
-
-		if (entity.IsValid())
+	se::Application::GetApplication().GetEntities().view<glm::vec2, se::TagComponent>().each([&](
+		auto entityId, glm::vec2&, se::TagComponent& tag)
 		{
-			if (entity.GetComponent<se::TagComponent>().Tag == "SceneViewPort")
+			se::Entity entity{ entityId, &se::Application::GetApplication() };
+
+			if (entity.IsValid())
 			{
-				m_MainSceneVeiwPort = entity;
+				if (tag.Tag == "SceneViewPort")
+					m_MainSceneVeiwPort = entity;
+				else if (tag.Tag == "ModelPreveiwViewPort")
+					m_ModelPreveiwVeiwPort = entity;
 			}
-		}
-	}
 
-	auto cameras = se::Application::GetApplication().GetEntities().view<se::CameraComponent, se::NativeScriptComponent>();
+		});
 
-	if (m_IsScenePlay)
-	{
-		GetScene()->SetUpdate(true);
-
-		for (auto& camera : cameras)
+	se::Application::GetApplication().GetEntities().view<se::CameraComponent, se::NativeScriptComponent>().each([&](
+		auto entityId, se::CameraComponent& camera, se::NativeScriptComponent& script)
 		{
-			cameras.get<se::NativeScriptComponent>(camera).Instance->SetUpdate(false);
-		}
+			if (m_IsScenePlay)
+			{
+				GetScene()->SetUpdate(true);
+				m_IsProjectBar = false;
+				//script.Instance->SetUpdate(false);
+			}
+			else
+			{
+				GetScene()->SetUpdate(false);
+				m_IsProjectBar = true;
+				//script.Instance->SetUpdate(true);
+				//GetScene()->SetActiveCamera(camera.Camera.get());
+			}
 
-		m_IsProjectBar = false;
-	}
-	else
-	{
-		GetScene()->SetUpdate(false);
-
-		for (auto& camera : cameras)
-		{
-			GetScene()->SetActiveCamera(cameras.get<se::CameraComponent>(camera).Camera.get());
-			cameras.get<se::NativeScriptComponent>(camera).Instance->SetUpdate(true);
-		}
-
-		m_IsProjectBar = true;
-	}
+		});
 }
 
 void EditorLayer::OnRender()
@@ -86,6 +79,7 @@ void EditorLayer::OnRender()
 		this->ShowMainMenu(m_IsMainMenu);
 		this->ShowProjectBar(m_IsProjectBar);
 		this->ShowSceneWindow(m_IsSceneWindow);
+		this->ShowModel3DPreview(m_IsModelPreveiw);
 	} ImGui::End(); // Begin("DockSpace")*/
 }
 
@@ -163,13 +157,18 @@ void EditorLayer::ShowMainMenu(const bool& show)
 					{
 						std::string file = se::FileDialog::OpenFile("3D model");
 						if (!file.empty())
-							Editor::Import(Editor::ImportType::Model3D, file);
+						{
+							se::Entity model = Editor::Import(Editor::ImportType::Model3D, file);
+							if (model.IsValid())
+								m_SelectedEntity = model;
+						}
+							
 					}
 					ImGui::EndMenu();
 				}
 				if (ImGui::BeginMenu("Assets"))
 				{
-					if (ImGui::MenuItem("New list")) 
+					if (ImGui::MenuItem("New"))
 					{
 						std::string file = se::FileDialog::SaveFile("*.bin");
 						if (!file.empty())
@@ -177,14 +176,14 @@ void EditorLayer::ShowMainMenu(const bool& show)
 							se::AssetData root;
 							se::AssetData models;
 							models.ID = "Models";
-							models.Type = se::AssetData::AType::Container;
+							models.Type = se::AssetData::AType::Models3D;
 							root.Childs.push_back(models);
 
 							se::AssetManager::WriteAssetDataList(file, root);
 							se::AssetManager::ReadAssetDataList(file);
 						}
 					}
-					if (ImGui::MenuItem("Open list")) 
+					if (ImGui::MenuItem("Open"))
 					{
 						std::string file = se::FileDialog::OpenFile("*.bin");
 						if (!file.empty())
@@ -253,14 +252,20 @@ void EditorLayer::ShowSceneWindow(const bool& show)
 	{
 		if (ImGui::Begin("Scene"))
 		{
-			auto entities = se::Application::GetApplication().GetEntities().view<se::CameraComponent, se::NativeScriptComponent>();
-			for (auto& entity : entities)
-			{
-				if (ImGui::IsWindowFocused() && !m_IsScenePlay)
-					entities.get<se::NativeScriptComponent>(entity).Instance->SetUpdate(true);
-				else
-					entities.get<se::NativeScriptComponent>(entity).Instance->SetUpdate(false);
-			}
+			se::Application::GetApplication().GetEntities().view<se::TagComponent, se::CameraComponent, se::NativeScriptComponent>().each([&](
+				auto entityId, se::TagComponent& tag, se::CameraComponent& camera, se::NativeScriptComponent& script)
+				{
+					if (tag.Tag == "EditorCamera")
+					{
+						if (ImGui::IsWindowFocused() && !m_IsScenePlay)
+						{
+							GetScene()->SetActiveCamera(camera.Camera.get());
+							script.Instance->SetUpdate(true);
+						}
+						else
+							script.Instance->SetUpdate(false);
+					}
+				});
 
 			auto frameBuffer = GetScene()->GetFrameBuffer("MainLayerFB");
 			if (frameBuffer != nullptr)
@@ -273,11 +278,14 @@ void EditorLayer::ShowSceneWindow(const bool& show)
 					viewPortSize.x = ImGui::GetContentRegionAvail().x;
 					viewPortSize.y = ImGui::GetContentRegionAvail().y;
 
-					//Create window resize event and grab it in MainLayer
+					/*//Create window resize event and grab it in MainLayer
 					se::Event event;
 					event.SetType(se::Event::Type::Window);
 					event.SetWindow(se::Event::Window::Resized);
-					se::EventManager::PusEvent(event);
+					se::EventManager::PusEvent(event);*/
+
+					GetScene()->GetActiveCamera()->Resize(viewPortSize.x / viewPortSize.y);
+					frameBuffer->Resize(viewPortSize.x, viewPortSize.y);
 				}
 
 				ImTextureID tid = reinterpret_cast<void*>(frameBuffer->GetTextureAttachment());
@@ -308,6 +316,52 @@ void EditorLayer::ShowSceneWindow(const bool& show)
 
 				this->ShowFPSOverlay(ImGui::GetWindowViewport(), m_IsFpsShow, ImGui::GetWindowPos().x, ImGui::GetWindowPos().y);
 			}
+
+		} ImGui::End();
+	}
+}
+
+void EditorLayer::ShowModel3DPreview(const bool& show)
+{
+	if (show)
+	{
+		if (ImGui::Begin("Model preveiw"))
+		{
+			se::Application::GetApplication().GetEntities().view<se::TagComponent, se::CameraComponent, se::NativeScriptComponent>().each([&](
+				auto entityId, se::TagComponent& tag, se::CameraComponent& camera, se::NativeScriptComponent& script)
+				{
+					if (tag.Tag == "ModelCamera")
+					{
+						if (ImGui::IsWindowFocused() && !m_IsScenePlay)
+						{
+							GetScene()->SetActiveCamera(camera.Camera.get());
+							script.Instance->SetUpdate(true);
+						}
+						else
+							script.Instance->SetUpdate(false);
+					}
+				});
+
+			auto& viewPortSize = m_ModelPreveiwVeiwPort.GetComponent<glm::vec2>();
+
+			if (viewPortSize.x != ImGui::GetContentRegionAvail().x
+				|| viewPortSize.y != ImGui::GetContentRegionAvail().y)
+			{
+				viewPortSize.x = ImGui::GetContentRegionAvail().x;
+				viewPortSize.y = ImGui::GetContentRegionAvail().y;
+
+				//Create window resize event and grab it in MainLayer
+				/*se::Event event;
+				event.SetType(se::Event::Type::Window);
+				event.SetWindow(se::Event::Window::Resized);
+				se::EventManager::PusEvent(event);*/
+				GetScene()->GetActiveCamera()->Resize(viewPortSize.x / viewPortSize.y);
+				GetScene()->GetFrameBuffer("ModelLayerFB")->Resize(viewPortSize.x, viewPortSize.y);
+			}
+
+			ImTextureID tid = reinterpret_cast<void*>(GetScene()->GetFrameBuffer("ModelLayerFB")->GetTextureAttachment());
+			ImGui::Image(tid, ImVec2{ viewPortSize.x, viewPortSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
 
 		} ImGui::End();
 	}

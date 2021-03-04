@@ -21,3 +21,9 @@ void AssimpTexture::LoadFromFile(const char* filePath)
 		throw se::ShadeException(std::string("Failed to open source image AssimTexture' !").c_str(), se::SECode::Warning);
 	}
 }
+
+void AssimpTexture::SetImportedAssetData(const se::AssetData* data)
+{
+	m_ImportedAssetData = *data;
+	SetAssetData(m_ImportedAssetData);
+}

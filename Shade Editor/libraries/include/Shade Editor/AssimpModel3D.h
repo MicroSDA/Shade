@@ -18,7 +18,9 @@ public:
 	AssimpModel3D() {};
 	virtual ~AssimpModel3D() {};
 	bool LoadFromFile(const std::string& filePath);
+	const se::AssetData* GetImportedAssetData() const;
 private:
 	void ProcessModel3DNode(const char* filename, const aiNode* node, const aiScene* scene);
 	void ProcessModel3DMesh(const char* filename, aiMesh* mesh, const aiScene* scene);
+	se::AssetData m_ImportedAssetData;
 };

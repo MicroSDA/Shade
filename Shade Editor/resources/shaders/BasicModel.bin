@@ -143,9 +143,9 @@ vec3 CalculateTBNNormal(vec3 NormalMap, mat3 TBNMatrix)
    return m_TBNNormal;
 }
 
-	layout(binding = 0) uniform sampler2D DIFFUSE_TEXTURE;
-	layout(binding = 1) uniform sampler2D SPECULAR_TEXTURE;
-	layout(binding = 2) uniform sampler2D NORMAL_MAP;
+	uniform sampler2D DIFFUSE_TEXTURE;
+	uniform sampler2D SPECULAR_TEXTURE;
+	uniform sampler2D NORMAL_MAP;
 	
 	layout (location = 0) in vec2 TextureCoords;
 	layout (location = 1) in vec3 Normals;
@@ -168,6 +168,12 @@ vec3 CalculateTBNNormal(vec3 NormalMap, mat3 TBNMatrix)
 	in mat3 out_TBN;
 	void main()
 	{
+		//Alpha cutting
+		if(texture(DIFFUSE_TEXTURE, TextureCoords).a <= 0.5)
+				discard;
+		if(texture(SPECULAR_TEXTURE, TextureCoords).a <= 0.5)
+				discard;
+			
 	    vec3 TBNNormal = CalculateTBNNormal(texture(NORMAL_MAP, TextureCoords).rgb, out_TBN);
 		vec3 ToCameraDirection = normalize(CameraPosition - ModelPosition);
 
@@ -185,7 +191,7 @@ vec3 CalculateTBNNormal(vec3 NormalMap, mat3 TBNMatrix)
 				break;
 		}
 
-		ColorAttachment1 = vec4(pow(TotalColor.rgb, vec3(0.70/1)), 1.0 ); // m_TotalColor.a for imgui alpha shoudl be as 1.0
+		ColorAttachment1 = vec4(pow(TotalColor.rgb, vec3(0.70/1)),TotalColor.a ); // m_TotalColor.a for imgui alpha shoudl be as 1.0
 	}
 #end
 #---

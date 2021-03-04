@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Shade/Core/Engine/Entity.h"
 
 class Editor
 {
@@ -8,8 +9,8 @@ public:
 	{
 		Model3D
 	};
-	static bool Import(const ImportType& type, const std::string& filePath);
+	static se::Entity Import(const ImportType& type, const std::string& filePath);
 private:
-	static bool ImportModel3D(const std::string& filePath);
+	static se::Entity ImportModel3D(const std::string& filePath);
 };
 

@@ -13,13 +13,12 @@ namespace se
 		{
 			Container,
 			Packet,
-			Shader,
+			Models3D,
 			Model3D,
 			Mesh,
+			Textures,
 			Texture,
 			Material,
-			Sprite,
-			Font
 
 		}		Type    = se::AssetData::AType::Container;	// Type
 		enum class ASubType : uint32_t

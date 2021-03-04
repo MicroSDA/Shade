@@ -2,7 +2,7 @@
 #include "Shade/Core/CoreAPI.h"
 #include "Shade/Core/Engine/Asset.h"
 #include "Vendors/glad/glad.h"
-
+#include "Shade/Core/Engine/Shader.h"
 
 namespace se
 {
@@ -20,12 +20,7 @@ namespace se
 	public:
 		Texture();
 		virtual ~Texture();
-		const void Bind(const std::uint32_t& id) const;
-		static const void BindTest(const uint32_t& id)
-		{
-			glActiveTexture(GL_TEXTURE0 + static_cast<GLuint>(0));
-			glBindTexture(GL_TEXTURE_2D, id);
-		}
+		const void Bind(const se::Shader* shader, const std::uint32_t& id) const;
 		static void UnBind(const uint32_t& id);
 		const GLuint& GetTextureRenderId() const;
 		// Унаследовано через Asset

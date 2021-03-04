@@ -1,8 +1,9 @@
 #pragma once
 #include <Shade/Core/Engine/Scene.h>
+
 #include "MainLayer.h"
 #include "EditorLayer.h"
-#include "Shade/Core/Engine/Text.h"
+#include "ModelPreviewLayer.h"
 
 class MainScene : public se::Scene
 {

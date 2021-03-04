@@ -17,15 +17,18 @@ bool AssimpModel3D::LoadFromFile(const std::string& filePath)
 	}
 	else
 	{
-		//se::AssetPointer<AssimpModel3D> model3D(new AssimpModel3D());
-
-		//se::Entity model3DEntity = se::Application::GetApplication().GetCurrentScene()->CreateEntity();
-
-		//model3DEntity.AddComponent<se::Model3DComponent>(model3D);
+		m_ImportedAssetData.ID   = se::Util::GetNameFromPath(filePath);
+		m_ImportedAssetData.Path = filePath;
+		m_ImportedAssetData.Type = se::AssetData::AType::Model3D;
 
 		ProcessModel3DNode(filePath.c_str(), m_pScene->mRootNode, m_pScene);
 		return true;
 	}
+}
+
+const se::AssetData* AssimpModel3D::GetImportedAssetData() const
+{
+	return m_AssetData;
 }
 
 void AssimpModel3D::ProcessModel3DNode(const char* filePath ,const aiNode* node, const aiScene* scene)
@@ -113,7 +116,7 @@ void AssimpModel3D::ProcessModel3DMesh(const char* filePath, aiMesh* mesh, const
 			AssimpTexture* pTexture = new AssimpTexture();
 			std::string _path = se::Util::GetPath(filePath) + "/" + path.C_Str();
 
-			pTexture->SetAssetData(_Image);
+			pTexture->SetImportedAssetData(&_Image);
 			pTexture->LoadFromFile(_path.c_str());
 			pTexture->Init();
 			_TextureEntity.AddComponent<se::TextureComponent>(se::AssetPointer<se::Texture>(static_cast<se::Texture*>(pTexture)));
@@ -131,7 +134,7 @@ void AssimpModel3D::ProcessModel3DMesh(const char* filePath, aiMesh* mesh, const
 			AssimpTexture* pTexture = new AssimpTexture();
 			std::string _path = se::Util::GetPath(filePath) + "/" + path.C_Str();
 		
-			pTexture->SetAssetData(_Image);
+			pTexture->SetImportedAssetData(&_Image);
 			pTexture->LoadFromFile(_path.c_str());
 			pTexture->Init();
 			_TextureEntity.AddComponent<se::TextureComponent>(se::AssetPointer<se::Texture>(static_cast<se::Texture*>(pTexture)));
@@ -149,7 +152,7 @@ void AssimpModel3D::ProcessModel3DMesh(const char* filePath, aiMesh* mesh, const
 			AssimpTexture* pTexture = new AssimpTexture();
 			std::string _path = se::Util::GetPath(filePath) + "/" + path.C_Str();
 
-			pTexture->SetAssetData(_Image);
+			pTexture->SetImportedAssetData(&_Image);
 			pTexture->LoadFromFile(_path.c_str());
 			pTexture->Init();
 			_TextureEntity.AddComponent<se::TextureComponent>(se::AssetPointer<se::Texture>(static_cast<se::Texture*>(pTexture)));

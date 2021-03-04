@@ -40,6 +40,9 @@ namespace se
 		}
 		operator std::string& () { return Tag; }
 		operator const std::string& () const { return Tag; }
+
+		operator char* () { return Tag.data(); }
+		operator const char* () const { return Tag.c_str(); }
 	};
 	struct CameraComponent : ComponentBase
 	{

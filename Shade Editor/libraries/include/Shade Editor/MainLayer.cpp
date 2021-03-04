@@ -43,6 +43,7 @@ void MainLayer::OnUpdate(const se::Timer& deltaTime)
 
 void MainLayer::OnRender()
 {
+
 	auto camera = GetScene()->GetActiveCamera();
 	if (camera != nullptr)
 	{
@@ -66,10 +67,10 @@ void MainLayer::OnRender()
 						{
 							material_comp.Material.Process(m_BasicModelShader.get());
 							// Textures
-							mesh_comp.Mesh->GetEntities().view<se::TextureComponent>().each([](
+							mesh_comp.Mesh->GetEntities().view<se::TextureComponent>().each([&](
 								auto entityId, se::TextureComponent& texture_comp)
 								{
-									texture_comp.Texture->Bind(static_cast<uint32_t>(entityId));
+									texture_comp.Texture->Bind(m_BasicModelShader.get(), static_cast<uint32_t>(entityId));
 								});
 
 							se::Renderer::DrawIndexed(*mesh_comp.Mesh);
@@ -114,7 +115,7 @@ void MainLayer::OnDelete()
 void MainLayer::OnEvent(const se::Event& event)
 {
 
-	if (event.GetType() == se::Event::Type::Window)
+	/*if (event.GetType() == se::Event::Type::Window)
 	{
 		if (event.GetWindow() == se::Event::Window::Resized)
 		{
@@ -137,7 +138,7 @@ void MainLayer::OnEvent(const se::Event& event)
 				}
 			}
 		}
-	}
+	}*/
 }
 
 void MainLayer::OnRenderBegin()

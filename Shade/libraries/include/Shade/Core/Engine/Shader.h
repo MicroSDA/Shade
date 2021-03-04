@@ -31,53 +31,89 @@ namespace se
 		inline void Bind() const;
 		inline static void UnBind();
 		const GLuint& GetProgram() const { return m_Program; }
-		inline void SendUniformMatrix3Float(const std::string& name, const GLboolean& isTransopnse, const glm::fmat3& value) const
+		inline GLint SendUniformMatrix3Float(const std::string& name, const GLboolean& isTransopnse, const glm::fmat3& value) const
 		{
-			glUniformMatrix3fv(GetUniformLocation(name), 1, isTransopnse, glm::value_ptr(value));
+			GLint location = GetUniformLocation(name);
+			if(location)
+				glUniformMatrix3fv(location, 1, isTransopnse, glm::value_ptr(value));
+			return location;
 		}
-		inline void SendUniformMatrix4Float(const std::string& name, const GLboolean& isTransopnse, const glm::fmat4& value) const
+		inline GLint SendUniformMatrix4Float(const std::string& name, const GLboolean& isTransopnse, const glm::fmat4& value) const
 		{
-			glUniformMatrix4fv(GetUniformLocation(name), 1, isTransopnse, glm::value_ptr(value));
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniformMatrix4fv(location, 1, isTransopnse, glm::value_ptr(value));
+			return location;
 		}
-		inline void SendUniform1Int(const std::string& name, const GLint& value) const
+		inline GLint SendUniform1Int(const std::string& name, const GLint& value) const
 		{
-			glUniform1i(GetUniformLocation(name), value);
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniform1i(location, value);
+			return location;
 		}
-		inline void SendUniform2Int(const std::string& name, const glm::ivec2& value) const
+		inline GLint SendUniform2Int(const std::string& name, const glm::ivec2& value) const
 		{
-			glUniform2i(GetUniformLocation(name), value.x, value.y);
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniform2i(location, value.x, value.y);
+			return location;
 		}
-		inline void SendUniform3Int(const std::string& name, const glm::ivec3& value) const
+		inline GLint SendUniform3Int(const std::string& name, const glm::ivec3& value) const
 		{
-			glUniform3i(GetUniformLocation(name), value.x, value.y, value.z);
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniform3i(location, value.x, value.y, value.z);
+			return location;
 		}
-		inline void SendUniform4Int(const std::string& name, const glm::ivec4& value) const
+		inline GLint SendUniform4Int(const std::string& name, const glm::ivec4& value) const
 		{
-			glUniform4i(GetUniformLocation(name), value.x, value.y, value.z, value.a);
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniform4i(location, value.x, value.y, value.z, value.a);
+			return location;
 		}
-		inline void SendUniform1Float(const std::string& name, const GLfloat& value) const
+		inline GLint SendUniform1Float(const std::string& name, const GLfloat& value) const
 		{
-			glUniform1f(GetUniformLocation(name), value);
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniform1f(location, value);
+			return location;
 		}
-		inline void SendUniform2Float(const std::string& name, const glm::fvec2& value) const
+		inline GLint SendUniform2Float(const std::string& name, const glm::fvec2& value) const
 		{
-			glUniform2f(GetUniformLocation(name), value.x, value.y);
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniform2f(location, value.x, value.y);
+			return location;
 		}
-		inline void SendUniform3Float(const std::string& name, const glm::fvec3& value) const
+		inline GLint SendUniform3Float(const std::string& name, const glm::fvec3& value) const
 		{
-			glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniform3f(location, value.x, value.y, value.z);
+			return location;
 		}
-		inline void SendUniform4Float(const std::string& name, const glm::fvec4& value) const
+		inline GLint SendUniform4Float(const std::string& name, const glm::fvec4& value) const
 		{
-			glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.a);
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniform4f(location, value.x, value.y, value.z, value.a);
+			return location;
 		}
-		inline void SendUniformBool(const std::string& name, const bool& value) const
+		inline GLint SendUniformBool(const std::string& name, const bool& value) const
 		{
-			glUniform1i(GetUniformLocation(name), value);
+			GLint location = GetUniformLocation(name);
+			if (location)
+				glUniform1i(location, value);
+			return location;
 		}
-		inline void SetAttribLocation(const std::string& name) const
+		inline GLint SetAttribLocation(const std::string& name) const
 		{
-			glBindAttribLocation(m_Program, GetAttribLocation(name), name.c_str());
+			GLint location = GetAttribLocation(name);
+			if (location)
+				glBindAttribLocation(m_Program, location, name.c_str());
+			return location;
 		}
 		void SetLayout(void(*layout)(const void*, const se::Shader*));
 		void Process(const void* entity);

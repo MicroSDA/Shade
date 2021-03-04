@@ -17,6 +17,7 @@ private:
 	void ShowMainMenu(const bool& show);
 	void ShowProjectBar(const bool& show);
 	void ShowSceneWindow(const bool& show);
+	void ShowModel3DPreview(const bool& show);
 	void ShowAssetList(const bool& show);
 
 	void DrawEntities(se::Entity& selectedEntity, se::EntitiesDocker* docker);
@@ -87,10 +88,14 @@ private:
 	bool m_IsImGuizmoShow  = true;
 	bool m_IsFpsShow       = true;
 	bool m_IsAssetListShow = true;
+	bool m_IsModelPreveiw  = true;
 
 	se::Entity  m_SelectedEntity;
 	se::Entity  m_MainSceneVeiwPort;
+	se::Entity  m_ModelPreveiwVeiwPort;
+
+	ImTextureID    m_MaiSceneVeiwPortTexureid     = 0;
+	ImTextureID    m_ModelPreveiwVeiwPortTexureid = 0;
 
 	bool m_IsScenePlay		= false;
 };
-

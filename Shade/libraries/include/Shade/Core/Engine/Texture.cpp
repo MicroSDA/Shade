@@ -12,10 +12,36 @@ se::Texture::~Texture()
 	glDeleteTextures(1, &m_Texture);
 }
 
-const void se::Texture::Bind(const std::uint32_t& id) const
+const void se::Texture::Bind(const se::Shader* shader, const std::uint32_t& id) const
 {
-	glActiveTexture(GL_TEXTURE0 + static_cast<GLuint>(id));
-	glBindTexture(GL_TEXTURE_2D, m_Texture);
+	switch (GetAssetData().SubType)
+	{
+	case se::AssetData::ASubType::Diffuse:
+		if (shader->SendUniform1Int("DIFFUSE_TEXTURE", id))
+		{
+			glActiveTexture(GL_TEXTURE0 + static_cast<GLuint>(id));
+			glBindTexture(GL_TEXTURE_2D, m_Texture);
+		}
+		break;
+	case se::AssetData::ASubType::Specular:
+		if(shader->SendUniform1Int("SPECULAR_TEXTURE", id))
+		{
+			glActiveTexture(GL_TEXTURE0 + static_cast<GLuint>(id));
+			glBindTexture(GL_TEXTURE_2D, m_Texture);
+		}
+		break;
+	case se::AssetData::ASubType::NormalMap:
+		if(shader->SendUniform1Int("NORMAL_MAP", id))
+		{
+			glActiveTexture(GL_TEXTURE0 + static_cast<GLuint>(id));
+			glBindTexture(GL_TEXTURE_2D, m_Texture);
+		}
+		break;
+	default:
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		break;
+	}
 }
 
 void se::Texture::UnBind(const uint32_t& id)

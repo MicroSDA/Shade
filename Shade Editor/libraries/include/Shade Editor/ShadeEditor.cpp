@@ -139,11 +139,26 @@ void ShadeEditor::OnInit()
 	grid.AddComponent<se::DrawableComponent>(se::ShadeShared<se::Drawable>(new se::Grid(500, 500, 250)));
 
 	this->CreateEntity("SceneViewPort").AddComponent<glm::vec2>();
-	auto camera = this->CreateEntity("EditorCamera");
+	this->CreateEntity("ModelPreveiwViewPort").AddComponent<glm::vec2>();
+	{
+		auto camera = this->CreateEntity("EditorCamera");
 
-	auto camera_copm = camera.AddComponent<se::CameraComponent>(new se::Camera(glm::vec3(0.0f, 5.0f, 0.0f), 45.0f, 1.0f, 0.01f, 3000.0f));
-	camera.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
-	scene->SetActiveCamera(camera_copm.Camera);
+		auto camera_copm = camera.AddComponent<se::CameraComponent>(new se::Camera(glm::vec3(0.0f, 5.0f, 0.0f), 45.0f, 1.0f, 0.01f, 3000.0f));
+		camera.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
+		scene->SetActiveCamera(camera_copm.Camera);
+	}
+	{
+		auto camera = this->CreateEntity("ModelCamera");
+
+		auto camera_copm = camera.AddComponent<se::CameraComponent>(new se::Camera(glm::vec3(0.0f, 5.0f, 0.0f), 45.0f, 1.0f, 0.01f, 3000.0f));
+		camera.AddComponent<se::NativeScriptComponent>().Bind<se::FreeCameraController>();
+		//scene->SetActiveCamera(camera_copm.Camera);
+	}
+
+	auto light = this->CreateEntity("Direct Light");
+	auto pLight = new se::GeneralLight();
+	//pLight->SetDirection(0, -1, 0);
+	auto& component = light.AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(pLight));
 }
 
 void ShadeEditor::OnUpdate(const se::Timer& deltaTime)

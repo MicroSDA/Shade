@@ -1,11 +1,11 @@
 #pragma once
 #include <Shade/Core/Engine/Layer.h>
 
-class MainLayer :public se::Layer
+class ModelPreviewLayer :public se::Layer
 {
 public:
-	MainLayer(const std::string& name, se::Scene* scene);
-	virtual ~MainLayer();
+	ModelPreviewLayer(const std::string& name, se::Scene* scene);
+	virtual ~ModelPreviewLayer();
 	// Унаследовано через Layer
 	virtual void OnCreate() override;
 	virtual void OnInit() override;
@@ -16,7 +16,6 @@ public:
 	virtual void OnDelete() override;
 	virtual void OnEvent(const se::Event& event) override;
 private:
-	//se::ShadeShared<se::FrameBuffer>	m_FrameBuffer;
 	se::AssetPointer<se::Shader>		m_BasicModelShader;
 	se::AssetPointer<se::Shader>		m_GridShader;
 };

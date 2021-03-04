@@ -9,6 +9,8 @@ public:
 	virtual ~AssimpTexture() = default;
 
 	void LoadFromFile(const char* filePath);
+	void SetImportedAssetData(const se::AssetData* data);
 private:
+	se::AssetData m_ImportedAssetData;
 };
 
