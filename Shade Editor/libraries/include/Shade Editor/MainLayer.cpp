@@ -27,12 +27,15 @@ void MainLayer::OnInit()
 
 	m_BasicModelShader  = se::ShadeShared<se::Shader>(se::Shader::CreateFromFile("resources/shaders/BasicModel.bin"));
 	m_GridShader		= se::ShadeShared<se::Shader>(se::Shader::CreateFromFile("resources/shaders/Grid.bin"));
-
+	m_TextShader		= se::ShadeShared<se::Shader>(se::Shader::CreateFromFile("resources/shaders/Text.bin"));
 	//Shader's layouts
 	m_BasicModelShader->SetLayout([](const void* entity, const se::Shader* shader) {
 		shader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, static_cast<const se::Transform3DComponent*>(entity)->Transform.GetModelMatrix());
 		});
 	m_GridShader->SetLayout([](const void* entity, const se::Shader* shader) {
+		shader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, static_cast<const se::Transform3DComponent*>(entity)->Transform.GetModelMatrix());
+		});
+	m_TextShader->SetLayout([](const void* entity, const se::Shader* shader) {
 		shader->SendUniformMatrix4Float("ModelMatrix", GL_FALSE, static_cast<const se::Transform3DComponent*>(entity)->Transform.GetModelMatrix());
 		});
 }
@@ -88,8 +91,19 @@ void MainLayer::OnRender()
 			});
 	}
 
-	/*auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text");
-	auto texts = GetScene()->GetEntities().view<se::DrawableTextComponent>();
+
+	m_TextShader->Bind();
+	GetScene()->GetEntities().view<se::DrawableTextComponent>().each([&](
+		auto entityId, se::DrawableTextComponent& text_comp)
+		{
+			se::Transform3D transform;
+			m_TextShader->Process(&transform);
+			se::Renderer::BindTexture(text_comp.Text->GetFont()->GetAtlas());
+			se::Renderer::DrawIndexed(*text_comp.Text);
+		});
+
+	//auto _Shader = se::AssetManager::Hold<se::Shader>("Shaders.Text");
+	/*auto texts = GetScene()->GetEntities().view<se::DrawableTextComponent>();
 	se::Transform2D transform;
 	transform.SetPostition(0.0f, (float)se::WindowManager::GetWindow().Height);
 	transform.SetScale(0.8, 0.8);
@@ -105,7 +119,7 @@ void MainLayer::OnRender()
 		se::Renderer::DrawIndexed(*t);
 	}*/
 
-	se::Renderer::Disable(GL_BLEND);
+	//se::Renderer::Disable(GL_BLEND);
 }
 
 void MainLayer::OnDelete()

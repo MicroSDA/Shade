@@ -13,6 +13,7 @@
 #include "Shade/Core/Engine/Font.h"
 #include "Shade/Core/Engine/Text.h"
 #include "Shade/Core/Engine/FrameBuffer.h"
+#include "Shade/Core/Engine/RigidBody3D.h"
 
 namespace se
 {
@@ -253,5 +254,15 @@ namespace se
 		FrameBufferComponent(const se::ShadeShared<se::FrameBuffer>& other) //  TODO Nedd to create copy constructor for vertex buffer
 			: FrameBuffer(other) {};
 		FrameBufferComponent(const FrameBufferComponent&) = default;
+	};
+
+	struct RigidBody3DComponent
+	{
+		se::RigidBody3D Body;
+		RigidBody3DComponent() = default;
+		~RigidBody3DComponent() = default;
+		RigidBody3DComponent(const se::RigidBody3D& other)
+			: Body(other) {};
+		RigidBody3DComponent(const RigidBody3DComponent&) = default;
 	};
 }

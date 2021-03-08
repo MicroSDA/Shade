@@ -155,8 +155,6 @@ void se::Model3D::LoadFromAssetData(const std::string& assetId, se::AssetData& d
 						"." + m_AssetData->Childs[m].ID + 
 						"." + _Asset.ID));
 				}
-				default:
-					break;
 				}
 			}
 		}

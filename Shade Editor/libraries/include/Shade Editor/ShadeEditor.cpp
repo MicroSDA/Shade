@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ShadeEditor.h"
-
 #include "Serrializer.h"
+#include <Shade/Core/Engine/AABB3D.h>
 
 ShadeEditor::ShadeEditor()
 {
@@ -121,11 +121,24 @@ ShadeEditor::~ShadeEditor()
 
 void ShadeEditor::OnInit()
 {
-	//se::AssetManager::ReadAssetDataList("map.bin");
+	se::AssetManager::ReadAssetDataList("resources/scenes/map.bin");
 	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
 	se::WindowManager::Create(se::Window());
 
 	auto scene = CreateScene<MainScene>("Main");
+
+	auto cube1 = scene->CreateEntity("Cube1");
+	auto cube2 = scene->CreateEntity("Cube2");
+
+	auto model = se::AssetManager::Hold<se::Model3D>("Models.Cube");
+
+	cube1.AddComponent<se::Model3DComponent>(model);
+	cube1.AddComponent<se::Transform3DComponent>().Transform.SetPostition(-3, 0, 0);
+	cube1.AddComponent<se::RigidBody3DComponent>(se::RigidBody3D(se::Collider3D::Type::AABB));
+
+	cube2.AddComponent<se::Model3DComponent>(model);
+	cube2.AddComponent<se::Transform3DComponent>().Transform.SetPostition(3, 0, 0);
+	cube2.AddComponent<se::RigidBody3DComponent>(se::RigidBody3D(se::Collider3D::Type::AABB));
 
 	for (auto const& [name, scene] : GetScenes())
 	{
@@ -163,12 +176,33 @@ void ShadeEditor::OnInit()
 
 void ShadeEditor::OnUpdate(const se::Timer& deltaTime)
 {
-	return;
+	auto entites = GetCurrentScene()->GetEntities().group<se::Transform3DComponent, se::RigidBody3DComponent>();
+
+	for (auto i = 0; i < entites.size(); i++)
+	{
+		auto [transform1, body1] = entites.get<se::Transform3DComponent, se::RigidBody3DComponent>(entites[i]);
+		body1.Body.SetTranslate(transform1.Transform.GetPosition());
+
+		for (auto j = i + 1; j < entites.size(); j++)
+		{
+			auto [transform2, body2] = entites.get<se::Transform3DComponent, se::RigidBody3DComponent>(entites[j]);
+			body2.Body.SetTranslate(transform2.Transform.GetPosition());
+
+			auto data = body1.Body.CheckCollision(body2.Body);
+			if (data.IsCollision)
+			{
+				std::cout << "X:" << body1.Body.GetDirection().x;
+				std::cout << " Y:" << body1.Body.GetDirection().y;
+				std::cout << " Z:" << body1.Body.GetDirection().z << std::endl;
+
+				transform2.Transform.GetPosition() += body1.Body.GetDirection() * data.Distance;
+			}
+		}
+	}
 }
 
 void ShadeEditor::OnEvent(const se::Event& event)
 {
-
 	if (event.GetType() == se::Event::Type::Quit)
 		this->Quit();
 

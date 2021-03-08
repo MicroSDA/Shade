@@ -325,7 +325,7 @@ void EditorLayer::ShowModel3DPreview(const bool& show)
 {
 	if (show)
 	{
-		if (ImGui::Begin("Model preveiw"))
+		if (ImGui::Begin("Model preview"))
 		{
 			se::Application::GetApplication().GetEntities().view<se::TagComponent, se::CameraComponent, se::NativeScriptComponent>().each([&](
 				auto entityId, se::TagComponent& tag, se::CameraComponent& camera, se::NativeScriptComponent& script)

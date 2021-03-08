@@ -19,4 +19,5 @@ private:
 	//se::ShadeShared<se::FrameBuffer>	m_FrameBuffer;
 	se::AssetPointer<se::Shader>		m_BasicModelShader;
 	se::AssetPointer<se::Shader>		m_GridShader;
+	se::AssetPointer<se::Shader>		m_TextShader;
 };

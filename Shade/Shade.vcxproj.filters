@@ -70,6 +70,9 @@
     <Filter Include="Vendors\Entt">
       <UniqueIdentifier>{73f7d33d-c6f2-405c-837a-ff80e49bff3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Engine\Physics">
+      <UniqueIdentifier>{17dab6f4-0638-4eff-9dc1-0d3609e80bcf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -244,6 +247,15 @@
     <ClInclude Include="libraries\include\Shade\Core\Util\Util.h">
       <Filter>Core\Util</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Collider3D.h">
+      <Filter>Core\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\AABB3D.h">
+      <Filter>Core\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\RigidBody3D.h">
+      <Filter>Core\Engine\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">
@@ -387,6 +399,15 @@
     </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Util\Util.cpp">
       <Filter>Core\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Collider3D.cpp">
+      <Filter>Core\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\AABB3D.cpp">
+      <Filter>Core\Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\RigidBody3D.cpp">
+      <Filter>Core\Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
