@@ -20,13 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Engine\AABB3D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Application.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Asset.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\AssetData.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\AssetManager.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\BoxShape.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Camera.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Collider3D.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\CollisionShape.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Components.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Controllers.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Drawable.h" />
@@ -49,7 +49,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\Model3D.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\PointLight.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Renderer.h" />
-    <ClInclude Include="libraries\include\Shade\Core\Engine\RigidBody3D.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\RigidBody.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Scene.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\ScriptableEntity.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Shader.h" />
@@ -87,12 +87,12 @@
     <ClInclude Include="vendors\ImGizmo\ImGuizmo.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\AABB3D.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Asset.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\AssetManager.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\BoxShape.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Camera.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Collider3D.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\CollisionShape.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Controllers.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Drawable.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\EntitiesDocker.cpp" />
@@ -114,7 +114,7 @@
     <ClCompile Include="libraries\include\Shade\Core\Engine\Model3D.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\PointLight.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Renderer.cpp" />
-    <ClCompile Include="libraries\include\Shade\Core\Engine\RigidBody3D.cpp" />
+    <ClCompile Include="libraries\include\Shade\Core\Engine\RigidBody.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Scene.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\ScriptableEntity.cpp" />
     <ClCompile Include="libraries\include\Shade\Core\Engine\Shader.cpp" />

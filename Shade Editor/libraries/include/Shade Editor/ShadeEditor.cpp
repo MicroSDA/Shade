@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ShadeEditor.h"
 #include "Serrializer.h"
-#include <Shade/Core/Engine/AABB3D.h>
 
 ShadeEditor::ShadeEditor()
 {
@@ -133,12 +132,19 @@ void ShadeEditor::OnInit()
 	auto model = se::AssetManager::Hold<se::Model3D>("Models.Cube");
 
 	cube1.AddComponent<se::Model3DComponent>(model);
-	cube1.AddComponent<se::Transform3DComponent>().Transform.SetPostition(-3, 0, 0);
-	cube1.AddComponent<se::RigidBody3DComponent>(se::RigidBody3D(se::Collider3D::Type::AABB));
+	auto& transform1 =  cube1.AddComponent<se::Transform3DComponent>();
+
+	transform1.Transform.SetPostition(1, 0, 0);
+	transform1.Transform.SetScale(0.5, 0.5, 0.5);
+	auto& body1 = cube1.AddComponent<se::RigidBody3DComponent>();
+	body1.Body.AddCollisionShape(new se::BoxShape(glm::vec3(-0.5, 0, -0.5), glm::vec3(0.5, 1, 0.5)));
 
 	cube2.AddComponent<se::Model3DComponent>(model);
-	cube2.AddComponent<se::Transform3DComponent>().Transform.SetPostition(3, 0, 0);
-	cube2.AddComponent<se::RigidBody3DComponent>(se::RigidBody3D(se::Collider3D::Type::AABB));
+	auto& transform2 = cube2.AddComponent<se::Transform3DComponent>();
+	transform2.Transform.SetPostition(0, 0, 0);
+	transform2.Transform.SetScale(0.5, 0.5, 0.5);
+	auto& body2 = cube2.AddComponent<se::RigidBody3DComponent>();
+	body2.Body.AddCollisionShape(new se::BoxShape(glm::vec3(-0.5, 0, -0.5), glm::vec3(0.5, 1, 0.5)));
 
 	for (auto const& [name, scene] : GetScenes())
 	{
@@ -168,7 +174,7 @@ void ShadeEditor::OnInit()
 		//scene->SetActiveCamera(camera_copm.Camera);
 	}
 
-	auto light = this->CreateEntity("Direct Light");
+	auto light = this->GetCurrentScene()->CreateEntity("Direct Light");
 	auto pLight = new se::GeneralLight();
 	//pLight->SetDirection(0, -1, 0);
 	auto& component = light.AddComponent<se::EnvironmentComponent>(se::ShadeShared<se::Environment>(pLight));
@@ -181,21 +187,44 @@ void ShadeEditor::OnUpdate(const se::Timer& deltaTime)
 	for (auto i = 0; i < entites.size(); i++)
 	{
 		auto [transform1, body1] = entites.get<se::Transform3DComponent, se::RigidBody3DComponent>(entites[i]);
-		body1.Body.SetTranslate(transform1.Transform.GetPosition());
+		body1.Body.SetPosition(transform1.Transform.GetPosition());
+		body1.Body.SetRotation(transform1.Transform.GetRotation());
 
 		for (auto j = i + 1; j < entites.size(); j++)
 		{
 			auto [transform2, body2] = entites.get<se::Transform3DComponent, se::RigidBody3DComponent>(entites[j]);
-			body2.Body.SetTranslate(transform2.Transform.GetPosition());
+			body2.Body.SetPosition(transform2.Transform.GetPosition());
+			body2.Body.SetRotation(transform2.Transform.GetRotation());
 
-			auto data = body1.Body.CheckCollision(body2.Body);
-			if (data.IsCollision)
+			if (body1.Body.GetType() == se::RigidBody::Type::Static &&
+				body2.Body.GetType() == se::RigidBody::Type::Static)
 			{
-				std::cout << "X:" << body1.Body.GetDirection().x;
-				std::cout << " Y:" << body1.Body.GetDirection().y;
-				std::cout << " Z:" << body1.Body.GetDirection().z << std::endl;
+				continue;
+			}
+			else
+			{
+				auto data = body1.Body.TestCollision(body2.Body);
 
-				transform2.Transform.GetPosition() += body1.Body.GetDirection() * data.Distance;
+				if (data.IsColliding)
+				{
+					if (body1.Body.GetType() == se::RigidBody::Type::Dynamic &&
+						body2.Body.GetType() == se::RigidBody::Type::Static)
+					{
+						transform1.Transform.GetPosition() += data.Dirrection;
+					}
+					else if (body2.Body.GetType() == se::RigidBody::Type::Dynamic &&
+							 body1.Body.GetType() == se::RigidBody::Type::Static)
+					{
+						transform1.Transform.GetPosition() += data.Dirrection;
+					}
+					else if (body1.Body.GetType() == se::RigidBody::Type::Dynamic &&
+							 body2.Body.GetType() == se::RigidBody::Type::Dynamic)
+					{
+						// TODO check their mass and etc
+						transform1.Transform.GetPosition() += (data.Dirrection / float(2.0f));
+						transform2.Transform.GetPosition() -= (data.Dirrection / float(2.0f));
+					}
+				}
 			}
 		}
 	}

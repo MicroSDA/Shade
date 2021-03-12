@@ -247,13 +247,13 @@
     <ClInclude Include="libraries\include\Shade\Core\Util\Util.h">
       <Filter>Core\Util</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\Collider3D.h">
+    <ClInclude Include="libraries\include\Shade\Core\Engine\BoxShape.h">
       <Filter>Core\Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\AABB3D.h">
+    <ClInclude Include="libraries\include\Shade\Core\Engine\RigidBody.h">
       <Filter>Core\Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\RigidBody3D.h">
+    <ClInclude Include="libraries\include\Shade\Core\Engine\CollisionShape.h">
       <Filter>Core\Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
@@ -400,13 +400,13 @@
     <ClCompile Include="libraries\include\Shade\Core\Util\Util.cpp">
       <Filter>Core\Util</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\Collider3D.cpp">
+    <ClCompile Include="libraries\include\Shade\Core\Engine\BoxShape.cpp">
       <Filter>Core\Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\AABB3D.cpp">
+    <ClCompile Include="libraries\include\Shade\Core\Engine\RigidBody.cpp">
       <Filter>Core\Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\RigidBody3D.cpp">
+    <ClCompile Include="libraries\include\Shade\Core\Engine\CollisionShape.cpp">
       <Filter>Core\Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>

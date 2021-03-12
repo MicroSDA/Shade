@@ -13,7 +13,7 @@
 #include "Shade/Core/Engine/Font.h"
 #include "Shade/Core/Engine/Text.h"
 #include "Shade/Core/Engine/FrameBuffer.h"
-#include "Shade/Core/Engine/RigidBody3D.h"
+#include "Shade/Core/Engine/RigidBody.h"
 
 namespace se
 {
@@ -258,11 +258,12 @@ namespace se
 
 	struct RigidBody3DComponent
 	{
-		se::RigidBody3D Body;
+		se::RigidBody Body;
 		RigidBody3DComponent() = default;
 		~RigidBody3DComponent() = default;
-		RigidBody3DComponent(const se::RigidBody3D& other)
+		RigidBody3DComponent(const se::RigidBody& other)
 			: Body(other) {};
-		RigidBody3DComponent(const RigidBody3DComponent&) = default;
+		/*RigidBody3DComponent(const RigidBody3DComponent&) = default;
+		RigidBody3DComponent(RigidBody3DComponent&&) = default;*/
 	};
 }

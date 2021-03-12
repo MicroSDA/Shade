@@ -16,6 +16,5 @@ se::Transform3D::~Transform3D()
 glm::mat4 se::Transform3D::GetModelMatrix() const
 {
 	glm::mat4 RoataionMatrix = glm::toMat4(glm::quat((m_Rotation))); // m_Rotation to radians
-	return glm::translate(glm::mat4(1.0f), m_Possition) *
-		RoataionMatrix * glm::scale(glm::mat4(1.0f), m_Scale);
+	return glm::translate(glm::mat4(1.0f), m_Possition) * RoataionMatrix * glm::scale(glm::mat4(1.0f), m_Scale);
 }
