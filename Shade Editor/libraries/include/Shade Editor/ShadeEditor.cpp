@@ -1,33 +1,34 @@
 #include "stdafx.h"
 #include "ShadeEditor.h"
 #include "Serrializer.h"
+//#include "Shade/Core/Engine/Collider.h"
 
 ShadeEditor::ShadeEditor()
 {
-	/*se::AssetData _Container;
+	se::AssetData _Container;
 	se::AssetData _ModelsPacket;
-	se::AssetData _ShaderPacket;
-	se::AssetData _SpritePacket;
+	/*se::AssetData _ShaderPacket;
+	se::AssetData _SpritePacket;*/
 	se::AssetData _Model;
-	se::AssetData _Shader;
-	se::AssetData _Sprite;
+	/*se::AssetData _Shader;
+	se::AssetData _Sprite;*/
 
 
 	_Container.ID = "";
 
 	_ModelsPacket.ID = "Models";
-	_ShaderPacket.ID = "Shaders";
+	//_ShaderPacket.ID = "Shaders";
 
-	_Model.ID = "Cube";
-	_Model.Path = "./resources/models/cube/";
-	Serrializer::Serrialize3DModel("./project/resources/models/cube/cube.obj", &_Model, true);
-	_ModelsPacket.Childs.push_back(_Model);
-
-	_Model = se::AssetData{}; // Reset
+	//_Model.ID = "Cube";
+	//_Model.Path = "./resources/models/cube/";
+	//Serrializer::Serrialize3DModel("./project/resources/models/cube/cube.obj", &_Model, true);
+	//_ModelsPacket.Childs.push_back(_Model);
+	//_Container.Childs.push_back(_ModelsPacket);
+	/*_Model = se::AssetData{}; // Reset
 	_Model.ID = "Floor";
 	_Model.Path = "./resources/models/floor/";
 	Serrializer::Serrialize3DModel("./project/resources/models/floor/floor.obj", &_Model, true);
-	_ModelsPacket.Childs.push_back(_Model);
+	_ModelsPacket.Childs.push_back(_Model);*/
 
 
 	/*_Model = se::AssetData{}; // Reset
@@ -111,6 +112,7 @@ ShadeEditor::ShadeEditor()
 	se::AssetManager::WriteAssetDataList("map.bin", _Container);
 	exit(0);*/
 
+	//se::AssetManager::WriteAssetDataList("resources/scenes/AssetData.bin", _Container);
 }
 
 ShadeEditor::~ShadeEditor()
@@ -120,31 +122,49 @@ ShadeEditor::~ShadeEditor()
 
 void ShadeEditor::OnInit()
 {
-	se::AssetManager::ReadAssetDataList("resources/scenes/map.bin");
+	se::AssetManager::ReadAssetDataList("resources/scenes/AssetData.bin");
 	se::System::InitVideo(se::RenderAPI::OpenGL, 4, 5);
 	se::WindowManager::Create(se::Window());
 
 	auto scene = CreateScene<MainScene>("Main");
 
-	auto cube1 = scene->CreateEntity("Cube1");
-	auto cube2 = scene->CreateEntity("Cube2");
-
 	auto model = se::AssetManager::Hold<se::Model3D>("Models.Cube");
 
-	cube1.AddComponent<se::Model3DComponent>(model);
-	auto& transform1 =  cube1.AddComponent<se::Transform3DComponent>();
+	{
+		auto cube = scene->CreateEntity("Cube1");
+		cube.AddComponent<se::Transform3DComponent>();
+		cube.AddComponent<se::Model3DComponent>(model);
+		auto& rigidBody = cube.AddComponent<se::RigidBodyComponent>();
+		se::MeshShape* shape = new se::MeshShape();
+		shape->AddVertex(glm::vec3(-1, -1, -1)); // 0 
+		shape->AddVertex(glm::vec3(-1,  1, -1)); // 1 
+		shape->AddVertex(glm::vec3( 1,  1, -1)); // 2 
+		shape->AddVertex(glm::vec3( 1, -1, -1)); // 3 
 
-	transform1.Transform.SetPostition(1, 0, 0);
-	transform1.Transform.SetScale(0.5, 0.5, 0.5);
-	auto& body1 = cube1.AddComponent<se::RigidBody3DComponent>();
-	body1.Body.AddCollisionShape(new se::BoxShape(glm::vec3(-0.5, 0, -0.5), glm::vec3(0.5, 1, 0.5)));
+		shape->AddVertex(glm::vec3(-1, -1,  1)); // 7
+		shape->AddVertex(glm::vec3( 1, -1,  1)); // 6
+		shape->AddVertex(glm::vec3( 1,  1,  1)); // 5
+		shape->AddVertex(glm::vec3(-1,  1,  1)); // 4
 
-	cube2.AddComponent<se::Model3DComponent>(model);
-	auto& transform2 = cube2.AddComponent<se::Transform3DComponent>();
-	transform2.Transform.SetPostition(0, 0, 0);
-	transform2.Transform.SetScale(0.5, 0.5, 0.5);
-	auto& body2 = cube2.AddComponent<se::RigidBody3DComponent>();
-	body2.Body.AddCollisionShape(new se::BoxShape(glm::vec3(-0.5, 0, -0.5), glm::vec3(0.5, 1, 0.5)));
+		rigidBody.Body.AddCollider(shape);
+	}
+	{
+		auto cube = scene->CreateEntity("Cube2");
+		cube.AddComponent<se::Transform3DComponent>();
+		cube.AddComponent<se::Model3DComponent>(model);
+		auto& rigidBody = cube.AddComponent<se::RigidBodyComponent>();
+		se::MeshShape* shape = new se::MeshShape();
+		shape->AddVertex(glm::vec3(-1, -1, -1)); // 0 
+		shape->AddVertex(glm::vec3(-1, 1, -1)); // 1 
+		shape->AddVertex(glm::vec3(1, 1, -1)); // 2 
+		shape->AddVertex(glm::vec3(1, -1, -1)); // 3 
+
+		shape->AddVertex(glm::vec3(-1, -1, 1)); // 7
+		shape->AddVertex(glm::vec3(1, -1, 1)); // 6
+		shape->AddVertex(glm::vec3(1, 1, 1)); // 5
+		shape->AddVertex(glm::vec3(-1, 1, 1)); // 4
+		rigidBody.Body.AddCollider(shape);
+	}
 
 	for (auto const& [name, scene] : GetScenes())
 	{
@@ -182,50 +202,18 @@ void ShadeEditor::OnInit()
 
 void ShadeEditor::OnUpdate(const se::Timer& deltaTime)
 {
-	auto entites = GetCurrentScene()->GetEntities().group<se::Transform3DComponent, se::RigidBody3DComponent>();
+	auto entites = GetCurrentScene()->GetEntities().group<se::Transform3DComponent, se::RigidBodyComponent>();
 
 	for (auto i = 0; i < entites.size(); i++)
 	{
-		auto [transform1, body1] = entites.get<se::Transform3DComponent, se::RigidBody3DComponent>(entites[i]);
-		body1.Body.SetPosition(transform1.Transform.GetPosition());
-		body1.Body.SetRotation(transform1.Transform.GetRotation());
-
+		auto [transform1, body1] = entites.get<se::Transform3DComponent, se::RigidBodyComponent>(entites[i]);
+	
 		for (auto j = i + 1; j < entites.size(); j++)
 		{
-			auto [transform2, body2] = entites.get<se::Transform3DComponent, se::RigidBody3DComponent>(entites[j]);
-			body2.Body.SetPosition(transform2.Transform.GetPosition());
-			body2.Body.SetRotation(transform2.Transform.GetRotation());
-
-			if (body1.Body.GetType() == se::RigidBody::Type::Static &&
-				body2.Body.GetType() == se::RigidBody::Type::Static)
-			{
-				continue;
-			}
-			else
-			{
-				auto data = body1.Body.TestCollision(body2.Body);
-
-				if (data.IsColliding)
-				{
-					if (body1.Body.GetType() == se::RigidBody::Type::Dynamic &&
-						body2.Body.GetType() == se::RigidBody::Type::Static)
-					{
-						transform1.Transform.GetPosition() += data.Dirrection;
-					}
-					else if (body2.Body.GetType() == se::RigidBody::Type::Dynamic &&
-							 body1.Body.GetType() == se::RigidBody::Type::Static)
-					{
-						transform1.Transform.GetPosition() += data.Dirrection;
-					}
-					else if (body1.Body.GetType() == se::RigidBody::Type::Dynamic &&
-							 body2.Body.GetType() == se::RigidBody::Type::Dynamic)
-					{
-						// TODO check their mass and etc
-						transform1.Transform.GetPosition() += (data.Dirrection / float(2.0f));
-						transform2.Transform.GetPosition() -= (data.Dirrection / float(2.0f));
-					}
-				}
-			}
+			auto [transform2, body2] = entites.get<se::Transform3DComponent, se::RigidBodyComponent>(entites[j]);
+			
+			if (body1.Body.TestCollision(transform1.Transform.GetModelMatrix(), body2.Body, transform2.Transform.GetModelMatrix()))
+				std::cout << "Collision :" << deltaTime << "\n";
 		}
 	}
 }

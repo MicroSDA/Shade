@@ -1,39 +1,37 @@
 #pragma once
-#include "Shade/Core/CoreAPI.h"
-#include "Vendors/glm/gtx/transform.hpp"
-#include "Vendors/glm/gtx/quaternion.hpp"
-#include "Vendors/glm/gtx/matrix_decompose.hpp"
+#include"Shade/Core/CoreAPI.h"
+#include "Vendors/glm/glm.hpp"
 
 namespace se
 {
-	struct CollisionData
-	{
-		bool IsColliding = false;
-		glm::vec3 Dirrection; // minimum translation vector
-	};
-
 	class SE_API CollisionShape
 	{
 	public:
+		struct CollisionData
+		{
+			bool IsCollide      = false;
+			glm::vec3 Direction = glm::vec3(0.0f);
+		};
 		enum class Shape
 		{
-			Box
+			Box,
+			Sphere,
+			Cylinder,
+			Capsule,
+			Plane,
+			Mesh
 		};
+	public:
+		CollisionShape(const se::CollisionShape::Shape& shape);
+		virtual ~CollisionShape() = default;
 
-		CollisionShape(const CollisionShape::Shape& shape);
-		virtual ~CollisionShape() { std::cout << "deleted\n"; };
-		virtual se::CollisionData TestCollision(const se::CollisionShape& other) const = 0;
-		virtual glm::vec3 Support(const glm::vec3& direction) const = 0;
 		const se::CollisionShape::Shape& GetShape() const;
-
-		void SetPosition(const glm::vec3& position);
-		void SetRotation(const glm::vec3& rotation);
+		virtual se::CollisionShape::CollisionData TestCollision(const glm::mat4& transform,
+			const se::CollisionShape& other, const glm::mat4& otherTransform) const { return se::CollisionShape::CollisionData(); }; // void = 0 ?
+		virtual glm::vec3 FindFurthestPoint(const glm::mat4& transform, const glm::vec3& direction) const { return glm::vec3(0.0f); };
 	protected:
-		const se::CollisionShape::Shape m_Shape;
-
-		glm::vec3 m_Position;
-		glm::mat3 m_RotationScaleMatix;
-		glm::mat3 m_RotationScaleMatixInversed;
 	private:
+		const se::CollisionShape::Shape m_ShapeType;
 	};
 }
+

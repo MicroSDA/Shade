@@ -73,6 +73,12 @@
     <Filter Include="Core\Engine\Physics">
       <UniqueIdentifier>{17dab6f4-0638-4eff-9dc1-0d3609e80bcf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Engine\Physics\Util">
+      <UniqueIdentifier>{7a142e3f-b4a7-4ef7-a4c1-4118c236a391}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Engine\Physics\Shapes">
+      <UniqueIdentifier>{268ea741-edbf-40bf-971f-4144d1ce396d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libraries\include\Shade\Core\CoreAPI.h">
@@ -247,14 +253,20 @@
     <ClInclude Include="libraries\include\Shade\Core\Util\Util.h">
       <Filter>Core\Util</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\include\Shade\Core\Engine\BoxShape.h">
-      <Filter>Core\Engine\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\RigidBody.h">
       <Filter>Core\Engine\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\Simplex.h">
+      <Filter>Core\Engine\Physics\Util</Filter>
+    </ClInclude>
     <ClInclude Include="libraries\include\Shade\Core\Engine\CollisionShape.h">
-      <Filter>Core\Engine\Physics</Filter>
+      <Filter>Core\Engine\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\MeshShape.h">
+      <Filter>Core\Engine\Physics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\GJK.h">
+      <Filter>Core\Engine\Physics\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -400,14 +412,17 @@
     <ClCompile Include="libraries\include\Shade\Core\Util\Util.cpp">
       <Filter>Core\Util</Filter>
     </ClCompile>
-    <ClCompile Include="libraries\include\Shade\Core\Engine\BoxShape.cpp">
-      <Filter>Core\Engine\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\RigidBody.cpp">
       <Filter>Core\Engine\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\Simplex.cpp">
+      <Filter>Core\Engine\Physics\Util</Filter>
+    </ClCompile>
     <ClCompile Include="libraries\include\Shade\Core\Engine\CollisionShape.cpp">
-      <Filter>Core\Engine\Physics</Filter>
+      <Filter>Core\Engine\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\Shade\Core\Engine\MeshShape.cpp">
+      <Filter>Core\Engine\Physics\Shapes</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

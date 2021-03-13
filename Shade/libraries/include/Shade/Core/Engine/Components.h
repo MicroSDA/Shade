@@ -256,14 +256,8 @@ namespace se
 		FrameBufferComponent(const FrameBufferComponent&) = default;
 	};
 
-	struct RigidBody3DComponent
+	struct RigidBodyComponent
 	{
 		se::RigidBody Body;
-		RigidBody3DComponent() = default;
-		~RigidBody3DComponent() = default;
-		RigidBody3DComponent(const se::RigidBody& other)
-			: Body(other) {};
-		/*RigidBody3DComponent(const RigidBody3DComponent&) = default;
-		RigidBody3DComponent(RigidBody3DComponent&&) = default;*/
 	};
 }
