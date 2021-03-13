@@ -17,18 +17,18 @@ const se::RigidBody::Type& se::RigidBody::GetType() const
 	return m_BodyType;
 }
 
-bool se::RigidBody::TestCollision(const glm::mat4& transform, const se::RigidBody& other, const glm::mat4& otherTransform) const
+se::CollisionShape::CollisionData se::RigidBody::TestCollision(const glm::mat4& transform, const se::RigidBody& other, const glm::mat4& otherTransform) const
 {
 	for (const auto& colliderA : m_CollisionShapes)
 	{
 		for (const auto& colliderB : other.m_CollisionShapes)
 		{
 			auto result = colliderA->TestCollision(transform, *colliderB, otherTransform);
-			if (result.IsCollide)
-				return true;
+			if (result.HasCollision)
+				return result;
 		}
 	}
-	return false;
+	return { false };
 }
 
 void se::RigidBody::AddCollider(se::CollisionShape* shape)

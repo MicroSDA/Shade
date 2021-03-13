@@ -14,13 +14,3 @@ void se::Simplex::push_front(const glm::vec3& point)
 	m_Points = { point, m_Points[0], m_Points[1], m_Points[2] };
 	m_Count = std::min(m_Count + 1, 4u);
 }
-
-auto se::Simplex::begin() const
-{
-	return m_Points.begin();
-}
-
-auto se::Simplex::end() const
-{
-	return m_Points.end() - (4 - m_Count);
-}

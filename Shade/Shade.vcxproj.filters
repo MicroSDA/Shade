@@ -268,6 +268,9 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\GJK.h">
       <Filter>Core\Engine\Physics\Util</Filter>
     </ClInclude>
+    <ClInclude Include="libraries\include\Shade\Core\Engine\EPA.h">
+      <Filter>Core\Engine\Physics\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libraries\include\Shade\Core\Engine\Application.cpp">

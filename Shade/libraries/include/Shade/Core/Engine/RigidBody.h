@@ -17,7 +17,7 @@ namespace se
 		~RigidBody() = default;
 		void SetType(const se::RigidBody::Type& type);
 		const se::RigidBody::Type& GetType() const;
-		bool TestCollision(const glm::mat4& transform, const se::RigidBody& other, const glm::mat4& otherTransform) const;
+		se::CollisionShape::CollisionData TestCollision(const glm::mat4& transform, const se::RigidBody& other, const glm::mat4& otherTransform) const;
 
 		void AddCollider(se::CollisionShape* shape); // can be const !
 	protected:

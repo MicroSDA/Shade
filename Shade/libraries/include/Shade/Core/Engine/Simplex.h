@@ -19,8 +19,8 @@ namespace se
 		glm::vec3& operator[](unsigned i) { return m_Points[i]; }
 		unsigned size() const { return m_Count; }
 		void push_front(const glm::vec3& point);
-		auto begin() const;
-		auto end()   const;
+		auto begin() const { return m_Points.begin(); };
+		auto end() const { return m_Points.end() - (4 - m_Count); }
 	private:
 		std::array<glm::vec3, 4> m_Points;
 		uint32_t				 m_Count;

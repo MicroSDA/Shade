@@ -129,40 +129,29 @@ void ShadeEditor::OnInit()
 	auto scene = CreateScene<MainScene>("Main");
 
 	auto model = se::AssetManager::Hold<se::Model3D>("Models.Cube");
+	se::MeshShape* shape = new se::MeshShape();
+	shape->AddVertex(glm::vec3(-1, -1, -1)); // 0 
+	shape->AddVertex(glm::vec3(-1, 1, -1)); // 1 
+	shape->AddVertex(glm::vec3(1, 1, -1)); // 2 
+	shape->AddVertex(glm::vec3(1, -1, -1)); // 3 
 
+	shape->AddVertex(glm::vec3(-1, -1, 1)); // 7
+	shape->AddVertex(glm::vec3(1, -1, 1)); // 6
+	shape->AddVertex(glm::vec3(1, 1, 1)); // 5
+	shape->AddVertex(glm::vec3(-1, 1, 1)); // 4
 	{
 		auto cube = scene->CreateEntity("Cube1");
-		cube.AddComponent<se::Transform3DComponent>();
+		cube.AddComponent<se::Transform3DComponent>().Transform.SetPostition(0,5,0);
 		cube.AddComponent<se::Model3DComponent>(model);
 		auto& rigidBody = cube.AddComponent<se::RigidBodyComponent>();
-		se::MeshShape* shape = new se::MeshShape();
-		shape->AddVertex(glm::vec3(-1, -1, -1)); // 0 
-		shape->AddVertex(glm::vec3(-1,  1, -1)); // 1 
-		shape->AddVertex(glm::vec3( 1,  1, -1)); // 2 
-		shape->AddVertex(glm::vec3( 1, -1, -1)); // 3 
-
-		shape->AddVertex(glm::vec3(-1, -1,  1)); // 7
-		shape->AddVertex(glm::vec3( 1, -1,  1)); // 6
-		shape->AddVertex(glm::vec3( 1,  1,  1)); // 5
-		shape->AddVertex(glm::vec3(-1,  1,  1)); // 4
-
 		rigidBody.Body.AddCollider(shape);
+		rigidBody.Body.SetType(se::RigidBody::Type::Static);
 	}
 	{
 		auto cube = scene->CreateEntity("Cube2");
 		cube.AddComponent<se::Transform3DComponent>();
 		cube.AddComponent<se::Model3DComponent>(model);
 		auto& rigidBody = cube.AddComponent<se::RigidBodyComponent>();
-		se::MeshShape* shape = new se::MeshShape();
-		shape->AddVertex(glm::vec3(-1, -1, -1)); // 0 
-		shape->AddVertex(glm::vec3(-1, 1, -1)); // 1 
-		shape->AddVertex(glm::vec3(1, 1, -1)); // 2 
-		shape->AddVertex(glm::vec3(1, -1, -1)); // 3 
-
-		shape->AddVertex(glm::vec3(-1, -1, 1)); // 7
-		shape->AddVertex(glm::vec3(1, -1, 1)); // 6
-		shape->AddVertex(glm::vec3(1, 1, 1)); // 5
-		shape->AddVertex(glm::vec3(-1, 1, 1)); // 4
 		rigidBody.Body.AddCollider(shape);
 	}
 
@@ -212,8 +201,27 @@ void ShadeEditor::OnUpdate(const se::Timer& deltaTime)
 		{
 			auto [transform2, body2] = entites.get<se::Transform3DComponent, se::RigidBodyComponent>(entites[j]);
 			
-			if (body1.Body.TestCollision(transform1.Transform.GetModelMatrix(), body2.Body, transform2.Transform.GetModelMatrix()))
-				std::cout << "Collision :" << deltaTime << "\n";
+			auto result = body1.Body.TestCollision(transform1.Transform.GetModelMatrix(), body2.Body, transform2.Transform.GetModelMatrix());
+			if (result.HasCollision)
+			{
+				if (body1.Body.GetType() == se::RigidBody::Type::Static && body2.Body.GetType() == se::RigidBody::Type::Static)
+				{
+					continue;
+				}
+				else if (body1.Body.GetType() == se::RigidBody::Type::Dynamic && body2.Body.GetType() == se::RigidBody::Type::Dynamic)
+				{
+					transform1.Transform.GetPosition() += result.Direction * result.Depth / 2.0f;
+					transform2.Transform.GetPosition() -= result.Direction * result.Depth / 2.0f;
+				}
+				else if (body1.Body.GetType() == se::RigidBody::Type::Dynamic && body2.Body.GetType() == se::RigidBody::Type::Static)
+				{
+					transform1.Transform.GetPosition() += result.Direction * result.Depth;
+				}
+				else if (body1.Body.GetType() == se::RigidBody::Type::Static && body2.Body.GetType() == se::RigidBody::Type::Dynamic)
+				{
+					transform2.Transform.GetPosition() += result.Direction * result.Depth;
+				}
+			}
 		}
 	}
 }

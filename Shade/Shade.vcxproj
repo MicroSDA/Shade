@@ -33,6 +33,7 @@
     <ClInclude Include="libraries\include\Shade\Core\Engine\EntitiesDocker.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Entity.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Environment.h" />
+    <ClInclude Include="libraries\include\Shade\Core\Engine\EPA.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Event.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\EventManager.h" />
     <ClInclude Include="libraries\include\Shade\Core\Engine\Font.h" />

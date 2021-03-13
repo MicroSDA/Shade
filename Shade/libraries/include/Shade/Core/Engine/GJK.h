@@ -1,26 +1,14 @@
 #pragma once
 #include "Shade/Core/Engine/CollisionShape.h"
 #include "Shade/Core/Engine/Simplex.h"
+#include "Shade/Core/Engine/EPA.h"
+
 namespace se
 {
 	namespace algo
 	{
 #define GJK_MAX_ITERATION 32
 
-		glm::vec3 Support(
-			const se::CollisionShape& shapeA, const glm::mat4& transformA,
-			const se::CollisionShape& shapeB, const glm::mat4& transformB,
-			const glm::vec3& direction)
-		{
-			return shapeA.FindFurthestPoint(transformA, direction) - shapeB.FindFurthestPoint(transformB, -direction);
-		}
-
-		bool SameDirection(
-			const glm::vec3& direction,
-			const glm::vec3& ao)
-		{
-			return glm::dot(direction, ao) > 0;
-		}
 		bool Line(
 			Simplex& points,
 			glm::vec3& direction)
@@ -139,7 +127,7 @@ namespace se
 			// never should be here
 			return false;
 		}
-		bool GJK(const se::CollisionShape& shapeA, const glm::mat4& transformA, const se::CollisionShape& shapeB , const glm::mat4& transformB)
+		se::CollisionShape::CollisionData GJK(const se::CollisionShape& shapeA, const glm::mat4& transformA, const se::CollisionShape& shapeB , const glm::mat4& transformB)
 		{
 			// Get initial support point in any direction
 			glm::vec3 support = Support(shapeA, transformA, shapeB, transformB, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -154,16 +142,17 @@ namespace se
 				support = Support(shapeA, transformA, shapeB, transformB, direction);
 
 				if (glm::dot(support, direction) <= 0) // If there <= then no proper colliding when any of 2 axies are aligned
-				{
-					return false; // no collision
-				}
-
+					break;
+				
 				points.push_front(support);
+
 				if (NextSimplex(points, direction))
 				{
-					return true;
+					return se::algo::EPA(points, shapeA, transformA, shapeB, transformB);
 				}
 			}
+
+			return { false };
 		}
 	}
 }

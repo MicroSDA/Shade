@@ -9,8 +9,11 @@ namespace se
 	public:
 		struct CollisionData
 		{
-			bool IsCollide      = false;
-			glm::vec3 Direction = glm::vec3(0.0f);
+			bool HasCollision	= false;
+			float Depth			= 0.0f;            // Length of B - A
+			//glm::vec3 A			= glm::vec3(0.0f); // Furhest point of A into B
+			//glm::vec3 B			= glm::vec3(0.0f); // Furhest point of B into A
+			glm::vec3 Direction = glm::vec3(0.0f); // B - Normalized
 		};
 		enum class Shape
 		{
