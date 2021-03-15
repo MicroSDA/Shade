@@ -6,7 +6,9 @@ se::RigidBody::RigidBody() :
 {
 
 }
-
+se::RigidBody::~RigidBody()
+{
+}
 void se::RigidBody::SetType(const se::RigidBody::Type& type)
 {
 	m_BodyType = type;
@@ -31,7 +33,7 @@ se::CollisionShape::CollisionData se::RigidBody::TestCollision(const glm::mat4& 
 	return { false };
 }
 
-void se::RigidBody::AddCollider(se::CollisionShape* shape)
+void se::RigidBody::AddCollider(const std::shared_ptr<se::CollisionShape>& shape)
 {
 	m_CollisionShapes.push_back(shape);
 }

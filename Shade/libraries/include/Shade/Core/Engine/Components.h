@@ -259,5 +259,19 @@ namespace se
 	struct RigidBodyComponent
 	{
 		se::RigidBody Body;
+		RigidBodyComponent() = default;
+		~RigidBodyComponent() = default;
+		RigidBodyComponent(RigidBodyComponent&& other) noexcept
+		{
+			this->Body = std::move(other.Body);
+		}
+		RigidBodyComponent& operator=(RigidBodyComponent&& other) noexcept
+		{
+			if (this != &other)
+			{
+				this->Body = std::move(other.Body);
+			}
+			return *this;
+		}
 	};
 }

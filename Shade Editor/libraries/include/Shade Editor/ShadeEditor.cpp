@@ -129,7 +129,7 @@ void ShadeEditor::OnInit()
 	auto scene = CreateScene<MainScene>("Main");
 
 	auto model = se::AssetManager::Hold<se::Model3D>("Models.Cube");
-	se::MeshShape* shape = new se::MeshShape();
+	se::ShadeShared<se::MeshShape> shape(new se::MeshShape());
 	shape->AddVertex(glm::vec3(-1, -1, -1)); // 0 
 	shape->AddVertex(glm::vec3(-1, 1, -1)); // 1 
 	shape->AddVertex(glm::vec3(1, 1, -1)); // 2 
@@ -143,16 +143,16 @@ void ShadeEditor::OnInit()
 		auto cube = scene->CreateEntity("Cube1");
 		cube.AddComponent<se::Transform3DComponent>().Transform.SetPostition(0,5,0);
 		cube.AddComponent<se::Model3DComponent>(model);
-		auto& rigidBody = cube.AddComponent<se::RigidBodyComponent>();
-		rigidBody.Body.AddCollider(shape);
-		rigidBody.Body.SetType(se::RigidBody::Type::Static);
+		auto& rigidBody = cube.AddComponent<se::RigidBody>();
+		rigidBody.AddCollider(shape);
+		rigidBody.SetType(se::RigidBody::Type::Static);
 	}
 	{
 		auto cube = scene->CreateEntity("Cube2");
 		cube.AddComponent<se::Transform3DComponent>();
 		cube.AddComponent<se::Model3DComponent>(model);
-		auto& rigidBody = cube.AddComponent<se::RigidBodyComponent>();
-		rigidBody.Body.AddCollider(shape);
+		auto& rigidBody = cube.AddComponent<se::RigidBody>();
+		rigidBody.AddCollider(shape);
 	}
 
 	for (auto const& [name, scene] : GetScenes())
@@ -191,33 +191,33 @@ void ShadeEditor::OnInit()
 
 void ShadeEditor::OnUpdate(const se::Timer& deltaTime)
 {
-	auto entites = GetCurrentScene()->GetEntities().group<se::Transform3DComponent, se::RigidBodyComponent>();
+	auto entites = GetCurrentScene()->GetEntities().group<se::Transform3DComponent, se::RigidBody>();
 
 	for (auto i = 0; i < entites.size(); i++)
 	{
-		auto [transform1, body1] = entites.get<se::Transform3DComponent, se::RigidBodyComponent>(entites[i]);
+		auto [transform1, body1] = entites.get<se::Transform3DComponent, se::RigidBody>(entites[i]);
 	
 		for (auto j = i + 1; j < entites.size(); j++)
 		{
-			auto [transform2, body2] = entites.get<se::Transform3DComponent, se::RigidBodyComponent>(entites[j]);
+			auto [transform2, body2] = entites.get<se::Transform3DComponent, se::RigidBody>(entites[j]);
 			
-			auto result = body1.Body.TestCollision(transform1.Transform.GetModelMatrix(), body2.Body, transform2.Transform.GetModelMatrix());
+			auto result = body1.TestCollision(transform1.Transform.GetModelMatrix(), body2, transform2.Transform.GetModelMatrix());
 			if (result.HasCollision)
 			{
-				if (body1.Body.GetType() == se::RigidBody::Type::Static && body2.Body.GetType() == se::RigidBody::Type::Static)
+				if (body1.GetType() == se::RigidBody::Type::Static && body2.GetType() == se::RigidBody::Type::Static)
 				{
 					continue;
 				}
-				else if (body1.Body.GetType() == se::RigidBody::Type::Dynamic && body2.Body.GetType() == se::RigidBody::Type::Dynamic)
+				else if (body1.GetType() == se::RigidBody::Type::Dynamic && body2.GetType() == se::RigidBody::Type::Dynamic)
 				{
 					transform1.Transform.GetPosition() += result.Direction * result.Depth / 2.0f;
 					transform2.Transform.GetPosition() -= result.Direction * result.Depth / 2.0f;
 				}
-				else if (body1.Body.GetType() == se::RigidBody::Type::Dynamic && body2.Body.GetType() == se::RigidBody::Type::Static)
+				else if (body1.GetType() == se::RigidBody::Type::Dynamic && body2.GetType() == se::RigidBody::Type::Static)
 				{
 					transform1.Transform.GetPosition() += result.Direction * result.Depth;
 				}
-				else if (body1.Body.GetType() == se::RigidBody::Type::Static && body2.Body.GetType() == se::RigidBody::Type::Dynamic)
+				else if (body1.GetType() == se::RigidBody::Type::Static && body2.GetType() == se::RigidBody::Type::Dynamic)
 				{
 					transform2.Transform.GetPosition() += result.Direction * result.Depth;
 				}
